@@ -1,0 +1,88 @@
+option java_package = "flowy.scheduler.protocal";   
+option java_outer_classname = "Messages";   
+option optimize_for=SPEED;  
+
+import "google/protobuf/csharp_options.proto";
+option (google.protobuf.csharp_file_options).namespace = "Flowy.Scheduler.CSharpSDK.Protocal";
+option (google.protobuf.csharp_file_options).umbrella_classname = "FSP_0_0_1";
+
+message LoginRequest {
+  required string app_id = 1;
+  required string app_secret = 2;
+}
+
+message LoginResponse {
+   enum LoginResultType {
+      SUCCESS = 0;
+	  FAILED = 1;
+   }
+   
+   required LoginResultType resultType = 1;
+   optional string failReason = 2 [default = ''];
+}
+
+message WorkerRegisterRequest {
+	
+	required string worker_id = 1;
+	required string worker_name = 2;
+	repeated string execute_time = 3;
+	required int32 timeout = 4;
+	
+	enum ExecuteLastExpiredType {
+		RUN = 0;
+		IGNORE = 1;
+	}
+	
+	required ExecuteLastExpiredType execute_last_expired = 5;
+}
+
+message WorkerRegisterResponse {
+	required string worker_id = 1;
+}
+
+message StartListenRequest {
+	required string worker_id = 1;
+}
+
+message TaskNotify {
+	required string worker_id = 1;
+	required string task_id = 2;
+}
+
+message TaskStatusUpdate{
+	enum Status{
+		START = 0;
+		RUNNING = 1;
+		STOP = 2;
+	}	
+
+	required string worker_id = 1;
+	required string task_id = 2;
+	required Status status = 3;
+	optional int32 percentage = 4;
+	optional string error_message = 5;
+}	
+
+message TaskStart {
+	required string worker_id = 1;
+	required string task_id = 2;
+}
+
+message TaskRunning {
+	required string worker_id = 1;
+	required string task_id = 2;
+	optional int32 percentage = 3 [default = 0];
+}
+
+message TaskComplete {
+	required string worker_id = 1;
+	required string task_id = 2;
+	
+	enum TaskResultType {
+		SUCCESS = 0;
+		FAILED = 1;
+	}
+	
+	required TaskResultType result = 3;
+	optional string error_message = 4 [default=''];
+}

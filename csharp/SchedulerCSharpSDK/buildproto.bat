@@ -1,0 +1,1 @@
+..\tools\protogen.exe protos\fsp.proto protos\google\protobuf\csharp_options.proto protos\google\protobuf\descriptor.proto --proto_path=protos -output_directory=Protocal
