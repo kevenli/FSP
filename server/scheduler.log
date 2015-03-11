@@ -1,0 +1,67 @@
+2015-03-11 17:36:33,032 [myid:] - INFO  [main:JavaReflectionManager@66] - HCANN000001: Hibernate Commons Annotations {4.0.5.Final}
+2015-03-11 17:36:33,042 [myid:] - INFO  [main:Version@54] - HHH000412: Hibernate Core {4.3.6.Final}
+2015-03-11 17:36:33,046 [myid:] - INFO  [main:Environment@239] - HHH000206: hibernate.properties not found
+2015-03-11 17:36:33,048 [myid:] - INFO  [main:Environment@346] - HHH000021: Bytecode provider name : javassist
+2015-03-11 17:36:33,069 [myid:] - INFO  [main:Configuration@2073] - HHH000043: Configuring from resource: /hibernate.cfg.xml
+2015-03-11 17:36:33,069 [myid:] - INFO  [main:Configuration@2092] - HHH000040: Configuration resource: /hibernate.cfg.xml
+2015-03-11 17:36:33,070 [myid:] - ERROR [main:DaoFactory@24] - org.hibernate.HibernateException: /hibernate.cfg.xml not found
+2015-03-11 17:37:34,888 [myid:] - INFO  [main:JavaReflectionManager@66] - HCANN000001: Hibernate Commons Annotations {4.0.5.Final}
+2015-03-11 17:37:34,899 [myid:] - INFO  [main:Version@54] - HHH000412: Hibernate Core {4.3.6.Final}
+2015-03-11 17:37:34,904 [myid:] - INFO  [main:Environment@239] - HHH000206: hibernate.properties not found
+2015-03-11 17:37:34,905 [myid:] - INFO  [main:Environment@346] - HHH000021: Bytecode provider name : javassist
+2015-03-11 17:37:34,926 [myid:] - INFO  [main:Configuration@2073] - HHH000043: Configuring from resource: /hibernate.cfg.xml
+2015-03-11 17:37:34,927 [myid:] - INFO  [main:Configuration@2092] - HHH000040: Configuration resource: /hibernate.cfg.xml
+2015-03-11 17:37:34,927 [myid:] - ERROR [main:DaoFactory@24] - org.hibernate.HibernateException: /hibernate.cfg.xml not found
+2015-03-11 17:39:53,029 [myid:] - INFO  [main:JavaReflectionManager@66] - HCANN000001: Hibernate Commons Annotations {4.0.5.Final}
+2015-03-11 17:39:53,050 [myid:] - INFO  [main:Version@54] - HHH000412: Hibernate Core {4.3.6.Final}
+2015-03-11 17:39:53,055 [myid:] - INFO  [main:Environment@239] - HHH000206: hibernate.properties not found
+2015-03-11 17:39:53,056 [myid:] - INFO  [main:Environment@346] - HHH000021: Bytecode provider name : javassist
+2015-03-11 17:39:53,077 [myid:] - INFO  [main:Configuration@2073] - HHH000043: Configuring from resource: /hibernate.cfg.xml
+2015-03-11 17:39:53,078 [myid:] - INFO  [main:Configuration@2092] - HHH000040: Configuration resource: /hibernate.cfg.xml
+2015-03-11 17:39:53,078 [myid:] - ERROR [main:DaoFactory@24] - org.hibernate.HibernateException: /hibernate.cfg.xml not found
+2015-03-11 17:40:04,310 [myid:] - INFO  [main:JavaReflectionManager@66] - HCANN000001: Hibernate Commons Annotations {4.0.5.Final}
+2015-03-11 17:40:04,320 [myid:] - INFO  [main:Version@54] - HHH000412: Hibernate Core {4.3.6.Final}
+2015-03-11 17:40:04,324 [myid:] - INFO  [main:Environment@239] - HHH000206: hibernate.properties not found
+2015-03-11 17:40:04,326 [myid:] - INFO  [main:Environment@346] - HHH000021: Bytecode provider name : javassist
+2015-03-11 17:40:04,347 [myid:] - INFO  [main:Configuration@2073] - HHH000043: Configuring from resource: /hibernate.cfg.xml
+2015-03-11 17:40:04,347 [myid:] - INFO  [main:Configuration@2092] - HHH000040: Configuration resource: /hibernate.cfg.xml
+2015-03-11 17:40:04,474 [myid:] - INFO  [main:Configuration@2214] - HHH000041: Configured SessionFactory: null
+2015-03-11 17:40:04,590 [myid:] - WARN  [main:DriverManagerConnectionProviderImpl@93] - HHH000402: Using Hibernate built-in connection pool (not for production use!)
+2015-03-11 17:40:04,612 [myid:] - INFO  [main:DriverManagerConnectionProviderImpl@166] - HHH000401: using driver [com.mysql.jdbc.Driver] at URL [jdbc:mysql://localhost/scheduler?characterEncoding=utf8]
+2015-03-11 17:40:04,612 [myid:] - INFO  [main:DriverManagerConnectionProviderImpl@175] - HHH000046: Connection properties: {user=scheduler, password=****}
+2015-03-11 17:40:04,612 [myid:] - INFO  [main:DriverManagerConnectionProviderImpl@180] - HHH000006: Autocommit mode: false
+2015-03-11 17:40:04,614 [myid:] - INFO  [main:DriverManagerConnectionProviderImpl@102] - HHH000115: Hibernate connection pool size: 20 (min=1)
+2015-03-11 17:40:04,790 [myid:] - INFO  [main:Dialect@145] - HHH000400: Using dialect: org.hibernate.dialect.MySQLDialect
+2015-03-11 17:40:04,798 [myid:] - INFO  [main:LobCreatorBuilder@97] - HHH000423: Disabling contextual LOB creation as JDBC driver reported JDBC version [3] less than 4
+2015-03-11 17:40:04,953 [myid:] - INFO  [main:TransactionFactoryInitiator@62] - HHH000399: Using default transaction strategy (direct JDBC transactions)
+2015-03-11 17:40:04,958 [myid:] - INFO  [main:ASTQueryTranslatorFactory@47] - HHH000397: Using ASTQueryTranslatorFactory
+2015-03-11 17:40:05,392 [myid:] - INFO  [main:StdSchedulerFactory@1184] - Using default implementation for ThreadExecutor
+2015-03-11 17:40:05,394 [myid:] - INFO  [main:SimpleThreadPool@268] - Job execution threads will use class loader of thread: main
+2015-03-11 17:40:05,430 [myid:] - INFO  [main:SchedulerSignalerImpl@61] - Initialized Scheduler Signaller of type: class org.quartz.core.SchedulerSignalerImpl
+2015-03-11 17:40:05,431 [myid:] - INFO  [main:QuartzScheduler@240] - Quartz Scheduler v.2.2.1 created.
+2015-03-11 17:40:05,432 [myid:] - INFO  [main:RAMJobStore@155] - RAMJobStore initialized.
+2015-03-11 17:40:05,433 [myid:] - INFO  [main:QuartzScheduler@305] - Scheduler meta-data: Quartz Scheduler (v2.2.1) 'DefaultQuartzScheduler' with instanceId 'NON_CLUSTERED'
+  Scheduler class: 'org.quartz.core.QuartzScheduler' - running locally.
+  NOT STARTED.
+  Currently in standby mode.
+  Number of jobs executed: 0
+  Using thread pool 'org.quartz.simpl.SimpleThreadPool' - with 10 threads.
+  Using job-store 'org.quartz.simpl.RAMJobStore' - which does not support persistence. and is not clustered.
+
+2015-03-11 17:40:05,433 [myid:] - INFO  [main:StdSchedulerFactory@1339] - Quartz scheduler 'DefaultQuartzScheduler' initialized from default resource file in Quartz package: 'quartz.properties'
+2015-03-11 17:40:05,433 [myid:] - INFO  [main:StdSchedulerFactory@1343] - Quartz scheduler version: 2.2.1
+2015-03-11 17:40:05,434 [myid:] - INFO  [main:QuartzScheduler@575] - Scheduler DefaultQuartzScheduler_$_NON_CLUSTERED started.
+2015-03-11 17:40:05,434 [myid:] - INFO  [main:FSPServer@34] - Server started on 3092
+2015-03-11 17:40:11,247 [myid:] - INFO  [main:FSPServer@43] - Accepting new connection from /127.0.0.1:55043
+2015-03-11 17:40:11,414 [myid:] - INFO  [Thread-2:Configuration@2073] - HHH000043: Configuring from resource: /hibernate.cfg.xml
+2015-03-11 17:40:11,414 [myid:] - INFO  [Thread-2:Configuration@2092] - HHH000040: Configuration resource: /hibernate.cfg.xml
+2015-03-11 17:40:11,420 [myid:] - INFO  [Thread-2:Configuration@2214] - HHH000041: Configured SessionFactory: null
+2015-03-11 17:40:11,444 [myid:] - WARN  [Thread-2:DriverManagerConnectionProviderImpl@93] - HHH000402: Using Hibernate built-in connection pool (not for production use!)
+2015-03-11 17:40:11,444 [myid:] - INFO  [Thread-2:DriverManagerConnectionProviderImpl@166] - HHH000401: using driver [com.mysql.jdbc.Driver] at URL [jdbc:mysql://localhost/scheduler?characterEncoding=utf8]
+2015-03-11 17:40:11,444 [myid:] - INFO  [Thread-2:DriverManagerConnectionProviderImpl@175] - HHH000046: Connection properties: {user=scheduler, password=****}
+2015-03-11 17:40:11,444 [myid:] - INFO  [Thread-2:DriverManagerConnectionProviderImpl@180] - HHH000006: Autocommit mode: false
+2015-03-11 17:40:11,445 [myid:] - INFO  [Thread-2:DriverManagerConnectionProviderImpl@102] - HHH000115: Hibernate connection pool size: 20 (min=1)
+2015-03-11 17:40:11,471 [myid:] - INFO  [Thread-2:Dialect@145] - HHH000400: Using dialect: org.hibernate.dialect.MySQLDialect
+2015-03-11 17:40:11,472 [myid:] - INFO  [Thread-2:LobCreatorBuilder@97] - HHH000423: Disabling contextual LOB creation as JDBC driver reported JDBC version [3] less than 4
+2015-03-11 17:40:11,484 [myid:] - INFO  [Thread-2:TransactionFactoryInitiator@62] - HHH000399: Using default transaction strategy (direct JDBC transactions)
+2015-03-11 17:40:11,484 [myid:] - INFO  [Thread-2:ASTQueryTranslatorFactory@47] - HHH000397: Using ASTQueryTranslatorFactory
