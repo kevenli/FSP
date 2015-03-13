@@ -64,7 +64,7 @@ public class TestClient {
 
 	public void Auth() throws IOException {
 		LoginRequest.Builder builder = LoginRequest.newBuilder();
-		builder.setAppId("123");
+		builder.setAppKey("123");
 		builder.setAppSecret("321");
 		LoginRequest request = builder.build();
 		write(request.toByteArray());

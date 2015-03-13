@@ -1,13 +1,17 @@
 package flowy.scheduler.server;
 
+import flowy.scheduler.server.codec.MessageDecoder;
+import flowy.scheduler.server.codec.MessageEncoder;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
+import io.netty.channel.ChannelPipeline;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.handler.timeout.IdleStateHandler;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -15,6 +19,7 @@ import java.net.Socket;
 import java.nio.charset.Charset;
 
 import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.impl.StdSchedulerFactory;
@@ -23,7 +28,7 @@ public class FSPServer {
 	
 	public static final int DEFAULT_PORT = 3092;
 	
-	private Logger logger = Logger.getLogger(FSPServer.class);
+	private static Logger logger = Logger.getLogger(FSPServer.class);
 	
 	public FSPServer() throws Exception{
 		if (!DaoFactory.testDatabaseConnection()){
@@ -46,7 +51,12 @@ public class FSPServer {
              .childHandler(new ChannelInitializer<SocketChannel>() { // (4)
                  @Override
                  public void initChannel(SocketChannel ch) throws Exception {
-                     ch.pipeline().addLast(new FSPServerHandler());
+                	 ChannelPipeline pipeline = ch.pipeline();
+                	 pipeline.addLast(
+                			 new IdleStateHandler(10, 10, 0),
+                			 new MessageDecoder(), 
+                			 new MessageEncoder(),
+                			 new SessionHandler());
                  }
              })
              .option(ChannelOption.SO_BACKLOG, 128)          // (5)
@@ -54,7 +64,7 @@ public class FSPServer {
 
             // Bind and start to accept incoming connections.
             ChannelFuture f = b.bind(DEFAULT_PORT).sync(); // (7)
-
+            logger.debug("Server started");
             // Wait until the server socket is closed.
             // In this example, this does not happen, but you can do that to gracefully
             // shut down your server.
@@ -90,6 +100,10 @@ public class FSPServer {
 	}
 
 	public static void main(String[] args) throws Exception {
+		// load log4j configuration 
+		PropertyConfigurator.configure("conf/log4j.properties");
+		
+		// start server
 		FSPServer server = new FSPServer();
 		server.Run();
 	}

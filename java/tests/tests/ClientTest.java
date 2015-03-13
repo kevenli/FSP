@@ -9,7 +9,7 @@ import flowy.scheduler.javasdk.WorkerSetting;
 
 public class ClientTest implements IClientCallback {
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws InterruptedException {
 
 		ClientTest test = new ClientTest();
 		String app_key = "123";
@@ -19,7 +19,7 @@ public class ClientTest implements IClientCallback {
 				"*/5 * * * * ?", 30);
 
 		Client client = new Client("127.0.0.1:3092", app_key, app_secret, setting, test);
-
+		client.connect();
 		try {
 			client.start();
 		} catch (IOException e) {

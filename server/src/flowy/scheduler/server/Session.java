@@ -26,6 +26,7 @@ import flowy.scheduler.protocal.Messages.TaskStatusUpdate;
 import flowy.scheduler.protocal.Messages.TaskStatusUpdate.Status;
 import flowy.scheduler.protocal.Messages.WorkerRegisterRequest;
 import flowy.scheduler.protocal.Messages.WorkerRegisterResponse;
+import flowy.scheduler.server.messages.Message;
 
 import org.apache.log4j.Logger;
 import org.quartz.JobDetail;
@@ -41,6 +42,8 @@ public class Session implements Runnable {
 	private Worker m_worker;
 	private Object m_iolock = new Object();
 	private Object m_notifylock = new Object();
+	private int m_sessionId;
+	private SessionHandler m_sessionHandler;
 
 	private static Logger logger = Logger.getLogger(Session.class);
 	
@@ -50,6 +53,11 @@ public class Session implements Runnable {
 		this.m_scheduler = scheduler;
 		this.m_socket = socket;
 		this.clientAddress = socket.getInetAddress();
+	}
+	
+	public Session(int sessionId, SessionHandler sessionHandler){
+		m_sessionId = sessionId;
+		m_sessionHandler = sessionHandler;
 	}
 
 	@Override
@@ -111,7 +119,7 @@ public class Session implements Runnable {
 		try {
 			LoginRequest loginRequest = LoginRequest
 					.parseFrom(getNextMessage());
-			String app_id = loginRequest.getAppId();
+			String app_id = loginRequest.getAppKey();
 			String app_secret = loginRequest.getAppSecret();
 
 			Application application = ApplicationDAO.getApplication(app_id);
@@ -255,6 +263,10 @@ public class Session implements Runnable {
 		synchronized(m_notifylock){
 			m_notifylock.notify();
 		}
+	}
+	
+	public void handleMessage(Message message){
+		
 	}
 }
 

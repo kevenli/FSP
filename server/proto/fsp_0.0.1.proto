@@ -2,9 +2,24 @@ option java_package = "flowy.scheduler.protocal";
 option java_outer_classname = "Messages";   
 option optimize_for=SPEED;  
 
+message ConnectRequest{
+	required string client_protocol_version = 1;
+}
+
+message ConnectResponse{
+	
+}
+
 message LoginRequest {
-  required string app_id = 1;
+  enum ConnectionType {
+      NEW = 0;
+	  RECONNECT = 1;
+   }
+  
+  required string app_key = 1;
   required string app_secret = 2;
+  optional ConnectionType connection_type = 3;
+  optional int32 session_id = 4;
 }
 
 message LoginResponse {
