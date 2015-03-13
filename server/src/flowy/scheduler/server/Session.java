@@ -265,6 +265,10 @@ public class Session implements Runnable {
 		}
 	}
 	
+	public void bindHandler(SessionHandler sessionHandler){
+		this.m_sessionHandler = sessionHandler;
+	}
+	
 	public void handleMessage(Message message){
 		
 	}

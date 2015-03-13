@@ -11,15 +11,8 @@ message ConnectResponse{
 }
 
 message LoginRequest {
-  enum ConnectionType {
-      NEW = 0;
-	  RECONNECT = 1;
-   }
-  
   required string app_key = 1;
   required string app_secret = 2;
-  optional ConnectionType connection_type = 3;
-  optional int32 session_id = 4;
 }
 
 message LoginResponse {
@@ -27,9 +20,8 @@ message LoginResponse {
       SUCCESS = 0;
 	  FAILED = 1;
    }
-   
-   required LoginResultType resultType = 1;
-   optional string failReason = 2 [default = ''];
+   optional LoginResultType result_type = 1;
+   optional string fail_reason = 3 [default = ''];
 }
 
 message WorkerRegisterRequest {

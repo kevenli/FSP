@@ -74,30 +74,6 @@ public class FSPServer {
             bossGroup.shutdownGracefully();
         }
 	}
-	
-	// 开始接受链接时先检查客户端版本号
-	private String acceptSocket(Socket socket) throws IOException{
-		byte[] readBuffer = new byte[1];
-		int readIndex = 0;
-		int readLength = 1;
-		
-		StringBuilder versionReader = new StringBuilder();
-		
-		// 变长协议字符串，以0x00结尾   ： FSP_0_0_1
-		do {
-			socket.getInputStream().read(readBuffer, readIndex, readLength);
-			versionReader.append(new String(readBuffer, Charset.forName("Ascii")));
-		}
-		while(readBuffer[0] != 0x00);
-		
-		String versionStr = versionReader.toString();
-		
-		
-		
-		System.out.format("Client connected, %s %s\r\n", socket.getInetAddress().getHostAddress(), versionStr);
-		
-		return versionStr;
-	}
 
 	public static void main(String[] args) throws Exception {
 		// load log4j configuration 

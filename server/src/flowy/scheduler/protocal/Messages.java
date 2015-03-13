@@ -828,26 +828,6 @@ public final class Messages {
      */
     com.google.protobuf.ByteString
         getAppSecretBytes();
-
-    // optional .LoginRequest.ConnectionType connection_type = 3;
-    /**
-     * <code>optional .LoginRequest.ConnectionType connection_type = 3;</code>
-     */
-    boolean hasConnectionType();
-    /**
-     * <code>optional .LoginRequest.ConnectionType connection_type = 3;</code>
-     */
-    flowy.scheduler.protocal.Messages.LoginRequest.ConnectionType getConnectionType();
-
-    // optional int32 session_id = 4;
-    /**
-     * <code>optional int32 session_id = 4;</code>
-     */
-    boolean hasSessionId();
-    /**
-     * <code>optional int32 session_id = 4;</code>
-     */
-    int getSessionId();
   }
   /**
    * Protobuf type {@code LoginRequest}
@@ -910,22 +890,6 @@ public final class Messages {
               appSecret_ = input.readBytes();
               break;
             }
-            case 24: {
-              int rawValue = input.readEnum();
-              flowy.scheduler.protocal.Messages.LoginRequest.ConnectionType value = flowy.scheduler.protocal.Messages.LoginRequest.ConnectionType.valueOf(rawValue);
-              if (value == null) {
-                unknownFields.mergeVarintField(3, rawValue);
-              } else {
-                bitField0_ |= 0x00000004;
-                connectionType_ = value;
-              }
-              break;
-            }
-            case 32: {
-              bitField0_ |= 0x00000008;
-              sessionId_ = input.readInt32();
-              break;
-            }
           }
         }
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
@@ -963,88 +927,6 @@ public final class Messages {
     @java.lang.Override
     public com.google.protobuf.Parser<LoginRequest> getParserForType() {
       return PARSER;
-    }
-
-    /**
-     * Protobuf enum {@code LoginRequest.ConnectionType}
-     */
-    public enum ConnectionType
-        implements com.google.protobuf.ProtocolMessageEnum {
-      /**
-       * <code>NEW = 0;</code>
-       */
-      NEW(0, 0),
-      /**
-       * <code>RECONNECT = 1;</code>
-       */
-      RECONNECT(1, 1),
-      ;
-
-      /**
-       * <code>NEW = 0;</code>
-       */
-      public static final int NEW_VALUE = 0;
-      /**
-       * <code>RECONNECT = 1;</code>
-       */
-      public static final int RECONNECT_VALUE = 1;
-
-
-      public final int getNumber() { return value; }
-
-      public static ConnectionType valueOf(int value) {
-        switch (value) {
-          case 0: return NEW;
-          case 1: return RECONNECT;
-          default: return null;
-        }
-      }
-
-      public static com.google.protobuf.Internal.EnumLiteMap<ConnectionType>
-          internalGetValueMap() {
-        return internalValueMap;
-      }
-      private static com.google.protobuf.Internal.EnumLiteMap<ConnectionType>
-          internalValueMap =
-            new com.google.protobuf.Internal.EnumLiteMap<ConnectionType>() {
-              public ConnectionType findValueByNumber(int number) {
-                return ConnectionType.valueOf(number);
-              }
-            };
-
-      public final com.google.protobuf.Descriptors.EnumValueDescriptor
-          getValueDescriptor() {
-        return getDescriptor().getValues().get(index);
-      }
-      public final com.google.protobuf.Descriptors.EnumDescriptor
-          getDescriptorForType() {
-        return getDescriptor();
-      }
-      public static final com.google.protobuf.Descriptors.EnumDescriptor
-          getDescriptor() {
-        return flowy.scheduler.protocal.Messages.LoginRequest.getDescriptor().getEnumTypes().get(0);
-      }
-
-      private static final ConnectionType[] VALUES = values();
-
-      public static ConnectionType valueOf(
-          com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
-        if (desc.getType() != getDescriptor()) {
-          throw new java.lang.IllegalArgumentException(
-            "EnumValueDescriptor is not for this type.");
-        }
-        return VALUES[desc.getIndex()];
-      }
-
-      private final int index;
-      private final int value;
-
-      private ConnectionType(int index, int value) {
-        this.index = index;
-        this.value = value;
-      }
-
-      // @@protoc_insertion_point(enum_scope:LoginRequest.ConnectionType)
     }
 
     private int bitField0_;
@@ -1134,43 +1016,9 @@ public final class Messages {
       }
     }
 
-    // optional .LoginRequest.ConnectionType connection_type = 3;
-    public static final int CONNECTION_TYPE_FIELD_NUMBER = 3;
-    private flowy.scheduler.protocal.Messages.LoginRequest.ConnectionType connectionType_;
-    /**
-     * <code>optional .LoginRequest.ConnectionType connection_type = 3;</code>
-     */
-    public boolean hasConnectionType() {
-      return ((bitField0_ & 0x00000004) == 0x00000004);
-    }
-    /**
-     * <code>optional .LoginRequest.ConnectionType connection_type = 3;</code>
-     */
-    public flowy.scheduler.protocal.Messages.LoginRequest.ConnectionType getConnectionType() {
-      return connectionType_;
-    }
-
-    // optional int32 session_id = 4;
-    public static final int SESSION_ID_FIELD_NUMBER = 4;
-    private int sessionId_;
-    /**
-     * <code>optional int32 session_id = 4;</code>
-     */
-    public boolean hasSessionId() {
-      return ((bitField0_ & 0x00000008) == 0x00000008);
-    }
-    /**
-     * <code>optional int32 session_id = 4;</code>
-     */
-    public int getSessionId() {
-      return sessionId_;
-    }
-
     private void initFields() {
       appKey_ = "";
       appSecret_ = "";
-      connectionType_ = flowy.scheduler.protocal.Messages.LoginRequest.ConnectionType.NEW;
-      sessionId_ = 0;
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -1198,12 +1046,6 @@ public final class Messages {
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
         output.writeBytes(2, getAppSecretBytes());
       }
-      if (((bitField0_ & 0x00000004) == 0x00000004)) {
-        output.writeEnum(3, connectionType_.getNumber());
-      }
-      if (((bitField0_ & 0x00000008) == 0x00000008)) {
-        output.writeInt32(4, sessionId_);
-      }
       getUnknownFields().writeTo(output);
     }
 
@@ -1220,14 +1062,6 @@ public final class Messages {
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
         size += com.google.protobuf.CodedOutputStream
           .computeBytesSize(2, getAppSecretBytes());
-      }
-      if (((bitField0_ & 0x00000004) == 0x00000004)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeEnumSize(3, connectionType_.getNumber());
-      }
-      if (((bitField0_ & 0x00000008) == 0x00000008)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(4, sessionId_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -1349,10 +1183,6 @@ public final class Messages {
         bitField0_ = (bitField0_ & ~0x00000001);
         appSecret_ = "";
         bitField0_ = (bitField0_ & ~0x00000002);
-        connectionType_ = flowy.scheduler.protocal.Messages.LoginRequest.ConnectionType.NEW;
-        bitField0_ = (bitField0_ & ~0x00000004);
-        sessionId_ = 0;
-        bitField0_ = (bitField0_ & ~0x00000008);
         return this;
       }
 
@@ -1389,14 +1219,6 @@ public final class Messages {
           to_bitField0_ |= 0x00000002;
         }
         result.appSecret_ = appSecret_;
-        if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
-          to_bitField0_ |= 0x00000004;
-        }
-        result.connectionType_ = connectionType_;
-        if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
-          to_bitField0_ |= 0x00000008;
-        }
-        result.sessionId_ = sessionId_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -1422,12 +1244,6 @@ public final class Messages {
           bitField0_ |= 0x00000002;
           appSecret_ = other.appSecret_;
           onChanged();
-        }
-        if (other.hasConnectionType()) {
-          setConnectionType(other.getConnectionType());
-        }
-        if (other.hasSessionId()) {
-          setSessionId(other.getSessionId());
         }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
@@ -1612,75 +1428,6 @@ public final class Messages {
         return this;
       }
 
-      // optional .LoginRequest.ConnectionType connection_type = 3;
-      private flowy.scheduler.protocal.Messages.LoginRequest.ConnectionType connectionType_ = flowy.scheduler.protocal.Messages.LoginRequest.ConnectionType.NEW;
-      /**
-       * <code>optional .LoginRequest.ConnectionType connection_type = 3;</code>
-       */
-      public boolean hasConnectionType() {
-        return ((bitField0_ & 0x00000004) == 0x00000004);
-      }
-      /**
-       * <code>optional .LoginRequest.ConnectionType connection_type = 3;</code>
-       */
-      public flowy.scheduler.protocal.Messages.LoginRequest.ConnectionType getConnectionType() {
-        return connectionType_;
-      }
-      /**
-       * <code>optional .LoginRequest.ConnectionType connection_type = 3;</code>
-       */
-      public Builder setConnectionType(flowy.scheduler.protocal.Messages.LoginRequest.ConnectionType value) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        bitField0_ |= 0x00000004;
-        connectionType_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional .LoginRequest.ConnectionType connection_type = 3;</code>
-       */
-      public Builder clearConnectionType() {
-        bitField0_ = (bitField0_ & ~0x00000004);
-        connectionType_ = flowy.scheduler.protocal.Messages.LoginRequest.ConnectionType.NEW;
-        onChanged();
-        return this;
-      }
-
-      // optional int32 session_id = 4;
-      private int sessionId_ ;
-      /**
-       * <code>optional int32 session_id = 4;</code>
-       */
-      public boolean hasSessionId() {
-        return ((bitField0_ & 0x00000008) == 0x00000008);
-      }
-      /**
-       * <code>optional int32 session_id = 4;</code>
-       */
-      public int getSessionId() {
-        return sessionId_;
-      }
-      /**
-       * <code>optional int32 session_id = 4;</code>
-       */
-      public Builder setSessionId(int value) {
-        bitField0_ |= 0x00000008;
-        sessionId_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional int32 session_id = 4;</code>
-       */
-      public Builder clearSessionId() {
-        bitField0_ = (bitField0_ & ~0x00000008);
-        sessionId_ = 0;
-        onChanged();
-        return this;
-      }
-
       // @@protoc_insertion_point(builder_scope:LoginRequest)
     }
 
@@ -1695,27 +1442,27 @@ public final class Messages {
   public interface LoginResponseOrBuilder
       extends com.google.protobuf.MessageOrBuilder {
 
-    // required .LoginResponse.LoginResultType resultType = 1;
+    // optional .LoginResponse.LoginResultType result_type = 1;
     /**
-     * <code>required .LoginResponse.LoginResultType resultType = 1;</code>
+     * <code>optional .LoginResponse.LoginResultType result_type = 1;</code>
      */
     boolean hasResultType();
     /**
-     * <code>required .LoginResponse.LoginResultType resultType = 1;</code>
+     * <code>optional .LoginResponse.LoginResultType result_type = 1;</code>
      */
     flowy.scheduler.protocal.Messages.LoginResponse.LoginResultType getResultType();
 
-    // optional string failReason = 2 [default = ""];
+    // optional string fail_reason = 3 [default = ""];
     /**
-     * <code>optional string failReason = 2 [default = ""];</code>
+     * <code>optional string fail_reason = 3 [default = ""];</code>
      */
     boolean hasFailReason();
     /**
-     * <code>optional string failReason = 2 [default = ""];</code>
+     * <code>optional string fail_reason = 3 [default = ""];</code>
      */
     java.lang.String getFailReason();
     /**
-     * <code>optional string failReason = 2 [default = ""];</code>
+     * <code>optional string fail_reason = 3 [default = ""];</code>
      */
     com.google.protobuf.ByteString
         getFailReasonBytes();
@@ -1782,7 +1529,7 @@ public final class Messages {
               }
               break;
             }
-            case 18: {
+            case 26: {
               bitField0_ |= 0x00000002;
               failReason_ = input.readBytes();
               break;
@@ -1909,33 +1656,33 @@ public final class Messages {
     }
 
     private int bitField0_;
-    // required .LoginResponse.LoginResultType resultType = 1;
-    public static final int RESULTTYPE_FIELD_NUMBER = 1;
+    // optional .LoginResponse.LoginResultType result_type = 1;
+    public static final int RESULT_TYPE_FIELD_NUMBER = 1;
     private flowy.scheduler.protocal.Messages.LoginResponse.LoginResultType resultType_;
     /**
-     * <code>required .LoginResponse.LoginResultType resultType = 1;</code>
+     * <code>optional .LoginResponse.LoginResultType result_type = 1;</code>
      */
     public boolean hasResultType() {
       return ((bitField0_ & 0x00000001) == 0x00000001);
     }
     /**
-     * <code>required .LoginResponse.LoginResultType resultType = 1;</code>
+     * <code>optional .LoginResponse.LoginResultType result_type = 1;</code>
      */
     public flowy.scheduler.protocal.Messages.LoginResponse.LoginResultType getResultType() {
       return resultType_;
     }
 
-    // optional string failReason = 2 [default = ""];
-    public static final int FAILREASON_FIELD_NUMBER = 2;
+    // optional string fail_reason = 3 [default = ""];
+    public static final int FAIL_REASON_FIELD_NUMBER = 3;
     private java.lang.Object failReason_;
     /**
-     * <code>optional string failReason = 2 [default = ""];</code>
+     * <code>optional string fail_reason = 3 [default = ""];</code>
      */
     public boolean hasFailReason() {
       return ((bitField0_ & 0x00000002) == 0x00000002);
     }
     /**
-     * <code>optional string failReason = 2 [default = ""];</code>
+     * <code>optional string fail_reason = 3 [default = ""];</code>
      */
     public java.lang.String getFailReason() {
       java.lang.Object ref = failReason_;
@@ -1952,7 +1699,7 @@ public final class Messages {
       }
     }
     /**
-     * <code>optional string failReason = 2 [default = ""];</code>
+     * <code>optional string fail_reason = 3 [default = ""];</code>
      */
     public com.google.protobuf.ByteString
         getFailReasonBytes() {
@@ -1977,10 +1724,6 @@ public final class Messages {
       byte isInitialized = memoizedIsInitialized;
       if (isInitialized != -1) return isInitialized == 1;
 
-      if (!hasResultType()) {
-        memoizedIsInitialized = 0;
-        return false;
-      }
       memoizedIsInitialized = 1;
       return true;
     }
@@ -1992,7 +1735,7 @@ public final class Messages {
         output.writeEnum(1, resultType_.getNumber());
       }
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
-        output.writeBytes(2, getFailReasonBytes());
+        output.writeBytes(3, getFailReasonBytes());
       }
       getUnknownFields().writeTo(output);
     }
@@ -2009,7 +1752,7 @@ public final class Messages {
       }
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeBytesSize(2, getFailReasonBytes());
+          .computeBytesSize(3, getFailReasonBytes());
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -2196,10 +1939,6 @@ public final class Messages {
       }
 
       public final boolean isInitialized() {
-        if (!hasResultType()) {
-          
-          return false;
-        }
         return true;
       }
 
@@ -2222,22 +1961,22 @@ public final class Messages {
       }
       private int bitField0_;
 
-      // required .LoginResponse.LoginResultType resultType = 1;
+      // optional .LoginResponse.LoginResultType result_type = 1;
       private flowy.scheduler.protocal.Messages.LoginResponse.LoginResultType resultType_ = flowy.scheduler.protocal.Messages.LoginResponse.LoginResultType.SUCCESS;
       /**
-       * <code>required .LoginResponse.LoginResultType resultType = 1;</code>
+       * <code>optional .LoginResponse.LoginResultType result_type = 1;</code>
        */
       public boolean hasResultType() {
         return ((bitField0_ & 0x00000001) == 0x00000001);
       }
       /**
-       * <code>required .LoginResponse.LoginResultType resultType = 1;</code>
+       * <code>optional .LoginResponse.LoginResultType result_type = 1;</code>
        */
       public flowy.scheduler.protocal.Messages.LoginResponse.LoginResultType getResultType() {
         return resultType_;
       }
       /**
-       * <code>required .LoginResponse.LoginResultType resultType = 1;</code>
+       * <code>optional .LoginResponse.LoginResultType result_type = 1;</code>
        */
       public Builder setResultType(flowy.scheduler.protocal.Messages.LoginResponse.LoginResultType value) {
         if (value == null) {
@@ -2249,7 +1988,7 @@ public final class Messages {
         return this;
       }
       /**
-       * <code>required .LoginResponse.LoginResultType resultType = 1;</code>
+       * <code>optional .LoginResponse.LoginResultType result_type = 1;</code>
        */
       public Builder clearResultType() {
         bitField0_ = (bitField0_ & ~0x00000001);
@@ -2258,16 +1997,16 @@ public final class Messages {
         return this;
       }
 
-      // optional string failReason = 2 [default = ""];
+      // optional string fail_reason = 3 [default = ""];
       private java.lang.Object failReason_ = "";
       /**
-       * <code>optional string failReason = 2 [default = ""];</code>
+       * <code>optional string fail_reason = 3 [default = ""];</code>
        */
       public boolean hasFailReason() {
         return ((bitField0_ & 0x00000002) == 0x00000002);
       }
       /**
-       * <code>optional string failReason = 2 [default = ""];</code>
+       * <code>optional string fail_reason = 3 [default = ""];</code>
        */
       public java.lang.String getFailReason() {
         java.lang.Object ref = failReason_;
@@ -2281,7 +2020,7 @@ public final class Messages {
         }
       }
       /**
-       * <code>optional string failReason = 2 [default = ""];</code>
+       * <code>optional string fail_reason = 3 [default = ""];</code>
        */
       public com.google.protobuf.ByteString
           getFailReasonBytes() {
@@ -2297,7 +2036,7 @@ public final class Messages {
         }
       }
       /**
-       * <code>optional string failReason = 2 [default = ""];</code>
+       * <code>optional string fail_reason = 3 [default = ""];</code>
        */
       public Builder setFailReason(
           java.lang.String value) {
@@ -2310,7 +2049,7 @@ public final class Messages {
         return this;
       }
       /**
-       * <code>optional string failReason = 2 [default = ""];</code>
+       * <code>optional string fail_reason = 3 [default = ""];</code>
        */
       public Builder clearFailReason() {
         bitField0_ = (bitField0_ & ~0x00000002);
@@ -2319,7 +2058,7 @@ public final class Messages {
         return this;
       }
       /**
-       * <code>optional string failReason = 2 [default = ""];</code>
+       * <code>optional string fail_reason = 3 [default = ""];</code>
        */
       public Builder setFailReasonBytes(
           com.google.protobuf.ByteString value) {
@@ -8527,36 +8266,33 @@ public final class Messages {
     java.lang.String[] descriptorData = {
       "\n\017fsp_0.0.1.proto\"1\n\016ConnectRequest\022\037\n\027c" +
       "lient_protocol_version\030\001 \002(\t\"\021\n\017ConnectR" +
-      "esponse\"\250\001\n\014LoginRequest\022\017\n\007app_key\030\001 \002(" +
-      "\t\022\022\n\napp_secret\030\002 \002(\t\0225\n\017connection_type" +
-      "\030\003 \001(\0162\034.LoginRequest.ConnectionType\022\022\n\n" +
-      "session_id\030\004 \001(\005\"(\n\016ConnectionType\022\007\n\003NE" +
-      "W\020\000\022\r\n\tRECONNECT\020\001\"\205\001\n\rLoginResponse\0222\n\n" +
-      "resultType\030\001 \002(\0162\036.LoginResponse.LoginRe" +
-      "sultType\022\024\n\nfailReason\030\002 \001(\t:\000\"*\n\017LoginR" +
-      "esultType\022\013\n\007SUCCESS\020\000\022\n\n\006FAILED\020\001\"\342\001\n\025W",
-      "orkerRegisterRequest\022\021\n\tworker_id\030\001 \002(\t\022" +
-      "\023\n\013worker_name\030\002 \002(\t\022\024\n\014execute_time\030\003 \003" +
-      "(\t\022\017\n\007timeout\030\004 \002(\005\022K\n\024execute_last_expi" +
-      "red\030\005 \002(\0162-.WorkerRegisterRequest.Execut" +
-      "eLastExpiredType\"-\n\026ExecuteLastExpiredTy" +
-      "pe\022\007\n\003RUN\020\000\022\n\n\006IGNORE\020\001\"+\n\026WorkerRegiste" +
-      "rResponse\022\021\n\tworker_id\030\001 \002(\t\"\'\n\022StartLis" +
-      "tenRequest\022\021\n\tworker_id\030\001 \002(\t\"0\n\nTaskNot" +
-      "ify\022\021\n\tworker_id\030\001 \002(\t\022\017\n\007task_id\030\002 \002(\t\"" +
-      "\267\001\n\020TaskStatusUpdate\022\021\n\tworker_id\030\001 \002(\t\022",
-      "\017\n\007task_id\030\002 \002(\t\022(\n\006status\030\003 \002(\0162\030.TaskS" +
-      "tatusUpdate.Status\022\022\n\npercentage\030\004 \001(\005\022\025" +
-      "\n\rerror_message\030\005 \001(\t\"*\n\006Status\022\t\n\005START" +
-      "\020\000\022\013\n\007RUNNING\020\001\022\010\n\004STOP\020\002\"/\n\tTaskStart\022\021" +
-      "\n\tworker_id\030\001 \002(\t\022\017\n\007task_id\030\002 \002(\t\"H\n\013Ta" +
-      "skRunning\022\021\n\tworker_id\030\001 \002(\t\022\017\n\007task_id\030" +
-      "\002 \002(\t\022\025\n\npercentage\030\003 \001(\005:\0010\"\244\001\n\014TaskCom" +
-      "plete\022\021\n\tworker_id\030\001 \002(\t\022\017\n\007task_id\030\002 \002(" +
-      "\t\022,\n\006result\030\003 \002(\0162\034.TaskComplete.TaskRes" +
-      "ultType\022\027\n\rerror_message\030\004 \001(\t:\000\")\n\016Task",
-      "ResultType\022\013\n\007SUCCESS\020\000\022\n\n\006FAILED\020\001B&\n\030f" +
-      "lowy.scheduler.protocalB\010MessagesH\001"
+      "esponse\"3\n\014LoginRequest\022\017\n\007app_key\030\001 \002(\t" +
+      "\022\022\n\napp_secret\030\002 \002(\t\"\207\001\n\rLoginResponse\0223" +
+      "\n\013result_type\030\001 \001(\0162\036.LoginResponse.Logi" +
+      "nResultType\022\025\n\013fail_reason\030\003 \001(\t:\000\"*\n\017Lo" +
+      "ginResultType\022\013\n\007SUCCESS\020\000\022\n\n\006FAILED\020\001\"\342" +
+      "\001\n\025WorkerRegisterRequest\022\021\n\tworker_id\030\001 " +
+      "\002(\t\022\023\n\013worker_name\030\002 \002(\t\022\024\n\014execute_time" +
+      "\030\003 \003(\t\022\017\n\007timeout\030\004 \002(\005\022K\n\024execute_last_",
+      "expired\030\005 \002(\0162-.WorkerRegisterRequest.Ex" +
+      "ecuteLastExpiredType\"-\n\026ExecuteLastExpir" +
+      "edType\022\007\n\003RUN\020\000\022\n\n\006IGNORE\020\001\"+\n\026WorkerReg" +
+      "isterResponse\022\021\n\tworker_id\030\001 \002(\t\"\'\n\022Star" +
+      "tListenRequest\022\021\n\tworker_id\030\001 \002(\t\"0\n\nTas" +
+      "kNotify\022\021\n\tworker_id\030\001 \002(\t\022\017\n\007task_id\030\002 " +
+      "\002(\t\"\267\001\n\020TaskStatusUpdate\022\021\n\tworker_id\030\001 " +
+      "\002(\t\022\017\n\007task_id\030\002 \002(\t\022(\n\006status\030\003 \002(\0162\030.T" +
+      "askStatusUpdate.Status\022\022\n\npercentage\030\004 \001" +
+      "(\005\022\025\n\rerror_message\030\005 \001(\t\"*\n\006Status\022\t\n\005S",
+      "TART\020\000\022\013\n\007RUNNING\020\001\022\010\n\004STOP\020\002\"/\n\tTaskSta" +
+      "rt\022\021\n\tworker_id\030\001 \002(\t\022\017\n\007task_id\030\002 \002(\t\"H" +
+      "\n\013TaskRunning\022\021\n\tworker_id\030\001 \002(\t\022\017\n\007task" +
+      "_id\030\002 \002(\t\022\025\n\npercentage\030\003 \001(\005:\0010\"\244\001\n\014Tas" +
+      "kComplete\022\021\n\tworker_id\030\001 \002(\t\022\017\n\007task_id\030" +
+      "\002 \002(\t\022,\n\006result\030\003 \002(\0162\034.TaskComplete.Tas" +
+      "kResultType\022\027\n\rerror_message\030\004 \001(\t:\000\")\n\016" +
+      "TaskResultType\022\013\n\007SUCCESS\020\000\022\n\n\006FAILED\020\001B" +
+      "&\n\030flowy.scheduler.protocalB\010MessagesH\001"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -8580,7 +8316,7 @@ public final class Messages {
           internal_static_LoginRequest_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_LoginRequest_descriptor,
-              new java.lang.String[] { "AppKey", "AppSecret", "ConnectionType", "SessionId", });
+              new java.lang.String[] { "AppKey", "AppSecret", });
           internal_static_LoginResponse_descriptor =
             getDescriptor().getMessageTypes().get(3);
           internal_static_LoginResponse_fieldAccessorTable = new
