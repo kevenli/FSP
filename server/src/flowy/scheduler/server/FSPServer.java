@@ -11,7 +11,9 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.codec.protobuf.ProtobufDecoder;
+import io.netty.handler.codec.protobuf.ProtobufEncoder;
 import io.netty.handler.codec.protobuf.ProtobufVarint32FrameDecoder;
+import io.netty.handler.codec.protobuf.ProtobufVarint32LengthFieldPrepender;
 import io.netty.handler.codec.string.StringEncoder;
 import io.netty.handler.timeout.IdleStateHandler;
 
@@ -60,7 +62,8 @@ public class FSPServer {
                 	 ChannelPipeline pipeline = ch.pipeline();
                 	 pipeline.addLast(
                 			 new IdleStateHandler(10, 10, 0),
-                			 new StringEncoder(), 
+                			 new ProtobufVarint32LengthFieldPrepender(),
+                             new ProtobufEncoder(), 
                 			 new ProtobufVarint32FrameDecoder(),
                 			 new ProtobufDecoder(Messages.Request.getDefaultInstance(), registry),
                 			 new SessionHandler());

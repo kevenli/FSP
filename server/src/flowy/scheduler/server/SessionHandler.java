@@ -5,12 +5,15 @@ import java.net.SocketAddress;
 
 import org.apache.log4j.Logger;
 
+import flowy.scheduler.protocal.Messages;
 import flowy.scheduler.protocal.Messages.ConnectResponse;
 import flowy.scheduler.protocal.Messages.LoginRequest;
 import flowy.scheduler.protocal.Messages.LoginResponse;
+import flowy.scheduler.protocal.Messages.Response;
 import flowy.scheduler.protocal.Messages.LoginResponse.LoginResultType;
 import flowy.scheduler.protocal.Messages.Request;
 import flowy.scheduler.protocal.Messages.Request.RequestType;
+import flowy.scheduler.protocal.Messages.Response.ResponseType;
 import io.netty.channel.ChannelHandlerAdapter;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.timeout.IdleState;
@@ -52,7 +55,10 @@ public class SessionHandler extends ChannelHandlerAdapter {
 	private void ackConnection(ChannelHandlerContext ctx){
 		ConnectResponse ackMessage = ConnectResponse.newBuilder()
 				.build();
-		ctx.writeAndFlush(ackMessage);
+		Response response = Response.newBuilder()
+				.setType(ResponseType.CONNECT_RESPONSE)
+				.setExtension(Messages.connectResponse, ackMessage).build();
+		ctx.writeAndFlush(response);
 	}
 	
 	private void doLogin(ChannelHandlerContext ctx, LoginRequest request){
