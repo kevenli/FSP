@@ -133,7 +133,7 @@ public class Client {
 
 	private void auth() throws IOException {
 		LoginRequest.Builder builder = LoginRequest.newBuilder();
-		builder.setAppId(m_app_key);
+		builder.setAppKey(m_app_key);
 		builder.setAppSecret(m_app_secret);
 		LoginRequest request = builder.build();
 		write(request.toByteArray());

@@ -1,9 +1,12 @@
 package flowy.scheduler.javasdk;
 
 import flowy.scheduler.javasdk.exceptions.MessageInvalidException;
-import flowy.scheduler.javasdk.messages.ConnectRequest;
 import flowy.scheduler.javasdk.messages.ConnectResponse;
 import flowy.scheduler.javasdk.messages.Message;
+import flowy.scheduler.protocal.Messages;
+import flowy.scheduler.protocal.Messages.ConnectRequest;
+import flowy.scheduler.protocal.Messages.Request;
+import flowy.scheduler.protocal.Messages.Request.RequestType;
 import io.netty.channel.ChannelHandlerAdapter;
 import io.netty.channel.ChannelHandlerContext;
 
@@ -52,7 +55,13 @@ public class ClientHandler extends ChannelHandlerAdapter {
 	
 	@Override
 	public void channelActive(final ChannelHandlerContext ctx){
-		ctx.writeAndFlush(new ConnectRequest());
+		
+		ConnectRequest connectRequest = ConnectRequest.newBuilder()
+				.setClientProtocolVersion("FSP_0.0.1").build();
+		Request.Builder requestBuilder = Request.newBuilder();
+		requestBuilder.setExtension(Messages.connect, connectRequest);
+		requestBuilder.setType(RequestType.CONNECT);
+		ctx.writeAndFlush(requestBuilder.build());
 	}
 	
 	@Override

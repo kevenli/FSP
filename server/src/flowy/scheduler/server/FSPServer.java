@@ -1,5 +1,6 @@
 package flowy.scheduler.server;
 
+import flowy.scheduler.protocal.Messages;
 import flowy.scheduler.server.codec.MessageDecoder;
 import flowy.scheduler.server.codec.MessageEncoder;
 import io.netty.bootstrap.ServerBootstrap;
@@ -11,6 +12,9 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.handler.codec.protobuf.ProtobufDecoder;
+import io.netty.handler.codec.protobuf.ProtobufVarint32FrameDecoder;
+import io.netty.handler.codec.string.StringEncoder;
 import io.netty.handler.timeout.IdleStateHandler;
 
 import java.io.IOException;
@@ -23,6 +27,8 @@ import org.apache.log4j.PropertyConfigurator;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.impl.StdSchedulerFactory;
+
+import com.google.protobuf.ExtensionRegistry;
 
 public class FSPServer {
 	
@@ -44,6 +50,8 @@ public class FSPServer {
 		scheduler.start();
 		EventLoopGroup bossGroup = new NioEventLoopGroup(); // (1)
         EventLoopGroup workerGroup = new NioEventLoopGroup();
+        final ExtensionRegistry registry = ExtensionRegistry.newInstance();
+        Messages.registerAllExtensions(registry);
         try {
             ServerBootstrap b = new ServerBootstrap(); // (2)
             b.group(bossGroup, workerGroup)
@@ -54,8 +62,9 @@ public class FSPServer {
                 	 ChannelPipeline pipeline = ch.pipeline();
                 	 pipeline.addLast(
                 			 new IdleStateHandler(10, 10, 0),
-                			 new MessageDecoder(), 
-                			 new MessageEncoder(),
+                			 new StringEncoder(), 
+                			 new ProtobufVarint32FrameDecoder(),
+                			 new ProtobufDecoder(Messages.Request.getDefaultInstance(), registry),
                 			 new SessionHandler());
                  }
              })

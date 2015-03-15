@@ -5,6 +5,8 @@ import java.net.SocketAddress;
 
 import org.apache.log4j.Logger;
 
+import flowy.scheduler.protocal.Messages.Request;
+import flowy.scheduler.protocal.Messages.Request.RequestType;
 import flowy.scheduler.server.messages.ConnectResponse;
 import flowy.scheduler.server.messages.LoginRequest;
 import flowy.scheduler.server.messages.LoginResponse;
@@ -24,11 +26,11 @@ public class SessionHandler extends ChannelHandlerAdapter {
 	
 	@Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) {
-        Message message = (Message)msg;
-        logger.debug(message);
+        Request request = (Request)msg;
+        logger.debug(request);
         
         // the handler will handle ConnectRequest & LoginRequest without Session.
-        if (message.getMessageType() == MessageType.ConnectRequest){
+        if (request.getType() == RequestType.CONNECT){
         	InetSocketAddress remoteAddress = (InetSocketAddress)ctx.channel().remoteAddress();
         	String host = remoteAddress.getAddress().getHostAddress();
             int port = remoteAddress.getPort();
@@ -36,15 +38,7 @@ public class SessionHandler extends ChannelHandlerAdapter {
             ackConnection(ctx);
         	return;
         }
-        else if (message.getMessageType() == MessageType.LoginRequest){
-        	m_session = SessionManager.getInstance().newSession(this);
-        	LoginRequest request = (LoginRequest)message;
-        	
-        	return;
-        }
-        
-        
-        m_session.handleMessage(message);
+        //m_session.handleMessage(message);
     }
 	
 	@Override

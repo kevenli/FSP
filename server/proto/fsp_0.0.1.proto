@@ -2,6 +2,19 @@ option java_package = "flowy.scheduler.protocal";
 option java_outer_classname = "Messages";   
 option optimize_for=SPEED;  
 
+message Request {
+  extensions 100 to max;
+  enum RequestType{
+    HEARTBEAT = 0;
+    CONNECT = 1;
+  }
+  required RequestType type = 1;
+}
+
+extend Request {
+  optional ConnectRequest connect = 1001;
+}
+
 message ConnectRequest{
 	required string client_protocol_version = 1;
 }

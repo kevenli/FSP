@@ -7,7 +7,518 @@ public final class Messages {
   private Messages() {}
   public static void registerAllExtensions(
       com.google.protobuf.ExtensionRegistry registry) {
+    registry.add(flowy.scheduler.protocal.Messages.connect);
   }
+  public interface RequestOrBuilder extends
+      com.google.protobuf.GeneratedMessage.
+          ExtendableMessageOrBuilder<Request> {
+
+    // required .Request.RequestType type = 1;
+    /**
+     * <code>required .Request.RequestType type = 1;</code>
+     */
+    boolean hasType();
+    /**
+     * <code>required .Request.RequestType type = 1;</code>
+     */
+    flowy.scheduler.protocal.Messages.Request.RequestType getType();
+  }
+  /**
+   * Protobuf type {@code Request}
+   */
+  public static final class Request extends
+      com.google.protobuf.GeneratedMessage.ExtendableMessage<
+        Request> implements RequestOrBuilder {
+    // Use Request.newBuilder() to construct.
+    private Request(com.google.protobuf.GeneratedMessage.ExtendableBuilder<flowy.scheduler.protocal.Messages.Request, ?> builder) {
+      super(builder);
+      this.unknownFields = builder.getUnknownFields();
+    }
+    private Request(boolean noInit) { this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance(); }
+
+    private static final Request defaultInstance;
+    public static Request getDefaultInstance() {
+      return defaultInstance;
+    }
+
+    public Request getDefaultInstanceForType() {
+      return defaultInstance;
+    }
+
+    private final com.google.protobuf.UnknownFieldSet unknownFields;
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+        getUnknownFields() {
+      return this.unknownFields;
+    }
+    private Request(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      initFields();
+      int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!parseUnknownField(input, unknownFields,
+                                     extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+            case 8: {
+              int rawValue = input.readEnum();
+              flowy.scheduler.protocal.Messages.Request.RequestType value = flowy.scheduler.protocal.Messages.Request.RequestType.valueOf(rawValue);
+              if (value == null) {
+                unknownFields.mergeVarintField(1, rawValue);
+              } else {
+                bitField0_ |= 0x00000001;
+                type_ = value;
+              }
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e.getMessage()).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return flowy.scheduler.protocal.Messages.internal_static_Request_descriptor;
+    }
+
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return flowy.scheduler.protocal.Messages.internal_static_Request_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              flowy.scheduler.protocal.Messages.Request.class, flowy.scheduler.protocal.Messages.Request.Builder.class);
+    }
+
+    public static com.google.protobuf.Parser<Request> PARSER =
+        new com.google.protobuf.AbstractParser<Request>() {
+      public Request parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new Request(input, extensionRegistry);
+      }
+    };
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<Request> getParserForType() {
+      return PARSER;
+    }
+
+    /**
+     * Protobuf enum {@code Request.RequestType}
+     */
+    public enum RequestType
+        implements com.google.protobuf.ProtocolMessageEnum {
+      /**
+       * <code>HEARTBEAT = 0;</code>
+       */
+      HEARTBEAT(0, 0),
+      /**
+       * <code>CONNECT = 1;</code>
+       */
+      CONNECT(1, 1),
+      ;
+
+      /**
+       * <code>HEARTBEAT = 0;</code>
+       */
+      public static final int HEARTBEAT_VALUE = 0;
+      /**
+       * <code>CONNECT = 1;</code>
+       */
+      public static final int CONNECT_VALUE = 1;
+
+
+      public final int getNumber() { return value; }
+
+      public static RequestType valueOf(int value) {
+        switch (value) {
+          case 0: return HEARTBEAT;
+          case 1: return CONNECT;
+          default: return null;
+        }
+      }
+
+      public static com.google.protobuf.Internal.EnumLiteMap<RequestType>
+          internalGetValueMap() {
+        return internalValueMap;
+      }
+      private static com.google.protobuf.Internal.EnumLiteMap<RequestType>
+          internalValueMap =
+            new com.google.protobuf.Internal.EnumLiteMap<RequestType>() {
+              public RequestType findValueByNumber(int number) {
+                return RequestType.valueOf(number);
+              }
+            };
+
+      public final com.google.protobuf.Descriptors.EnumValueDescriptor
+          getValueDescriptor() {
+        return getDescriptor().getValues().get(index);
+      }
+      public final com.google.protobuf.Descriptors.EnumDescriptor
+          getDescriptorForType() {
+        return getDescriptor();
+      }
+      public static final com.google.protobuf.Descriptors.EnumDescriptor
+          getDescriptor() {
+        return flowy.scheduler.protocal.Messages.Request.getDescriptor().getEnumTypes().get(0);
+      }
+
+      private static final RequestType[] VALUES = values();
+
+      public static RequestType valueOf(
+          com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
+        if (desc.getType() != getDescriptor()) {
+          throw new java.lang.IllegalArgumentException(
+            "EnumValueDescriptor is not for this type.");
+        }
+        return VALUES[desc.getIndex()];
+      }
+
+      private final int index;
+      private final int value;
+
+      private RequestType(int index, int value) {
+        this.index = index;
+        this.value = value;
+      }
+
+      // @@protoc_insertion_point(enum_scope:Request.RequestType)
+    }
+
+    private int bitField0_;
+    // required .Request.RequestType type = 1;
+    public static final int TYPE_FIELD_NUMBER = 1;
+    private flowy.scheduler.protocal.Messages.Request.RequestType type_;
+    /**
+     * <code>required .Request.RequestType type = 1;</code>
+     */
+    public boolean hasType() {
+      return ((bitField0_ & 0x00000001) == 0x00000001);
+    }
+    /**
+     * <code>required .Request.RequestType type = 1;</code>
+     */
+    public flowy.scheduler.protocal.Messages.Request.RequestType getType() {
+      return type_;
+    }
+
+    private void initFields() {
+      type_ = flowy.scheduler.protocal.Messages.Request.RequestType.HEARTBEAT;
+    }
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized != -1) return isInitialized == 1;
+
+      if (!hasType()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      if (!extensionsAreInitialized()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      getSerializedSize();
+      com.google.protobuf.GeneratedMessage
+        .ExtendableMessage<flowy.scheduler.protocal.Messages.Request>.ExtensionWriter extensionWriter =
+          newExtensionWriter();
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        output.writeEnum(1, type_.getNumber());
+      }
+      extensionWriter.writeUntil(536870912, output);
+      getUnknownFields().writeTo(output);
+    }
+
+    private int memoizedSerializedSize = -1;
+    public int getSerializedSize() {
+      int size = memoizedSerializedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeEnumSize(1, type_.getNumber());
+      }
+      size += extensionsSerializedSize();
+      size += getUnknownFields().getSerializedSize();
+      memoizedSerializedSize = size;
+      return size;
+    }
+
+    private static final long serialVersionUID = 0L;
+    @java.lang.Override
+    protected java.lang.Object writeReplace()
+        throws java.io.ObjectStreamException {
+      return super.writeReplace();
+    }
+
+    public static flowy.scheduler.protocal.Messages.Request parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static flowy.scheduler.protocal.Messages.Request parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static flowy.scheduler.protocal.Messages.Request parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static flowy.scheduler.protocal.Messages.Request parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static flowy.scheduler.protocal.Messages.Request parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input);
+    }
+    public static flowy.scheduler.protocal.Messages.Request parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input, extensionRegistry);
+    }
+    public static flowy.scheduler.protocal.Messages.Request parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return PARSER.parseDelimitedFrom(input);
+    }
+    public static flowy.scheduler.protocal.Messages.Request parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return PARSER.parseDelimitedFrom(input, extensionRegistry);
+    }
+    public static flowy.scheduler.protocal.Messages.Request parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input);
+    }
+    public static flowy.scheduler.protocal.Messages.Request parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input, extensionRegistry);
+    }
+
+    public static Builder newBuilder() { return Builder.create(); }
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder(flowy.scheduler.protocal.Messages.Request prototype) {
+      return newBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() { return newBuilder(this); }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code Request}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.ExtendableBuilder<
+          flowy.scheduler.protocal.Messages.Request, Builder> implements flowy.scheduler.protocal.Messages.RequestOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return flowy.scheduler.protocal.Messages.internal_static_Request_descriptor;
+      }
+
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return flowy.scheduler.protocal.Messages.internal_static_Request_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                flowy.scheduler.protocal.Messages.Request.class, flowy.scheduler.protocal.Messages.Request.Builder.class);
+      }
+
+      // Construct using flowy.scheduler.protocal.Messages.Request.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+        }
+      }
+      private static Builder create() {
+        return new Builder();
+      }
+
+      public Builder clear() {
+        super.clear();
+        type_ = flowy.scheduler.protocal.Messages.Request.RequestType.HEARTBEAT;
+        bitField0_ = (bitField0_ & ~0x00000001);
+        return this;
+      }
+
+      public Builder clone() {
+        return create().mergeFrom(buildPartial());
+      }
+
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return flowy.scheduler.protocal.Messages.internal_static_Request_descriptor;
+      }
+
+      public flowy.scheduler.protocal.Messages.Request getDefaultInstanceForType() {
+        return flowy.scheduler.protocal.Messages.Request.getDefaultInstance();
+      }
+
+      public flowy.scheduler.protocal.Messages.Request build() {
+        flowy.scheduler.protocal.Messages.Request result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      public flowy.scheduler.protocal.Messages.Request buildPartial() {
+        flowy.scheduler.protocal.Messages.Request result = new flowy.scheduler.protocal.Messages.Request(this);
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
+          to_bitField0_ |= 0x00000001;
+        }
+        result.type_ = type_;
+        result.bitField0_ = to_bitField0_;
+        onBuilt();
+        return result;
+      }
+
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof flowy.scheduler.protocal.Messages.Request) {
+          return mergeFrom((flowy.scheduler.protocal.Messages.Request)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(flowy.scheduler.protocal.Messages.Request other) {
+        if (other == flowy.scheduler.protocal.Messages.Request.getDefaultInstance()) return this;
+        if (other.hasType()) {
+          setType(other.getType());
+        }
+        this.mergeExtensionFields(other);
+        this.mergeUnknownFields(other.getUnknownFields());
+        return this;
+      }
+
+      public final boolean isInitialized() {
+        if (!hasType()) {
+          
+          return false;
+        }
+        if (!extensionsAreInitialized()) {
+          
+          return false;
+        }
+        return true;
+      }
+
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        flowy.scheduler.protocal.Messages.Request parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (flowy.scheduler.protocal.Messages.Request) e.getUnfinishedMessage();
+          throw e;
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+      private int bitField0_;
+
+      // required .Request.RequestType type = 1;
+      private flowy.scheduler.protocal.Messages.Request.RequestType type_ = flowy.scheduler.protocal.Messages.Request.RequestType.HEARTBEAT;
+      /**
+       * <code>required .Request.RequestType type = 1;</code>
+       */
+      public boolean hasType() {
+        return ((bitField0_ & 0x00000001) == 0x00000001);
+      }
+      /**
+       * <code>required .Request.RequestType type = 1;</code>
+       */
+      public flowy.scheduler.protocal.Messages.Request.RequestType getType() {
+        return type_;
+      }
+      /**
+       * <code>required .Request.RequestType type = 1;</code>
+       */
+      public Builder setType(flowy.scheduler.protocal.Messages.Request.RequestType value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        bitField0_ |= 0x00000001;
+        type_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required .Request.RequestType type = 1;</code>
+       */
+      public Builder clearType() {
+        bitField0_ = (bitField0_ & ~0x00000001);
+        type_ = flowy.scheduler.protocal.Messages.Request.RequestType.HEARTBEAT;
+        onChanged();
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:Request)
+    }
+
+    static {
+      defaultInstance = new Request(true);
+      defaultInstance.initFields();
+    }
+
+    // @@protoc_insertion_point(class_scope:Request)
+  }
+
   public interface ConnectRequestOrBuilder
       extends com.google.protobuf.MessageOrBuilder {
 
@@ -8195,6 +8706,22 @@ public final class Messages {
     // @@protoc_insertion_point(class_scope:TaskComplete)
   }
 
+  public static final int CONNECT_FIELD_NUMBER = 1001;
+  /**
+   * <code>extend .Request { ... }</code>
+   */
+  public static final
+    com.google.protobuf.GeneratedMessage.GeneratedExtension<
+      flowy.scheduler.protocal.Messages.Request,
+      flowy.scheduler.protocal.Messages.ConnectRequest> connect = com.google.protobuf.GeneratedMessage
+          .newFileScopedGeneratedExtension(
+        flowy.scheduler.protocal.Messages.ConnectRequest.class,
+        flowy.scheduler.protocal.Messages.ConnectRequest.getDefaultInstance());
+  private static com.google.protobuf.Descriptors.Descriptor
+    internal_static_Request_descriptor;
+  private static
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_Request_fieldAccessorTable;
   private static com.google.protobuf.Descriptors.Descriptor
     internal_static_ConnectRequest_descriptor;
   private static
@@ -8264,113 +8791,124 @@ public final class Messages {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\017fsp_0.0.1.proto\"1\n\016ConnectRequest\022\037\n\027c" +
-      "lient_protocol_version\030\001 \002(\t\"\021\n\017ConnectR" +
-      "esponse\"3\n\014LoginRequest\022\017\n\007app_key\030\001 \002(\t" +
-      "\022\022\n\napp_secret\030\002 \002(\t\"\207\001\n\rLoginResponse\0223" +
-      "\n\013result_type\030\001 \001(\0162\036.LoginResponse.Logi" +
-      "nResultType\022\025\n\013fail_reason\030\003 \001(\t:\000\"*\n\017Lo" +
-      "ginResultType\022\013\n\007SUCCESS\020\000\022\n\n\006FAILED\020\001\"\342" +
-      "\001\n\025WorkerRegisterRequest\022\021\n\tworker_id\030\001 " +
-      "\002(\t\022\023\n\013worker_name\030\002 \002(\t\022\024\n\014execute_time" +
-      "\030\003 \003(\t\022\017\n\007timeout\030\004 \002(\005\022K\n\024execute_last_",
-      "expired\030\005 \002(\0162-.WorkerRegisterRequest.Ex" +
-      "ecuteLastExpiredType\"-\n\026ExecuteLastExpir" +
-      "edType\022\007\n\003RUN\020\000\022\n\n\006IGNORE\020\001\"+\n\026WorkerReg" +
-      "isterResponse\022\021\n\tworker_id\030\001 \002(\t\"\'\n\022Star" +
-      "tListenRequest\022\021\n\tworker_id\030\001 \002(\t\"0\n\nTas" +
-      "kNotify\022\021\n\tworker_id\030\001 \002(\t\022\017\n\007task_id\030\002 " +
-      "\002(\t\"\267\001\n\020TaskStatusUpdate\022\021\n\tworker_id\030\001 " +
-      "\002(\t\022\017\n\007task_id\030\002 \002(\t\022(\n\006status\030\003 \002(\0162\030.T" +
-      "askStatusUpdate.Status\022\022\n\npercentage\030\004 \001" +
-      "(\005\022\025\n\rerror_message\030\005 \001(\t\"*\n\006Status\022\t\n\005S",
-      "TART\020\000\022\013\n\007RUNNING\020\001\022\010\n\004STOP\020\002\"/\n\tTaskSta" +
-      "rt\022\021\n\tworker_id\030\001 \002(\t\022\017\n\007task_id\030\002 \002(\t\"H" +
-      "\n\013TaskRunning\022\021\n\tworker_id\030\001 \002(\t\022\017\n\007task" +
-      "_id\030\002 \002(\t\022\025\n\npercentage\030\003 \001(\005:\0010\"\244\001\n\014Tas" +
-      "kComplete\022\021\n\tworker_id\030\001 \002(\t\022\017\n\007task_id\030" +
-      "\002 \002(\t\022,\n\006result\030\003 \002(\0162\034.TaskComplete.Tas" +
-      "kResultType\022\027\n\rerror_message\030\004 \001(\t:\000\")\n\016" +
-      "TaskResultType\022\013\n\007SUCCESS\020\000\022\n\n\006FAILED\020\001B" +
-      "&\n\030flowy.scheduler.protocalB\010MessagesH\001"
+      "\n\017fsp_0.0.1.proto\"b\n\007Request\022\"\n\004type\030\001 \002" +
+      "(\0162\024.Request.RequestType\")\n\013RequestType\022" +
+      "\r\n\tHEARTBEAT\020\000\022\013\n\007CONNECT\020\001*\010\010d\020\200\200\200\200\002\"1\n" +
+      "\016ConnectRequest\022\037\n\027client_protocol_versi" +
+      "on\030\001 \002(\t\"\021\n\017ConnectResponse\"3\n\014LoginRequ" +
+      "est\022\017\n\007app_key\030\001 \002(\t\022\022\n\napp_secret\030\002 \002(\t" +
+      "\"\207\001\n\rLoginResponse\0223\n\013result_type\030\001 \001(\0162" +
+      "\036.LoginResponse.LoginResultType\022\025\n\013fail_" +
+      "reason\030\003 \001(\t:\000\"*\n\017LoginResultType\022\013\n\007SUC" +
+      "CESS\020\000\022\n\n\006FAILED\020\001\"\342\001\n\025WorkerRegisterReq",
+      "uest\022\021\n\tworker_id\030\001 \002(\t\022\023\n\013worker_name\030\002" +
+      " \002(\t\022\024\n\014execute_time\030\003 \003(\t\022\017\n\007timeout\030\004 " +
+      "\002(\005\022K\n\024execute_last_expired\030\005 \002(\0162-.Work" +
+      "erRegisterRequest.ExecuteLastExpiredType" +
+      "\"-\n\026ExecuteLastExpiredType\022\007\n\003RUN\020\000\022\n\n\006I" +
+      "GNORE\020\001\"+\n\026WorkerRegisterResponse\022\021\n\twor" +
+      "ker_id\030\001 \002(\t\"\'\n\022StartListenRequest\022\021\n\two" +
+      "rker_id\030\001 \002(\t\"0\n\nTaskNotify\022\021\n\tworker_id" +
+      "\030\001 \002(\t\022\017\n\007task_id\030\002 \002(\t\"\267\001\n\020TaskStatusUp" +
+      "date\022\021\n\tworker_id\030\001 \002(\t\022\017\n\007task_id\030\002 \002(\t",
+      "\022(\n\006status\030\003 \002(\0162\030.TaskStatusUpdate.Stat" +
+      "us\022\022\n\npercentage\030\004 \001(\005\022\025\n\rerror_message\030" +
+      "\005 \001(\t\"*\n\006Status\022\t\n\005START\020\000\022\013\n\007RUNNING\020\001\022" +
+      "\010\n\004STOP\020\002\"/\n\tTaskStart\022\021\n\tworker_id\030\001 \002(" +
+      "\t\022\017\n\007task_id\030\002 \002(\t\"H\n\013TaskRunning\022\021\n\twor" +
+      "ker_id\030\001 \002(\t\022\017\n\007task_id\030\002 \002(\t\022\025\n\npercent" +
+      "age\030\003 \001(\005:\0010\"\244\001\n\014TaskComplete\022\021\n\tworker_" +
+      "id\030\001 \002(\t\022\017\n\007task_id\030\002 \002(\t\022,\n\006result\030\003 \002(" +
+      "\0162\034.TaskComplete.TaskResultType\022\027\n\rerror" +
+      "_message\030\004 \001(\t:\000\")\n\016TaskResultType\022\013\n\007SU",
+      "CCESS\020\000\022\n\n\006FAILED\020\001:+\n\007connect\022\010.Request" +
+      "\030\351\007 \001(\0132\017.ConnectRequestB&\n\030flowy.schedu" +
+      "ler.protocalB\010MessagesH\001"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
         public com.google.protobuf.ExtensionRegistry assignDescriptors(
             com.google.protobuf.Descriptors.FileDescriptor root) {
           descriptor = root;
-          internal_static_ConnectRequest_descriptor =
+          internal_static_Request_descriptor =
             getDescriptor().getMessageTypes().get(0);
+          internal_static_Request_fieldAccessorTable = new
+            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+              internal_static_Request_descriptor,
+              new java.lang.String[] { "Type", });
+          internal_static_ConnectRequest_descriptor =
+            getDescriptor().getMessageTypes().get(1);
           internal_static_ConnectRequest_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_ConnectRequest_descriptor,
               new java.lang.String[] { "ClientProtocolVersion", });
           internal_static_ConnectResponse_descriptor =
-            getDescriptor().getMessageTypes().get(1);
+            getDescriptor().getMessageTypes().get(2);
           internal_static_ConnectResponse_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_ConnectResponse_descriptor,
               new java.lang.String[] { });
           internal_static_LoginRequest_descriptor =
-            getDescriptor().getMessageTypes().get(2);
+            getDescriptor().getMessageTypes().get(3);
           internal_static_LoginRequest_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_LoginRequest_descriptor,
               new java.lang.String[] { "AppKey", "AppSecret", });
           internal_static_LoginResponse_descriptor =
-            getDescriptor().getMessageTypes().get(3);
+            getDescriptor().getMessageTypes().get(4);
           internal_static_LoginResponse_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_LoginResponse_descriptor,
               new java.lang.String[] { "ResultType", "FailReason", });
           internal_static_WorkerRegisterRequest_descriptor =
-            getDescriptor().getMessageTypes().get(4);
+            getDescriptor().getMessageTypes().get(5);
           internal_static_WorkerRegisterRequest_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_WorkerRegisterRequest_descriptor,
               new java.lang.String[] { "WorkerId", "WorkerName", "ExecuteTime", "Timeout", "ExecuteLastExpired", });
           internal_static_WorkerRegisterResponse_descriptor =
-            getDescriptor().getMessageTypes().get(5);
+            getDescriptor().getMessageTypes().get(6);
           internal_static_WorkerRegisterResponse_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_WorkerRegisterResponse_descriptor,
               new java.lang.String[] { "WorkerId", });
           internal_static_StartListenRequest_descriptor =
-            getDescriptor().getMessageTypes().get(6);
+            getDescriptor().getMessageTypes().get(7);
           internal_static_StartListenRequest_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_StartListenRequest_descriptor,
               new java.lang.String[] { "WorkerId", });
           internal_static_TaskNotify_descriptor =
-            getDescriptor().getMessageTypes().get(7);
+            getDescriptor().getMessageTypes().get(8);
           internal_static_TaskNotify_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_TaskNotify_descriptor,
               new java.lang.String[] { "WorkerId", "TaskId", });
           internal_static_TaskStatusUpdate_descriptor =
-            getDescriptor().getMessageTypes().get(8);
+            getDescriptor().getMessageTypes().get(9);
           internal_static_TaskStatusUpdate_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_TaskStatusUpdate_descriptor,
               new java.lang.String[] { "WorkerId", "TaskId", "Status", "Percentage", "ErrorMessage", });
           internal_static_TaskStart_descriptor =
-            getDescriptor().getMessageTypes().get(9);
+            getDescriptor().getMessageTypes().get(10);
           internal_static_TaskStart_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_TaskStart_descriptor,
               new java.lang.String[] { "WorkerId", "TaskId", });
           internal_static_TaskRunning_descriptor =
-            getDescriptor().getMessageTypes().get(10);
+            getDescriptor().getMessageTypes().get(11);
           internal_static_TaskRunning_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_TaskRunning_descriptor,
               new java.lang.String[] { "WorkerId", "TaskId", "Percentage", });
           internal_static_TaskComplete_descriptor =
-            getDescriptor().getMessageTypes().get(11);
+            getDescriptor().getMessageTypes().get(12);
           internal_static_TaskComplete_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_TaskComplete_descriptor,
               new java.lang.String[] { "WorkerId", "TaskId", "Result", "ErrorMessage", });
+          connect.internalInit(descriptor.getExtensions().get(0));
           return null;
         }
       };
