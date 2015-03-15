@@ -6,34 +6,56 @@ message Request {
   extensions 100 to max;
   enum RequestType{
     HEARTBEAT = 0;
-    CONNECT = 1;
+    CONNECT_REQUEST = 1;
+    LOGIN_REQUEST = 2;
   }
   required RequestType type = 1;
 }
 
 extend Request {
-  optional ConnectRequest connect = 1001;
+  optional Heartbeat heartbeat = 1000;
+  optional ConnectRequest connect_request = 1001;
+  optional LoginRequest login_request = 1002;
+}
+
+message Heartbeat {
+
 }
 
 message ConnectRequest{
 	required string client_protocol_version = 1;
 }
 
-message ConnectResponse{
-	
-}
 
 message LoginRequest {
   required string app_key = 1;
   required string app_secret = 2;
 }
 
+message Response {
+  extensions 100 to max;
+  enum ResponseType{
+    CONNECT_RESPONSE = 1;
+    LOGIN_RESPONSE = 2;
+  }
+  required ResponseType type = 1;
+}
+
+extend Response {
+  optional ConnectResponse connect_response = 2001;
+  optional LoginResponse login_response = 2002;
+}
+
+message ConnectResponse{
+	
+}
+
 message LoginResponse {
    enum LoginResultType {
       SUCCESS = 0;
-	  FAILED = 1;
+  	  FAILED = 1;
    }
-   optional LoginResultType result_type = 1;
+   required LoginResultType result_type = 1;
    optional string fail_reason = 3 [default = ''];
 }
 

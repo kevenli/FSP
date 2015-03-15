@@ -1,8 +1,6 @@
 package flowy.scheduler.server;
 
 import flowy.scheduler.protocal.Messages;
-import flowy.scheduler.server.codec.MessageDecoder;
-import flowy.scheduler.server.codec.MessageEncoder;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;

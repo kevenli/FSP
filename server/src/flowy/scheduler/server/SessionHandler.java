@@ -5,14 +5,12 @@ import java.net.SocketAddress;
 
 import org.apache.log4j.Logger;
 
+import flowy.scheduler.protocal.Messages.ConnectResponse;
+import flowy.scheduler.protocal.Messages.LoginRequest;
+import flowy.scheduler.protocal.Messages.LoginResponse;
+import flowy.scheduler.protocal.Messages.LoginResponse.LoginResultType;
 import flowy.scheduler.protocal.Messages.Request;
 import flowy.scheduler.protocal.Messages.Request.RequestType;
-import flowy.scheduler.server.messages.ConnectResponse;
-import flowy.scheduler.server.messages.LoginRequest;
-import flowy.scheduler.server.messages.LoginResponse;
-import flowy.scheduler.server.messages.LoginResponse.LoginResultType;
-import flowy.scheduler.server.messages.Message;
-import flowy.scheduler.server.messages.MessageType;
 import io.netty.channel.ChannelHandlerAdapter;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.timeout.IdleState;
@@ -30,7 +28,7 @@ public class SessionHandler extends ChannelHandlerAdapter {
         logger.debug(request);
         
         // the handler will handle ConnectRequest & LoginRequest without Session.
-        if (request.getType() == RequestType.CONNECT){
+        if (request.getType() == RequestType.CONNECT_REQUEST){
         	InetSocketAddress remoteAddress = (InetSocketAddress)ctx.channel().remoteAddress();
         	String host = remoteAddress.getAddress().getHostAddress();
             int port = remoteAddress.getPort();
@@ -52,21 +50,23 @@ public class SessionHandler extends ChannelHandlerAdapter {
     }
 	
 	private void ackConnection(ChannelHandlerContext ctx){
-		ConnectResponse ackMessage = new ConnectResponse();
+		ConnectResponse ackMessage = ConnectResponse.newBuilder()
+				.build();
 		ctx.writeAndFlush(ackMessage);
 	}
 	
 	private void doLogin(ChannelHandlerContext ctx, LoginRequest request){
 		if (request.getAppKey() != "abc" || request.getAppSecret() != "123"){
 			// auth failed 
-			LoginResponse response = new LoginResponse(LoginResultType.Fail);
+			LoginResponse response = LoginResponse.newBuilder()
+					.setResultType(LoginResultType.FAILED).build();
 			ctx.writeAndFlush(response);
 			return;
 		} else{
-			LoginResponse response = new LoginResponse(LoginResultType.Success);
+			LoginResponse response = LoginResponse.newBuilder()
+				.setResultType(LoginResultType.FAILED).build();
 			ctx.writeAndFlush(response);
 			return;
 		}
-		
 	}
 }

@@ -59,8 +59,8 @@ public class ClientHandler extends ChannelHandlerAdapter {
 		ConnectRequest connectRequest = ConnectRequest.newBuilder()
 				.setClientProtocolVersion("FSP_0.0.1").build();
 		Request.Builder requestBuilder = Request.newBuilder();
-		requestBuilder.setExtension(Messages.connect, connectRequest);
-		requestBuilder.setType(RequestType.CONNECT);
+		requestBuilder.setExtension(Messages.connectRequest, connectRequest);
+		requestBuilder.setType(RequestType.CONNECT_REQUEST);
 		ctx.writeAndFlush(requestBuilder.build());
 	}
 	

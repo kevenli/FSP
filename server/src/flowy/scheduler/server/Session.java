@@ -21,12 +21,12 @@ import flowy.scheduler.entities.WorkerStatus;
 import flowy.scheduler.protocal.Messages.LoginRequest;
 import flowy.scheduler.protocal.Messages.LoginResponse;
 import flowy.scheduler.protocal.Messages.LoginResponse.LoginResultType;
+import flowy.scheduler.protocal.Messages.Request;
 import flowy.scheduler.protocal.Messages.TaskNotify;
 import flowy.scheduler.protocal.Messages.TaskStatusUpdate;
 import flowy.scheduler.protocal.Messages.TaskStatusUpdate.Status;
 import flowy.scheduler.protocal.Messages.WorkerRegisterRequest;
 import flowy.scheduler.protocal.Messages.WorkerRegisterResponse;
-import flowy.scheduler.server.messages.Message;
 
 import org.apache.log4j.Logger;
 import org.quartz.JobDetail;
@@ -269,7 +269,7 @@ public class Session implements Runnable {
 		this.m_sessionHandler = sessionHandler;
 	}
 	
-	public void handleMessage(Message message){
+	public void handleMessage(Request message){
 		
 	}
 }

@@ -15,6 +15,7 @@ public class ClientHandlerInitializer extends ChannelInitializer<SocketChannel> 
 
 	@Override
 	protected void initChannel(SocketChannel ch) throws Exception {
+		
 		ch.pipeline().addLast(
 				new StringDecoder(), 
 				new ProtobufVarint32LengthFieldPrepender(),
