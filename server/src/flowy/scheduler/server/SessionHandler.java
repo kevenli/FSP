@@ -38,6 +38,8 @@ public class SessionHandler extends ChannelHandlerAdapter {
             logger.debug(String.format("host:%s port:%d", host, port));
             ackConnection(ctx);
         	return;
+        }else if(request.getType() == RequestType.LOGIN_REQUEST){
+        	
         }
         //m_session.handleMessage(message);
     }
