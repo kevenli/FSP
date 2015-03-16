@@ -115,7 +115,7 @@ public class Client {
 		
 		if (authenticationException!=null){
 			this.isShutdown = true;
-			throw authenticationException;
+			throw new AuthenticationFailException();
 		}
 	}
 

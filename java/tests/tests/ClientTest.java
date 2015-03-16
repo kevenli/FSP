@@ -13,7 +13,7 @@ public class ClientTest implements IClientCallback {
 
 		ClientTest test = new ClientTest();
 		String app_key = "abc";
-		String app_secret = "123";
+		String app_secret = "123d";
 
 		WorkerSetting setting = new WorkerSetting("Test_Worker", "≤‚ ‘",
 				"*/5 * * * * ?", 30);
