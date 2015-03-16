@@ -22,8 +22,12 @@ import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.util.concurrent.TimeUnit;
 
+import flowy.scheduler.javasdk.exceptions.AuthenticationFailException;
+import flowy.scheduler.protocal.Messages;
 import flowy.scheduler.protocal.Messages.LoginRequest;
 import flowy.scheduler.protocal.Messages.LoginResponse;
+import flowy.scheduler.protocal.Messages.LoginResponse.LoginResultType;
+import flowy.scheduler.protocal.Messages.Request;
 import flowy.scheduler.protocal.Messages.TaskNotify;
 import flowy.scheduler.protocal.Messages.TaskStatusUpdate;
 import flowy.scheduler.protocal.Messages.WorkerRegisterRequest;
@@ -55,6 +59,13 @@ public class Client {
 	private EventLoopGroup workerGroup;
 
 	private ChannelFuture channelFuture;
+	
+	private Exception connectionException = null;
+	
+	private Exception authenticationException = null;
+	
+	// lock this object when connecting and authenticating
+	private Object connectLock = new Object(); 
 
 	public Client(String hosts, String app_key, String app_secret,
 			WorkerSetting workerSetting, IClientCallback callback) {
@@ -79,7 +90,7 @@ public class Client {
 		return InetSocketAddress.createUnresolved(host_name, host_port);
 	}
 
-	public void connect() throws InterruptedException {
+	public void connect() throws Exception {
 		SocketAddress remoteAddress = pickRemoteAddress();
 
 		if (workerGroup == null) {
@@ -96,6 +107,16 @@ public class Client {
 		channelFuture = bootstrap.connect(remoteAddress);
 		channelFuture.addListener(new ConnectionListener(this));
 		channelFuture.sync();
+		
+		// lock connectLock, wait for notification after login
+		synchronized(connectLock){
+			connectLock.wait();
+		}
+		
+		if (authenticationException!=null){
+			this.isShutdown = true;
+			throw authenticationException;
+		}
 	}
 
 	public void start() throws UnknownHostException, IOException,
@@ -143,7 +164,15 @@ public class Client {
 	}
 
 	void login(ChannelHandlerContext ctx) {
+		LoginRequest loginRequest = LoginRequest.newBuilder()
+				.setAppKey(this.m_app_key)
+				.setAppSecret(this.m_app_secret).build();
+		
+		Request request = Request.newBuilder()
+				.setType(Request.RequestType.LOGIN_REQUEST)
+				.setExtension(Messages.loginRequest, loginRequest).build();
 
+		ctx.writeAndFlush(request);
 	}
 
 	private void register() {
@@ -240,6 +269,9 @@ public class Client {
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
 			}
 		}, 0L, TimeUnit.SECONDS);
@@ -247,6 +279,21 @@ public class Client {
 		// SocketAddress remoteAddress = pickRemoteAddress();
 		// channelFuture = ctx.connect(remoteAddress).sync();
 		// channelFuture = bootstrap.connect(remoteAddress).sync();
+	}
+	
+	public void onLoginResponse(ChannelHandlerContext ctx, LoginResponse loginResponse){
+		switch (loginResponse.getResultType()){
+		case FAILED:
+			authenticationException = new AuthenticationFailException();
+			break;
+		case SUCCESS:
+			authenticationException = null;
+			break;
+		}
+		synchronized(connectLock){
+			connectLock.notify();
+		}
+		
 	}
 
 	public class ConnectionListener implements ChannelFutureListener {
@@ -269,6 +316,9 @@ public class Client {
 							try {
 								client.connect();
 							} catch (InterruptedException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							} catch (Exception e) {
 								// TODO Auto-generated catch block
 								e.printStackTrace();
 							}

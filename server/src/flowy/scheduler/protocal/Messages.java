@@ -2795,17 +2795,17 @@ public final class Messages {
      */
     flowy.scheduler.protocal.Messages.LoginResponse.LoginResultType getResultType();
 
-    // optional string fail_reason = 3 [default = ""];
+    // optional string fail_reason = 2 [default = ""];
     /**
-     * <code>optional string fail_reason = 3 [default = ""];</code>
+     * <code>optional string fail_reason = 2 [default = ""];</code>
      */
     boolean hasFailReason();
     /**
-     * <code>optional string fail_reason = 3 [default = ""];</code>
+     * <code>optional string fail_reason = 2 [default = ""];</code>
      */
     java.lang.String getFailReason();
     /**
-     * <code>optional string fail_reason = 3 [default = ""];</code>
+     * <code>optional string fail_reason = 2 [default = ""];</code>
      */
     com.google.protobuf.ByteString
         getFailReasonBytes();
@@ -2872,7 +2872,7 @@ public final class Messages {
               }
               break;
             }
-            case 26: {
+            case 18: {
               bitField0_ |= 0x00000002;
               failReason_ = input.readBytes();
               break;
@@ -3015,17 +3015,17 @@ public final class Messages {
       return resultType_;
     }
 
-    // optional string fail_reason = 3 [default = ""];
-    public static final int FAIL_REASON_FIELD_NUMBER = 3;
+    // optional string fail_reason = 2 [default = ""];
+    public static final int FAIL_REASON_FIELD_NUMBER = 2;
     private java.lang.Object failReason_;
     /**
-     * <code>optional string fail_reason = 3 [default = ""];</code>
+     * <code>optional string fail_reason = 2 [default = ""];</code>
      */
     public boolean hasFailReason() {
       return ((bitField0_ & 0x00000002) == 0x00000002);
     }
     /**
-     * <code>optional string fail_reason = 3 [default = ""];</code>
+     * <code>optional string fail_reason = 2 [default = ""];</code>
      */
     public java.lang.String getFailReason() {
       java.lang.Object ref = failReason_;
@@ -3042,7 +3042,7 @@ public final class Messages {
       }
     }
     /**
-     * <code>optional string fail_reason = 3 [default = ""];</code>
+     * <code>optional string fail_reason = 2 [default = ""];</code>
      */
     public com.google.protobuf.ByteString
         getFailReasonBytes() {
@@ -3082,7 +3082,7 @@ public final class Messages {
         output.writeEnum(1, resultType_.getNumber());
       }
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
-        output.writeBytes(3, getFailReasonBytes());
+        output.writeBytes(2, getFailReasonBytes());
       }
       getUnknownFields().writeTo(output);
     }
@@ -3099,7 +3099,7 @@ public final class Messages {
       }
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeBytesSize(3, getFailReasonBytes());
+          .computeBytesSize(2, getFailReasonBytes());
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -3348,16 +3348,16 @@ public final class Messages {
         return this;
       }
 
-      // optional string fail_reason = 3 [default = ""];
+      // optional string fail_reason = 2 [default = ""];
       private java.lang.Object failReason_ = "";
       /**
-       * <code>optional string fail_reason = 3 [default = ""];</code>
+       * <code>optional string fail_reason = 2 [default = ""];</code>
        */
       public boolean hasFailReason() {
         return ((bitField0_ & 0x00000002) == 0x00000002);
       }
       /**
-       * <code>optional string fail_reason = 3 [default = ""];</code>
+       * <code>optional string fail_reason = 2 [default = ""];</code>
        */
       public java.lang.String getFailReason() {
         java.lang.Object ref = failReason_;
@@ -3371,7 +3371,7 @@ public final class Messages {
         }
       }
       /**
-       * <code>optional string fail_reason = 3 [default = ""];</code>
+       * <code>optional string fail_reason = 2 [default = ""];</code>
        */
       public com.google.protobuf.ByteString
           getFailReasonBytes() {
@@ -3387,7 +3387,7 @@ public final class Messages {
         }
       }
       /**
-       * <code>optional string fail_reason = 3 [default = ""];</code>
+       * <code>optional string fail_reason = 2 [default = ""];</code>
        */
       public Builder setFailReason(
           java.lang.String value) {
@@ -3400,7 +3400,7 @@ public final class Messages {
         return this;
       }
       /**
-       * <code>optional string fail_reason = 3 [default = ""];</code>
+       * <code>optional string fail_reason = 2 [default = ""];</code>
        */
       public Builder clearFailReason() {
         bitField0_ = (bitField0_ & ~0x00000002);
@@ -3409,7 +3409,7 @@ public final class Messages {
         return this;
       }
       /**
-       * <code>optional string fail_reason = 3 [default = ""];</code>
+       * <code>optional string fail_reason = 2 [default = ""];</code>
        */
       public Builder setFailReasonBytes(
           com.google.protobuf.ByteString value) {
@@ -9697,7 +9697,7 @@ public final class Messages {
       "ESPONSE\020\002*\010\010d\020\200\200\200\200\002\"\021\n\017ConnectResponse\"\207",
       "\001\n\rLoginResponse\0223\n\013result_type\030\001 \002(\0162\036." +
       "LoginResponse.LoginResultType\022\025\n\013fail_re" +
-      "ason\030\003 \001(\t:\000\"*\n\017LoginResultType\022\013\n\007SUCCE" +
+      "ason\030\002 \001(\t:\000\"*\n\017LoginResultType\022\013\n\007SUCCE" +
       "SS\020\000\022\n\n\006FAILED\020\001\"\342\001\n\025WorkerRegisterReque" +
       "st\022\021\n\tworker_id\030\001 \002(\t\022\023\n\013worker_name\030\002 \002" +
       "(\t\022\024\n\014execute_time\030\003 \003(\t\022\017\n\007timeout\030\004 \002(" +

@@ -56,7 +56,7 @@ message LoginResponse {
   	  FAILED = 1;
    }
    required LoginResultType result_type = 1;
-   optional string fail_reason = 3 [default = ''];
+   optional string fail_reason = 2 [default = ''];
 }
 
 message WorkerRegisterRequest {

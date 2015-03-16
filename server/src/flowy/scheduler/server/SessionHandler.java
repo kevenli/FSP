@@ -1,8 +1,6 @@
 package flowy.scheduler.server;
 
 import java.net.InetSocketAddress;
-import java.net.SocketAddress;
-
 import org.apache.log4j.Logger;
 
 import flowy.scheduler.protocal.Messages;
@@ -21,8 +19,6 @@ import io.netty.handler.timeout.IdleStateEvent;
 
 public class SessionHandler extends ChannelHandlerAdapter {
 	
-	private Session m_session = null;
-	
 	private static Logger logger = Logger.getLogger(SessionHandler.class);
 	
 	@Override
@@ -39,7 +35,7 @@ public class SessionHandler extends ChannelHandlerAdapter {
             ackConnection(ctx);
         	return;
         }else if(request.getType() == RequestType.LOGIN_REQUEST){
-        	
+        	doLogin(ctx, request.getExtension(Messages.loginRequest));
         }
         //m_session.handleMessage(message);
     }
@@ -64,16 +60,18 @@ public class SessionHandler extends ChannelHandlerAdapter {
 	}
 	
 	private void doLogin(ChannelHandlerContext ctx, LoginRequest request){
-		if (request.getAppKey() != "abc" || request.getAppSecret() != "123"){
+		Response.Builder responseBuilder = Response.newBuilder();
+		responseBuilder.setType(ResponseType.LOGIN_RESPONSE);
+		if (!request.getAppKey().equals("abc") || !request.getAppSecret().equals("123")){
 			// auth failed 
-			LoginResponse response = LoginResponse.newBuilder()
+			LoginResponse loginResponse = LoginResponse.newBuilder()
 					.setResultType(LoginResultType.FAILED).build();
-			ctx.writeAndFlush(response);
+			ctx.writeAndFlush(responseBuilder.setExtension(Messages.loginResponse, loginResponse));
 			return;
 		} else{
-			LoginResponse response = LoginResponse.newBuilder()
-				.setResultType(LoginResultType.FAILED).build();
-			ctx.writeAndFlush(response);
+			LoginResponse loginResponse = LoginResponse.newBuilder()
+				.setResultType(LoginResultType.SUCCESS).build();
+			ctx.writeAndFlush(responseBuilder.setExtension(Messages.loginResponse, loginResponse));
 			return;
 		}
 	}

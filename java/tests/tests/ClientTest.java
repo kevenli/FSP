@@ -12,20 +12,24 @@ public class ClientTest implements IClientCallback {
 	public static void main(String[] args) throws InterruptedException {
 
 		ClientTest test = new ClientTest();
-		String app_key = "123";
-		String app_secret = "321";
+		String app_key = "abc";
+		String app_secret = "123";
 
 		WorkerSetting setting = new WorkerSetting("Test_Worker", "≤‚ ‘",
 				"*/5 * * * * ?", 30);
 
 		Client client = new Client("127.0.0.1:3092", app_key, app_secret, setting, test);
-		client.connect();
+		
 		try {
+			client.connect();
 			client.start();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
