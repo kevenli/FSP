@@ -21,6 +21,8 @@ public class SessionHandler extends ChannelHandlerAdapter {
 	
 	private static Logger logger = Logger.getLogger(SessionHandler.class);
 	
+	private Session session;
+	
 	@Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) {
         Request request = (Request)msg;
@@ -69,6 +71,10 @@ public class SessionHandler extends ChannelHandlerAdapter {
 			ctx.writeAndFlush(responseBuilder.setExtension(Messages.loginResponse, loginResponse));
 			return;
 		} else{
+			// authentication passed, bind session
+			Session session = SessionManager.getInstance().newSession(this);
+			this.session = session;
+			
 			LoginResponse loginResponse = LoginResponse.newBuilder()
 				.setResultType(LoginResultType.SUCCESS).build();
 			ctx.writeAndFlush(responseBuilder.setExtension(Messages.loginResponse, loginResponse));
