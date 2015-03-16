@@ -13,7 +13,7 @@ public class ClientTest implements IClientCallback {
 
 		ClientTest test = new ClientTest();
 		String app_key = "abc";
-		String app_secret = "123d";
+		String app_secret = "123";
 
 		WorkerSetting setting = new WorkerSetting("Test_Worker", "≤‚ ‘",
 				"*/5 * * * * ?", 30);
@@ -22,6 +22,7 @@ public class ClientTest implements IClientCallback {
 		
 		try {
 			client.connect();
+			client.registerTask(new Task("TestTask", "*/5 * * * * ?"));
 			client.start();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -43,23 +44,6 @@ public class ClientTest implements IClientCallback {
 	public void OnNotify(Client client, Task task) {
 		// TODO Auto-generated method stub
 		System.out.println("OnNotify");
-
-		try {
-			client.sendTaskStart(task);
-
-			Thread.sleep(2000);
-			client.sendTaskRunning(task);
-			Thread.sleep(2000);
-			client.sendTaskRunning(task);
-			Thread.sleep(2000);
-			client.sendTaskComplete(task);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 
 	}
 

@@ -1,6 +1,7 @@
 package flowy.scheduler.javasdk;
 
 import io.netty.bootstrap.Bootstrap;
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
@@ -27,7 +28,9 @@ import flowy.scheduler.protocal.Messages;
 import flowy.scheduler.protocal.Messages.LoginRequest;
 import flowy.scheduler.protocal.Messages.LoginResponse;
 import flowy.scheduler.protocal.Messages.LoginResponse.LoginResultType;
+import flowy.scheduler.protocal.Messages.RegisterTask;
 import flowy.scheduler.protocal.Messages.Request;
+import flowy.scheduler.protocal.Messages.Request.RequestType;
 import flowy.scheduler.protocal.Messages.TaskNotify;
 import flowy.scheduler.protocal.Messages.TaskStatusUpdate;
 import flowy.scheduler.protocal.Messages.WorkerRegisterRequest;
@@ -66,6 +69,8 @@ public class Client {
 	
 	// lock this object when connecting and authenticating
 	private Object connectLock = new Object(); 
+	
+	private Channel channel;
 
 	public Client(String hosts, String app_key, String app_secret,
 			WorkerSetting workerSetting, IClientCallback callback) {
@@ -107,6 +112,7 @@ public class Client {
 		channelFuture = bootstrap.connect(remoteAddress);
 		channelFuture.addListener(new ConnectionListener(this));
 		channelFuture.sync();
+		this.channel = channelFuture.channel();
 		
 		// lock connectLock, wait for notification after login
 		synchronized(connectLock){
@@ -142,25 +148,17 @@ public class Client {
 		// startListen();
 		// }
 	}
-
-	private void sendVersion() throws IOException {
-		String version = "FSP_0.0.1\0";
-		m_socket.getOutputStream().write(version.getBytes());
-	}
-
-	private void sendConnectRequest() {
-
-	}
-
-	private void auth() throws IOException {
-		LoginRequest.Builder builder = LoginRequest.newBuilder();
-		builder.setAppKey(m_app_key);
-		builder.setAppSecret(m_app_secret);
-		LoginRequest request = builder.build();
-		write(request.toByteArray());
-
-		LoginResponse response = LoginResponse.parseFrom(getNextMessage());
-		System.out.println(response.getResultType().toString());
+	
+	public void registerTask(Task task){
+		RegisterTask registerTaskRequest = RegisterTask.newBuilder()
+				.setTaskId(task.getId())
+				.setExecuteTime(task.getExecuteTime()).build();
+		
+		Request request = Request.newBuilder()
+				.setType(RequestType.REGISTER_TASK)
+				.setExtension(Messages.registerTask, registerTaskRequest).build();
+		
+		this.channel.writeAndFlush(request);
 	}
 
 	void login(ChannelHandlerContext ctx) {
@@ -173,88 +171,6 @@ public class Client {
 				.setExtension(Messages.loginRequest, loginRequest).build();
 
 		ctx.writeAndFlush(request);
-	}
-
-	private void register() {
-		try {
-			WorkerRegisterRequest.Builder builder = WorkerRegisterRequest
-					.newBuilder();
-			builder.setWorkerId(m_worker_setting.getWorkerId());
-			builder.setWorkerName(m_worker_setting.getWorkerName());
-			builder.addExecuteTime(m_worker_setting.getExecuteTime()); // fire
-																		// every
-																		// 5
-																		// seconds
-			builder.setTimeout(m_worker_setting.getTimeout());
-			builder.setExecuteLastExpired(ExecuteLastExpiredType.IGNORE);
-
-			write(builder.build().toByteArray());
-
-			WorkerRegisterResponse response = WorkerRegisterResponse
-					.parseFrom(getNextMessage());
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-	}
-
-	private void startListen() throws IOException, InterruptedException {
-		TaskNotify notify = TaskNotify.parseFrom(getNextMessage());
-		Task task = new Task(notify.getTaskId(), notify.getWorkerId());
-
-		m_callback.OnNotify(this, task);
-
-	}
-
-	public void sendTaskStart(Task task) throws IOException {
-		TaskStatusUpdate.Builder builder = TaskStatusUpdate.newBuilder();
-		builder.setTaskId(task.getId());
-		builder.setWorkerId(task.getWorkerId());
-		builder.setStatus(Status.START);
-		write(builder.build().toByteArray());
-	}
-
-	public void sendTaskRunning(Task task) throws IOException {
-		TaskStatusUpdate.Builder builder = TaskStatusUpdate.newBuilder();
-		builder.setWorkerId(task.getWorkerId());
-		builder.setTaskId(task.getId());
-		builder.setStatus(Status.RUNNING);
-		write(builder.build().toByteArray());
-	}
-
-	public void sendTaskComplete(Task task) throws IOException {
-		TaskStatusUpdate.Builder builder = TaskStatusUpdate.newBuilder();
-		builder.setWorkerId(task.getWorkerId());
-		builder.setTaskId(task.getId());
-		builder.setStatus(Status.STOP);
-		write(builder.build().toByteArray());
-	}
-
-	private byte[] getNextMessage() throws IOException {
-		synchronized (m_iolock) {
-			byte[] sizeBuffer = new byte[4];
-			m_socket.getInputStream().read(sizeBuffer, 0, 4);
-			int size = ByteBuffer.wrap(sizeBuffer).getInt();
-			byte[] buffer = new byte[size];
-			m_socket.getInputStream().read(buffer, 0, size);
-			return buffer;
-		}
-	}
-
-	private void write(byte[] messageBuffer) throws IOException {
-		synchronized (m_iolock) {
-			int size = messageBuffer.length;
-			byte[] sizeBuffer = ByteBuffer.allocate(4).putInt(size).array();
-			m_socket.getOutputStream().write(sizeBuffer);
-			m_socket.getOutputStream().write(messageBuffer);
-		}
-	}
-
-	public void bindChannel(ChannelHandlerContext ctx) {
-		if (ctx != null) {
-			m_handlerContext = ctx;
-		}
 	}
 
 	public void onDisconnect(ChannelHandlerContext ctx)
@@ -275,10 +191,6 @@ public class Client {
 				}
 			}
 		}, 0L, TimeUnit.SECONDS);
-		// if not shutting down, reconnect automatically
-		// SocketAddress remoteAddress = pickRemoteAddress();
-		// channelFuture = ctx.connect(remoteAddress).sync();
-		// channelFuture = bootstrap.connect(remoteAddress).sync();
 	}
 	
 	public void onLoginResponse(ChannelHandlerContext ctx, LoginResponse loginResponse){

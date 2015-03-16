@@ -51,7 +51,6 @@ public class ClientHandler extends ChannelHandlerAdapter {
 	}
 	
 	private void onConnectResponse(ChannelHandlerContext ctx, ConnectResponse msg){
-		client.bindChannel(ctx);
 		client.login(ctx);
 	}
 }

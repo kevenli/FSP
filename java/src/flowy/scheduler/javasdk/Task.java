@@ -1,20 +1,22 @@
 package flowy.scheduler.javasdk;
 
 public class Task {
-	private String m_id;
+	// task client id
+	private String id;
 	
-	private String m_worker_id;
+	// task execute time in cron expression;
+	private String executeTime;
 	
-	public Task(String id, String worker_id){
-		m_id = id;
-		m_worker_id = worker_id;
+	public Task(String id, String executeTime){
+		this.id = id;
+		this.executeTime = executeTime;
 	}
 	
 	public String getId(){
-		return m_id;
+		return id;
 	}
 	
-	public String getWorkerId(){
-		return m_worker_id;
+	public String getExecuteTime(){
+		return executeTime;
 	}
 }
