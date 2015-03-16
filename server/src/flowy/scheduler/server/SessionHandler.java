@@ -1,7 +1,9 @@
 package flowy.scheduler.server;
 
 import java.net.InetSocketAddress;
+
 import org.apache.log4j.Logger;
+import org.quartz.SchedulerException;
 
 import flowy.scheduler.protocal.Messages;
 import flowy.scheduler.protocal.Messages.ConnectResponse;
@@ -24,7 +26,7 @@ public class SessionHandler extends ChannelHandlerAdapter {
 	private Session session;
 	
 	@Override
-    public void channelRead(ChannelHandlerContext ctx, Object msg) {
+    public void channelRead(ChannelHandlerContext ctx, Object msg) throws SchedulerException {
         Request request = (Request)msg;
         logger.debug(request);
         
@@ -38,6 +40,8 @@ public class SessionHandler extends ChannelHandlerAdapter {
         	return;
         }else if(request.getType() == RequestType.LOGIN_REQUEST){
         	doLogin(ctx, request.getExtension(Messages.loginRequest));
+        }else if(request.getType() == RequestType.REGISTER_TASK){
+        	session.onRegisterTask(ctx, request.getExtension(Messages.registerTask));
         }
         //m_session.handleMessage(message);
     }

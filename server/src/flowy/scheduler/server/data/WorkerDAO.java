@@ -1,4 +1,4 @@
-package flowy.scheduler.server;
+package flowy.scheduler.server.data;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;

@@ -23,12 +23,16 @@ import flowy.scheduler.entities.WorkerStatus;
 import flowy.scheduler.protocal.Messages.LoginRequest;
 import flowy.scheduler.protocal.Messages.LoginResponse;
 import flowy.scheduler.protocal.Messages.LoginResponse.LoginResultType;
+import flowy.scheduler.protocal.Messages.RegisterTask;
 import flowy.scheduler.protocal.Messages.Request;
 import flowy.scheduler.protocal.Messages.TaskNotify;
 import flowy.scheduler.protocal.Messages.TaskStatusUpdate;
 import flowy.scheduler.protocal.Messages.TaskStatusUpdate.Status;
 import flowy.scheduler.protocal.Messages.WorkerRegisterRequest;
 import flowy.scheduler.protocal.Messages.WorkerRegisterResponse;
+import flowy.scheduler.server.data.ApplicationDAO;
+import flowy.scheduler.server.data.TaskDAO;
+import flowy.scheduler.server.data.WorkerDAO;
 
 import org.apache.log4j.Logger;
 import org.quartz.JobDetail;
@@ -57,9 +61,10 @@ public class Session implements Runnable {
 		this.clientAddress = socket.getInetAddress();
 	}
 	
-	public Session(int sessionId, SessionHandler sessionHandler){
+	public Session(int sessionId, SessionHandler sessionHandler, Scheduler scheduler){
 		m_sessionId = sessionId;
 		m_sessionHandler = sessionHandler;
+		this.m_scheduler = scheduler;
 	}
 
 	@Override
@@ -271,8 +276,25 @@ public class Session implements Runnable {
 		this.m_sessionHandler = sessionHandler;
 	}
 	
-	public void handleMessage(Request message){
+	public void onRegisterTask(ChannelHandlerContext ctx, RegisterTask registerTaskRequest) throws SchedulerException {
 		
+		
+		// register quartz scheduler
+		JobDetail job = newJob(TaskNotifyJob.class).withIdentity(
+				this.m_sessionId + "_" + registerTaskRequest.getTaskId() + "_job", 
+				"group1").build();
+		
+		job.getJobDataMap().put("SessionInstance", this);
+		
+		
+    	Trigger trigger = newTrigger().withIdentity(
+				this.m_sessionId + "_" + registerTaskRequest.getTaskId() + "_job", 
+				"group1")
+				.startNow().withSchedule(
+						cronSchedule(registerTaskRequest.getExecuteTime())).build();
+
+		// Tell quartz to schedule the job using our trigger
+		m_scheduler.scheduleJob(job, trigger);
 	}
 }
 

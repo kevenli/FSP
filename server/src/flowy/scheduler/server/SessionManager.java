@@ -1,21 +1,35 @@
 package flowy.scheduler.server;
 
+import java.util.Date;
 import java.util.Hashtable;
 import java.util.Random;
 
+import org.quartz.Scheduler;
+import org.quartz.SchedulerException;
+import org.quartz.impl.StdSchedulerFactory;
+
+import flowy.scheduler.entities.SessionVO;
+import flowy.scheduler.server.data.SessionDAO;
+
 public class SessionManager {
 
-	public SessionManager() {
-
+	private Scheduler scheduler;
+	private SessionManager() throws SchedulerException {
+		scheduler = StdSchedulerFactory.getDefaultScheduler();
 	}
 
 	private static SessionManager instance;
 
-	public static SessionManager getInstance() {
+	public static SessionManager getInstance(){
 		if (instance == null) {
 			synchronized (SessionManager.class) {
 				if (instance == null) {
-					instance = new SessionManager();
+					try {
+						instance = new SessionManager();
+					} catch (SchedulerException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				}
 			}
 		}
@@ -39,8 +53,15 @@ public class SessionManager {
 			do {
 				newSessionId = m_randomSeed.nextInt();
 			} while (newSessionId <= 0 || m_sessions.containsKey(newSessionId));
-			Session session = new Session(newSessionId, handler);
+			Session session = new Session(newSessionId, handler, scheduler);
 			m_sessions.put(newSessionId, session);
+			SessionDAO dao = new SessionDAO();
+			SessionVO sessionVO = new SessionVO();
+			sessionVO.setApplicationId(0);
+			sessionVO.setId(newSessionId);
+			sessionVO.setClientIp("");
+			sessionVO.setCreateTime(new Date());
+			dao.SaveSession(sessionVO);
 			return session;
 		}
 	}

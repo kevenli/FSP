@@ -1,4 +1,4 @@
-package flowy.scheduler.server;
+package flowy.scheduler.server.data;
 
 import org.apache.log4j.Logger;
 import org.hibernate.SessionFactory;
@@ -25,6 +25,5 @@ public class DaoFactory {
 			return false;
 		}
 		return true;
-
 	}
 }

@@ -9,6 +9,14 @@ CREATE TABLE `applications` (
   UNIQUE KEY `idx_app_key` (`app_key`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+CREATE TABLE `sessions` (
+  `id` int(11) NOT NULL,
+  `application_id` int(11) NOT NULL,
+  `client_ip` varchar(15) NOT NULL,
+  `create_time` datetime NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 create table `worker_status`(
   `id` int not null primary key,
   `name` varchar(20) not null

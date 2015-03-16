@@ -8,6 +8,7 @@ message Request {
     HEARTBEAT = 0;
     CONNECT_REQUEST = 1;
     LOGIN_REQUEST = 2;
+    REGISTER_TASK = 3;
   }
   required RequestType type = 1;
 }
@@ -16,6 +17,7 @@ extend Request {
   optional Heartbeat heartbeat = 1000;
   optional ConnectRequest connect_request = 1001;
   optional LoginRequest login_request = 1002;
+  optional RegisterTask register_task = 1003;
 }
 
 message Heartbeat {
@@ -26,11 +28,16 @@ message ConnectRequest{
 	required string client_protocol_version = 1;
 }
 
-
 message LoginRequest {
   required string app_key = 1;
   required string app_secret = 2;
 }
+
+message RegisterTask{
+  required string task_id = 1;
+  required string execute_time = 2;
+}
+
 
 message Response {
   extensions 100 to max;
