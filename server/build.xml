@@ -52,7 +52,6 @@ xmlns:maven="antlib:org.apache.maven.artifact.ant">
         <condition property="ivy.jar.exists">
           <available file="${lib.dir}/ivy-${ivy.version}.jar"/>
         </condition>
-
         <tstamp>
             <format property="build.time" pattern="MM/dd/yyyy HH:mm zz" timezone="GMT"/>
             <format property="year" pattern="yyyy" timezone="GMT"/>
@@ -65,6 +64,9 @@ xmlns:maven="antlib:org.apache.maven.artifact.ant">
             <compilerarg value="-Xlint:all"/>
             <compilerarg value="-Xlint:-path"/>
         </javac>
+		<copy todir="${classes.dir}">
+			<fileset file="${java.src.dir}\hibernate.cfg.xml"/>
+		</copy>
     </target>
 	<target name="build-all" depends="init">
 		<javac srcdir="${java.src.dir}" destdir="${build.classes}" includeantruntime="false"
