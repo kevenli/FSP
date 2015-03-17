@@ -3,30 +3,16 @@ package flowy.scheduler.server.data;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
-import org.hibernate.cfg.Configuration;
 import org.hibernate.criterion.Restrictions;
 
-import flowy.scheduler.entities.Application;
 import flowy.scheduler.entities.Task;
 import flowy.scheduler.entities.TaskInstance;
 
-public class TaskDAO {
+public class TaskDAO extends DAOBase {
 
-	private SessionFactory m_session_factory;
-	
-	private Session OpenSession(){
-		if (m_session_factory == null){
-			m_session_factory = new Configuration().configure()
-					.buildSessionFactory();
-		}
-		
-		Session session = m_session_factory.openSession();
-		return session;
-	}
 	public Task createTask(Task task){
-		Session session = OpenSession();
+		Session session = openSession();
 		Transaction trans = session.beginTransaction();
 		try{
 			session.save(task);
@@ -41,7 +27,7 @@ public class TaskDAO {
 	}
 	
 	public Task getTask(int id){
-		Session session = OpenSession();
+		Session session = openSession();
 		Task task = (Task)session.get(Task.class, id);
 		
 		session.close();
@@ -49,7 +35,7 @@ public class TaskDAO {
 	}
 	
 	public Task getTask(int applicationId, String clientTaskId){
-		Session session = OpenSession();
+		Session session = openSession();
 		Criteria criteria = session.createCriteria(Task.class);
 		criteria.add(Restrictions.eq("applicationId", applicationId));
 		criteria.add(Restrictions.eq("clientTaskId", clientTaskId));
@@ -58,7 +44,7 @@ public class TaskDAO {
 	}
 	
 	public Task updateTask(Task task) {
-		Session session = OpenSession();
+		Session session = openSession();
 		Transaction trans = session.beginTransaction();
 		session.update(task);
 		trans.commit();
@@ -66,7 +52,7 @@ public class TaskDAO {
 		return task;
 	}
 	public Task saveTask(Task task) {
-		Session session = OpenSession();
+		Session session = openSession();
 		Transaction trans = session.beginTransaction();
 		session.saveOrUpdate(task);
 		trans.commit();
@@ -74,7 +60,7 @@ public class TaskDAO {
 		return task;
 	}
 	public TaskInstance saveTaskInstance(TaskInstance instance) {
-		Session session = OpenSession();
+		Session session = openSession();
 		Transaction trans = session.beginTransaction();
 		session.save(instance);
 		trans.commit();
@@ -83,12 +69,12 @@ public class TaskDAO {
 	}
 	
 	public TaskInstance getTaskInstance(String id){
-		Session session = OpenSession();
+		Session session = openSession();
 		return (TaskInstance)session.get(TaskInstance.class, id);
 	}
 	
 	public TaskInstance updateTaskInstance(TaskInstance taskInstance){
-		Session session = OpenSession();
+		Session session = openSession();
 		Transaction trans = session.beginTransaction();
 		session.update(taskInstance);
 		trans.commit();

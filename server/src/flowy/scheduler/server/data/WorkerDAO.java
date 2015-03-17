@@ -2,26 +2,12 @@ package flowy.scheduler.server.data;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
-import org.hibernate.cfg.AnnotationConfiguration;
-import org.hibernate.cfg.Configuration;
 import org.hibernate.criterion.Restrictions;
 
 import flowy.scheduler.entities.Worker;
 
-public class WorkerDAO {
-	private SessionFactory m_session_factory;
-
-	private Session openSession() {
-		if (m_session_factory == null) {
-			m_session_factory = new AnnotationConfiguration().configure()
-					.buildSessionFactory();
-		}
-
-		Session session = m_session_factory.openSession();
-		return session;
-	}
+public class WorkerDAO extends DAOBase {
 
 	public Worker createOrUpdate(Worker worker) {
 		Session session = openSession();

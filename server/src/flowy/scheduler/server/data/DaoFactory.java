@@ -13,6 +13,7 @@ public class DaoFactory {
 	public static boolean testDatabaseConnection() {
 		try {
 			if (sessionFactory == null) {
+				@SuppressWarnings("deprecation")
 				SessionFactory sf = new Configuration().configure()
 						.buildSessionFactory();
 				sessionFactory = sf;
