@@ -5,22 +5,16 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoop;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
-import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 
 import java.io.IOException;
-import java.net.InetAddress;
 import java.net.InetSocketAddress;
-import java.net.Socket;
 import java.net.SocketAddress;
 import java.net.UnknownHostException;
-import java.nio.ByteBuffer;
-import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
@@ -29,44 +23,28 @@ import flowy.scheduler.javasdk.exceptions.TaskAlreadyExistsException;
 import flowy.scheduler.protocal.Messages;
 import flowy.scheduler.protocal.Messages.LoginRequest;
 import flowy.scheduler.protocal.Messages.LoginResponse;
-import flowy.scheduler.protocal.Messages.LoginResponse.LoginResultType;
 import flowy.scheduler.protocal.Messages.RegisterTask;
 import flowy.scheduler.protocal.Messages.RegisterTaskResponse;
 import flowy.scheduler.protocal.Messages.Request;
 import flowy.scheduler.protocal.Messages.Request.RequestType;
 import flowy.scheduler.protocal.Messages.TaskNotify;
 import flowy.scheduler.protocal.Messages.TaskStatusUpdate;
-import flowy.scheduler.protocal.Messages.WorkerRegisterRequest;
-import flowy.scheduler.protocal.Messages.WorkerRegisterResponse;
 import flowy.scheduler.protocal.Messages.TaskStatusUpdate.Status;
-import flowy.scheduler.protocal.Messages.WorkerRegisterRequest.ExecuteLastExpiredType;
 
 public class Client {
 	public static int DEFAULT_HOST_PORT = 3092;
 
 	private String[] m_hosts;
 
-	private Socket m_socket;
-
-	private IClientCallback m_callback;
-
-	private WorkerSetting m_worker_setting;
-
 	private String m_app_key;
 
 	private String m_app_secret;
 
-	private Object m_iolock = new Object();
-
 	private boolean isShutdown = false;
-
-	private ChannelHandlerContext m_handlerContext;
 
 	private EventLoopGroup workerGroup;
 
 	private ChannelFuture channelFuture;
-	
-	private Exception connectionException = null;
 	
 	private Exception authenticationException = null;
 	

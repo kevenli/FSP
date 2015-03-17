@@ -1,7 +1,6 @@
 package flowy.scheduler.javasdk;
 
 import flowy.scheduler.javasdk.exceptions.MessageInvalidException;
-import flowy.scheduler.javasdk.messages.Message;
 import flowy.scheduler.protocal.Messages;
 import flowy.scheduler.protocal.Messages.ConnectRequest;
 import flowy.scheduler.protocal.Messages.ConnectResponse;
