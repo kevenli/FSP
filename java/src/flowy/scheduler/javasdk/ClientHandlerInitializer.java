@@ -10,6 +10,7 @@ import io.netty.handler.codec.protobuf.ProtobufEncoder;
 import io.netty.handler.codec.protobuf.ProtobufVarint32FrameDecoder;
 import io.netty.handler.codec.protobuf.ProtobufVarint32LengthFieldPrepender;
 import io.netty.handler.codec.string.StringDecoder;
+import io.netty.handler.timeout.IdleStateHandler;
 
 public class ClientHandlerInitializer extends ChannelInitializer<SocketChannel> {
 
@@ -24,6 +25,7 @@ public class ClientHandlerInitializer extends ChannelInitializer<SocketChannel> 
         Messages.registerAllExtensions(registry);
         
 		ch.pipeline().addLast(
+				new IdleStateHandler(10, 10, 3),
 				new ProtobufVarint32FrameDecoder(), 
 				new ProtobufDecoder(
                         Messages.Response.getDefaultInstance(), registry),

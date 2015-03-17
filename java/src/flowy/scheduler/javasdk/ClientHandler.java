@@ -5,11 +5,14 @@ import flowy.scheduler.javasdk.messages.Message;
 import flowy.scheduler.protocal.Messages;
 import flowy.scheduler.protocal.Messages.ConnectRequest;
 import flowy.scheduler.protocal.Messages.ConnectResponse;
+import flowy.scheduler.protocal.Messages.Heartbeat;
 import flowy.scheduler.protocal.Messages.Request;
 import flowy.scheduler.protocal.Messages.Request.RequestType;
 import flowy.scheduler.protocal.Messages.Response;
 import io.netty.channel.ChannelHandlerAdapter;
 import io.netty.channel.ChannelHandlerContext;
+import io.netty.handler.timeout.IdleState;
+import io.netty.handler.timeout.IdleStateEvent;
 
 public class ClientHandler extends ChannelHandlerAdapter {
 	
@@ -52,5 +55,24 @@ public class ClientHandler extends ChannelHandlerAdapter {
 	
 	private void onConnectResponse(ChannelHandlerContext ctx, ConnectResponse msg){
 		client.login(ctx);
+	}
+	
+	@Override
+    public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
+        if (evt instanceof IdleStateEvent) {
+            IdleStateEvent e = (IdleStateEvent) evt;
+            if (e.state() == IdleState.ALL_IDLE) {
+                this.sendHeartbeat(ctx);
+            }
+        }
+    }
+	
+	private void sendHeartbeat(ChannelHandlerContext ctx){
+		Heartbeat heartbeat = Heartbeat.newBuilder().build();
+		Request.Builder requestBuilder = Request.newBuilder();
+		requestBuilder.setExtension(Messages.heartbeat, heartbeat);
+		requestBuilder.setType(RequestType.HEARTBEAT);
+		
+		ctx.writeAndFlush(requestBuilder.build());
 	}
 }
