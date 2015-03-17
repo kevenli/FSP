@@ -17,14 +17,14 @@
    limitations under the License.
 -->
 
-<project name="FlowyAgent" default="build-all" 
+<project name="FSPServer" default="bin-jar" 
 xmlns:ivy="antlib:org.apache.ivy.ant"
 xmlns:artifact="antlib:org.apache.maven.artifact.ant"
 xmlns:maven="antlib:org.apache.maven.artifact.ant">
 	<property name="build.dir" value="${basedir}/build" />
 	<property name="build.classes" value="${build.dir}/classes"/>
-	<property name="version" value="0.0.1"/>
-	<property name="name" value="flowyagent" /> 
+	<property name="version" value="0.1.0"/>
+	<property name="name" value="fspserver" /> 
 	<property name="final.name" value="${name}-${version}"/>
 	<property name="dist.dir" value="${build.dir}/${final.name}"/>
 	<property name="java.src.dir" value="${basedir}/src" />
@@ -85,26 +85,13 @@ xmlns:maven="antlib:org.apache.maven.artifact.ant">
             <fileset file="LICENSE.txt" />
             <fileset dir="${build.classes}" excludes="**/.generated"/>
             <manifest>
-                <attribute name="Main-Class" value="Agent" />
+                <attribute name="Main-Class" value="flowy.scheduler.server.FSPServer" />
                 <attribute name="Built-By" value="${user.name}"/>
                 <attribute name="Built-At" value="${build.time}"/>
                 <attribute name="Built-On" value="${host.name}" />
-                <attribute name="Implementation-Title" value="org.apache.zookeeper"/>
+                <attribute name="Implementation-Title" value="flowy.scheduler"/>
                 <attribute name="Implementation-Version" value="${revision}"/> 
-                <attribute name="Implementation-Vendor" value="The Apache Software Foundation"/>
-            	
-            	<!-- The following are OSGi manifest headers -->
-            	<!-- currently hardcoded, when things get more complicated we could use BND 
-            	http://www.aqute.biz/Code/Bnd to generate them -->
-                <attribute name="Bundle-Vendor" value="The Apache Software Foundation"/>
-                <attribute name="Bundle-Name" value="ZooKeeper Bundle"/>
-                <attribute name="Bundle-SymbolicName" value="org.apache.hadoop.zookeeper"/>
-                <attribute name="Bundle-ManifestVersion" value="2"/>
-                <attribute name="Bundle-Version" value="${version}"/>
-                <attribute name="Bundle-License" value="http://www.apache.org/licenses/LICENSE-2.0.txt"/>
-                <attribute name="Bundle-DocURL" value="http://hadoop.apache.org/zookeeper"/>
-                <attribute name="Import-Package" value='javax.management;resolution:=optional,javax.security.auth.callback,javax.security.auth.login,javax.security.sasl,org.slf4j;version="[1.6,2)",org.jboss.netty.buffer;resolution:=optional;version="[3.2,4)",org.jboss.netty.channel;resolution:=optional;version="[3.2,4)",org.jboss.netty.channel.group;resolution:=optional;version="[3.2,4)",org.jboss.netty.channel.socket.nio;resolution:=optional;version="[3.2,4)",org.osgi.framework;resolution:=optional;version="[1.5,2)",org.osgi.util.tracker;resolution:=optional;version="[1.4,2)"'/>
-                <attribute name="Export-Package" value='org.apache.zookeeper;version="${version}",org.apache.zookeeper.client;version="${version}",org.apache.zookeeper.data;version="${version}",org.apache.zookeeper.version;version="${version}",org.apache.zookeeper.server;version="${version}",org.apache.zookeeper.server.auth;version="${version}",org.apache.zookeeper.server.persistence;version="${version}",org.apache.zookeeper.server.quorum;version="${version}",org.apache.zookeeper.common;version="${version}"'/>
+                <attribute name="Implementation-Vendor" value="Mars Wizard"/>
             </manifest>
         </jar>
 	</target>
@@ -121,7 +108,6 @@ xmlns:maven="antlib:org.apache.maven.artifact.ant">
       <copy todir="${dist.dir}/bin">
         <fileset dir="${basedir}/bin" includes="*.sh,*.cmd" excludes="**/*.class" />
       </copy>
-
       <copy todir="${dist.dir}/conf">
         <fileset dir="${basedir}/conf" excludes="**/*.template"/>
       </copy>
