@@ -93,56 +93,7 @@ message RegisterTaskResponse {
 	required RegisterTaskResultType register_result = 1;
 }
 
-message WorkerRegisterRequest {
-	
-	required string worker_id = 1;
-	required string worker_name = 2;
-	repeated string execute_time = 3;
-	required int32 timeout = 4;
-	
-	enum ExecuteLastExpiredType {
-		RUN = 0;
-		IGNORE = 1;
-	}
-	
-	required ExecuteLastExpiredType execute_last_expired = 5;
-}
-
-message WorkerRegisterResponse {
-	required string worker_id = 1;
-}
-
 message TaskNotify {
 	required string task_id = 1;
 	required string task_instance_id = 2;
-}
-
-message StartListenRequest {
-	required string worker_id = 1;
-}
-
-
-
-message TaskStart {
-	required string worker_id = 1;
-	required string task_id = 2;
-}
-
-message TaskRunning {
-	required string worker_id = 1;
-	required string task_id = 2;
-	optional int32 percentage = 3 [default = 0];
-}
-
-message TaskComplete {
-	required string worker_id = 1;
-	required string task_id = 2;
-	
-	enum TaskResultType {
-		SUCCESS = 0;
-		FAILED = 1;
-	}
-	
-	required TaskResultType result = 3;
-	optional string error_message = 4 [default=''];
 }
