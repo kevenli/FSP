@@ -1,11 +1,14 @@
 package flowy.scheduler.server.data;
 
 
+import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
+import org.hibernate.criterion.Restrictions;
 
+import flowy.scheduler.entities.Application;
 import flowy.scheduler.entities.Task;
 
 public class TaskDAO {
@@ -43,10 +46,28 @@ public class TaskDAO {
 		session.close();
 		return task;
 	}
+	
+	public Task getTask(int applicationId, String clientTaskId){
+		Session session = OpenSession();
+		Criteria criteria = session.createCriteria(Task.class);
+		criteria.add(Restrictions.eq("applicationId", applicationId));
+		criteria.add(Restrictions.eq("clientTaskId", clientTaskId));
+		Task task = (Task)criteria.uniqueResult();
+		return task;
+	}
+	
 	public Task updateTask(Task task) {
 		Session session = OpenSession();
 		Transaction trans = session.beginTransaction();
 		session.update(task);
+		trans.commit();
+		session.close();
+		return task;
+	}
+	public Task saveTask(Task task) {
+		Session session = OpenSession();
+		Transaction trans = session.beginTransaction();
+		session.saveOrUpdate(task);
 		trans.commit();
 		session.close();
 		return task;

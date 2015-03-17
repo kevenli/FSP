@@ -44,6 +44,7 @@ message Response {
   enum ResponseType{
     CONNECT_RESPONSE = 1;
     LOGIN_RESPONSE = 2;
+    REGISTER_TASK_RESPONSE = 3;
   }
   required ResponseType type = 1;
 }
@@ -51,6 +52,7 @@ message Response {
 extend Response {
   optional ConnectResponse connect_response = 2001;
   optional LoginResponse login_response = 2002;
+  optional RegisterTaskResponse register_task_response = 2003;
 }
 
 message ConnectResponse{
@@ -64,6 +66,14 @@ message LoginResponse {
    }
    required LoginResultType result_type = 1;
    optional string fail_reason = 2 [default = ''];
+}
+
+message RegisterTaskResponse {
+	enum RegisterTaskResultType{
+		SUCCESS = 0;
+		TASK_ALREADY_EXISTS = 1;
+	}
+	required RegisterTaskResultType register_result = 1;
 }
 
 message WorkerRegisterRequest {

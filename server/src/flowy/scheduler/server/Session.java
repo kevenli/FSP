@@ -14,17 +14,23 @@ import static org.quartz.TriggerBuilder.*;
 import static org.quartz.CronScheduleBuilder.*;
 
 import com.google.protobuf.InvalidProtocolBufferException;
+import com.google.protobuf.GeneratedMessage.GeneratedExtension;
 
 import flowy.scheduler.entities.Application;
 import flowy.scheduler.entities.Task;
 import flowy.scheduler.entities.TaskStatus;
 import flowy.scheduler.entities.Worker;
 import flowy.scheduler.entities.WorkerStatus;
+import flowy.scheduler.protocal.Messages;
 import flowy.scheduler.protocal.Messages.LoginRequest;
 import flowy.scheduler.protocal.Messages.LoginResponse;
 import flowy.scheduler.protocal.Messages.LoginResponse.LoginResultType;
 import flowy.scheduler.protocal.Messages.RegisterTask;
+import flowy.scheduler.protocal.Messages.RegisterTaskResponse;
+import flowy.scheduler.protocal.Messages.RegisterTaskResponse.RegisterTaskResultType;
 import flowy.scheduler.protocal.Messages.Request;
+import flowy.scheduler.protocal.Messages.Response;
+import flowy.scheduler.protocal.Messages.Response.ResponseType;
 import flowy.scheduler.protocal.Messages.TaskNotify;
 import flowy.scheduler.protocal.Messages.TaskStatusUpdate;
 import flowy.scheduler.protocal.Messages.TaskStatusUpdate.Status;
@@ -45,11 +51,11 @@ public class Session{
 	private WorkerRegisterRequest m_request;
 	private Scheduler m_scheduler;
 	private Application m_application;
-	private Worker m_worker;
 	private Object m_iolock = new Object();
 	private Object m_notifylock = new Object();
 	private int m_sessionId;
 	private SessionHandler m_sessionHandler;
+	private int applicationId;
 
 	private static Logger logger = Logger.getLogger(Session.class);
 	
@@ -61,8 +67,9 @@ public class Session{
 		this.clientAddress = socket.getInetAddress();
 	}
 	
-	public Session(int sessionId, SessionHandler sessionHandler, Scheduler scheduler){
+	public Session(int sessionId, int applicationId, SessionHandler sessionHandler, Scheduler scheduler){
 		m_sessionId = sessionId;
+		this.applicationId = applicationId;
 		m_sessionHandler = sessionHandler;
 		this.m_scheduler = scheduler;
 	}
@@ -85,7 +92,7 @@ public class Session{
 		newWorker.setCreateTime(new Date());
 		newWorker.setUpdateTime(new Date());
 
-		m_worker = dao.createOrUpdate(newWorker);
+		dao.createOrUpdate(newWorker);
 
 		logger.debug(request);
 
@@ -135,50 +142,6 @@ public class Session{
 		}
 	}
 
-	private void Notify(String workerId, String taskId)
-			throws InvalidProtocolBufferException, IOException {
-		TaskNotify.Builder builder = TaskNotify.newBuilder();
-		builder.setWorkerId(workerId);
-		builder.setTaskId(taskId);
-
-		send(builder.build().toByteArray());
-
-		TaskDAO dao = new TaskDAO();
-		
-		TaskStatusUpdate status = null;
-				
-		do{
-			status = TaskStatusUpdate.parseFrom(getNextMessage());
-			
-			
-			long task_id = Long.parseLong(status.getTaskId());
-			Task task = dao.getTask(task_id);
-			task.setUpdateTime(new Date());
-			TaskStatus task_status = TaskStatus.Unknown;
-			switch (status.getStatus().getNumber()){
-			case Status.START_VALUE:
-				task_status = TaskStatus.Start;
-				task.setStartTime(new Date());
-				break;
-			case Status.RUNNING_VALUE:
-				task_status = TaskStatus.Running;
-				break;
-			case Status.STOP_VALUE:
-				task_status = TaskStatus.Success;
-				task.setCompleteTime(new Date());
-				break;
-			default:
-				task_status = TaskStatus.Unknown;
-			}
-			
-			task.setStatus( task_status );
-			task.setUpdateTime(new Date());
-			dao.updateTask(task);
-		
-		}
-		while (status.getStatus() != Status.STOP);
-	}
-	
 	public void onNotify(){
 		synchronized(m_notifylock){
 			m_notifylock.notify();
@@ -190,7 +153,27 @@ public class Session{
 	}
 	
 	public void onRegisterTask(ChannelHandlerContext ctx, RegisterTask registerTaskRequest) throws SchedulerException {
+		TaskDAO taskDAO = new TaskDAO();
+		Task task = taskDAO.getTask(this.applicationId, registerTaskRequest.getTaskId());
 		
+		if(task!=null && !task.getExecuteTime().equals(registerTaskRequest.getExecuteTime())){
+			// task already exists with different setting.
+			RegisterTaskResponse responseMessage = RegisterTaskResponse.newBuilder()
+					.setRegisterResult(RegisterTaskResultType.TASK_ALREADY_EXISTS)
+					.build();
+			ctx.writeAndFlush(buildResponseMessage(ResponseType.REGISTER_TASK_RESPONSE,
+					Messages.registerTaskResponse, 
+					responseMessage));
+			return;
+		}
+		
+		if(task == null){
+			task = new Task();
+		}
+		task.setApplicationId(applicationId);
+		task.setClientTaskId(registerTaskRequest.getTaskId());
+		task.setExecuteTime(registerTaskRequest.getExecuteTime());
+		taskDAO.saveTask(task);
 		
 		// register quartz scheduler
 		JobDetail job = newJob(TaskNotifyJob.class).withIdentity(
@@ -208,6 +191,21 @@ public class Session{
 
 		// Tell quartz to schedule the job using our trigger
 		m_scheduler.scheduleJob(job, trigger);
+		RegisterTaskResponse responseMessage = RegisterTaskResponse.newBuilder()
+				.setRegisterResult(RegisterTaskResultType.SUCCESS)
+				.build();
+		ctx.writeAndFlush(buildResponseMessage(ResponseType.REGISTER_TASK_RESPONSE,
+				Messages.registerTaskResponse, 
+				responseMessage));
+	}
+	
+	private static <Type> Response buildResponseMessage(ResponseType responseType, 
+			final GeneratedExtension<Response, Type> extension,
+	        final Type value){
+		Response response = Response.newBuilder()
+				.setType(responseType)
+				.setExtension(extension, value).build();
+		return response;
 	}
 }
 

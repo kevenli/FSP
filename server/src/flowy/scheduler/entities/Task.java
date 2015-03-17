@@ -1,11 +1,7 @@
 package flowy.scheduler.entities;
 
-import java.util.Date;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -14,83 +10,52 @@ import javax.persistence.Table;
 @Entity
 @Table(name="tasks")
 public class Task {
-	private long m_id;
+	private int id;
 	
-	private long m_worker_id;
+	private int applicationId;
 	
-	private Date m_create_time;
+	// task id specified by client
+	private String clientTaskId;
 	
-	private Date m_start_time;
-	
-	private Date m_complete_time;
-	
-	private Date m_update_time;
-	
-	private TaskStatus m_status;
-	
+	// task execute time in cron expression
+	private String executeTime;
 	
 	@Id
 	@Column(name = "id")
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	public long getId(){
-		return m_id;
+	public int getId(){
+		return id;
 	}
 	
-	public void setId(long id){
-		m_id = id;
+	public void setId(int id){
+		this.id = id;
 	}
 
-	@Column(name = "worker_id")
-	public long getWorkerId(){
-		return m_worker_id;
+	@Column(name = "application_id")
+	public int getApplicationId(){
+		return applicationId;
 	}
 	
-	public void setWorkerId(long worker_id){
-		m_worker_id = worker_id;
+	public void setApplicationId(int applicationId){
+		this.applicationId = applicationId;
+	}
+	
+	@Column(name = "client_task_id")
+	public String getClientTaskId(){
+		return this.clientTaskId;
+	}
+	
+	public void setClientTaskId(String clientTaskId){
+		this.clientTaskId = clientTaskId;
 	}
 
-	@Column(name = "create_time")
-	public Date getCreateTime(){
-		return m_create_time;
+	@Column(name = "execute_time")
+	public String getExecuteTime(){
+		return executeTime;
 	}
 	
-	public void setCreateTime(Date create_time){
-		m_create_time = create_time;
+	public void setExecuteTime(String executeTime){
+		this.executeTime = executeTime;
 	}
 	
-	@Column(name = "start_time")
-	public Date getStartTime(){
-		return m_start_time;
-	}
-	
-	public void setStartTime(Date start_time){
-		m_start_time = start_time;
-	}
-	
-	@Column(name = "complete_time")
-	public Date getCompleteTime(){
-		return m_complete_time;
-	}
-	
-	public void setCompleteTime(Date complete_time){
-		m_complete_time = complete_time;
-	}
-	
-	@Column(name = "update_time")
-	public Date getUpdateTime(){
-		return m_update_time;
-	}
-	
-	public void setUpdateTime(Date update_time){
-		m_update_time = update_time;
-	}
-	
-	@Enumerated(EnumType.ORDINAL)
-	public TaskStatus getStatus(){
-		return m_status;
-	}
-	
-	public void setStatus(TaskStatus status){
-		m_status = status;
-	}
 }

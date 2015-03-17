@@ -20,6 +20,15 @@ CREATE TABLE `sessions` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+create table `tasks` (
+  `id` int(11) not null auto_increment,
+  `application_id` int(11) not null,
+  `client_task_id` varchar(50) not null,
+  `execute_time` varchar(50) not null,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `idx_tasks_application_id_task_client_id` (`application_id`,`client_task_id`)
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 create table `worker_status`(
   `id` int not null primary key,
   `name` varchar(20) not null

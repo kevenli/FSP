@@ -53,7 +53,7 @@ public class SessionManager {
 			do {
 				newSessionId = m_randomSeed.nextInt();
 			} while (newSessionId <= 0 || m_sessions.containsKey(newSessionId));
-			Session session = new Session(newSessionId, handler, scheduler);
+			Session session = new Session(newSessionId, applicationId, handler, scheduler);
 			m_sessions.put(newSessionId, session);
 			SessionDAO dao = new SessionDAO();
 			SessionVO sessionVO = new SessionVO();
