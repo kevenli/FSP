@@ -19,6 +19,8 @@ public class TaskInstance {
 	
 	private Date fireTime;
 	
+	private Date startTime;
+	
 	private Date updateTime;
 	
 	private Date completeTime;
@@ -64,6 +66,15 @@ public class TaskInstance {
 	
 	public void setFireTime(Date fireTime){
 		this.fireTime = fireTime;
+	}
+	
+	@Column(name = "start_time")
+	public Date getStartTime(){
+		return this.startTime;
+	}
+	
+	public void setStartTime(Date startTime){
+		this.startTime = startTime;
 	}
 	
 	@Column(name = "update_time")

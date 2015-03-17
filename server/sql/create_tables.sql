@@ -34,6 +34,7 @@ create table `task_instances` (
   `task_id` int not null,
   `session_id` int not null,
   `fire_time` datetime not null,
+  `start_time` datetime null,
   `update_time` datetime null,
   `complete_time` datetime null,
   `status` int not null,

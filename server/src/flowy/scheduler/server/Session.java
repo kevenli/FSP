@@ -144,6 +144,7 @@ public class Session{
 		TaskInstance instance = dao.getTaskInstance(taskStatusUpdate.getInstanceId());
 		if (taskStatusUpdate.getStatus() == Status.START){
 			instance.setStatus(TaskStatus.Start);
+			instance.setStartTime(new Date());
 			instance.setUpdateTime(new Date());
 			dao.updateTaskInstance(instance);
 		}else if(taskStatusUpdate.getStatus() == Status.RUNNING){
