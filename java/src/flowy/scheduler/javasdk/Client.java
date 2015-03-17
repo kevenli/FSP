@@ -108,6 +108,31 @@ public class Client {
 			throw new AuthenticationFailException();
 		}
 	}
+	
+	private void reconnect(){
+		SocketAddress remoteAddress = pickRemoteAddress();
+
+		if (workerGroup == null) {
+			workerGroup = new NioEventLoopGroup();
+		}
+
+		Bootstrap bootstrap = new Bootstrap();
+		bootstrap.group(workerGroup);
+		bootstrap.channel(NioSocketChannel.class);
+		bootstrap.option(ChannelOption.SO_KEEPALIVE, true);
+
+		bootstrap.handler(new ClientHandlerInitializer(this));
+
+		channelFuture = bootstrap.connect(remoteAddress);
+		channelFuture.addListener(new ConnectionListener(this));
+		try {
+			channelFuture.sync();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		this.channel = channelFuture.channel();
+	}
 
 	public void start() throws UnknownHostException, IOException,
 			InterruptedException {
@@ -120,7 +145,8 @@ public class Client {
 			// connect();
 			//
 			//channelFuture.channel().closeFuture().sync();
-			Thread.sleep(1l);
+			channelFuture.channel().closeFuture().sync();
+			reconnect();
 		}
 
 		// m_socket = new Socket(InetAddress.getByName(host_name), host_port);
@@ -226,10 +252,7 @@ public class Client {
 						@Override
 						public void run() {
 							try {
-								client.connect();
-							} catch (InterruptedException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
+								client.reconnect();
 							} catch (Exception e) {
 								// TODO Auto-generated catch block
 								e.printStackTrace();
