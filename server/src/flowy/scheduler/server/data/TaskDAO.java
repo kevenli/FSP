@@ -10,6 +10,7 @@ import org.hibernate.criterion.Restrictions;
 
 import flowy.scheduler.entities.Application;
 import flowy.scheduler.entities.Task;
+import flowy.scheduler.entities.TaskInstance;
 
 public class TaskDAO {
 
@@ -39,7 +40,7 @@ public class TaskDAO {
 		
 	}
 	
-	public Task getTask(long id){
+	public Task getTask(int id){
 		Session session = OpenSession();
 		Task task = (Task)session.get(Task.class, id);
 		
@@ -71,5 +72,13 @@ public class TaskDAO {
 		trans.commit();
 		session.close();
 		return task;
+	}
+	public TaskInstance saveTaskInstance(TaskInstance instance) {
+		Session session = OpenSession();
+		Transaction trans = session.beginTransaction();
+		session.save(instance);
+		trans.commit();
+		session.close();
+		return instance;
 	}
 }

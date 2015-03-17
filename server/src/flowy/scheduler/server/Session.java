@@ -8,6 +8,7 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.nio.ByteBuffer;
 import java.util.Date;
+import java.util.UUID;
 
 import static org.quartz.JobBuilder.*;
 import static org.quartz.TriggerBuilder.*;
@@ -18,6 +19,7 @@ import com.google.protobuf.GeneratedMessage.GeneratedExtension;
 
 import flowy.scheduler.entities.Application;
 import flowy.scheduler.entities.Task;
+import flowy.scheduler.entities.TaskInstance;
 import flowy.scheduler.entities.TaskStatus;
 import flowy.scheduler.entities.Worker;
 import flowy.scheduler.entities.WorkerStatus;
@@ -142,10 +144,18 @@ public class Session{
 		}
 	}
 
-	public void onNotify(){
-		synchronized(m_notifylock){
-			m_notifylock.notify();
-		}
+	public void onNotify(int taskId){
+		TaskDAO dao = new TaskDAO();
+		Task task = dao.getTask(taskId);
+		
+		TaskInstance instance = new TaskInstance();
+		instance.setId(UUID.randomUUID().toString());
+		instance.setTaskId(task.getId());
+		instance.setSessionId(m_sessionId);
+		instance.setFireTime(new Date());
+		instance.setStatus(TaskStatus.NotStart);
+		
+		dao.saveTaskInstance(instance);
 	}
 	
 	public void bindHandler(SessionHandler sessionHandler){
@@ -181,7 +191,7 @@ public class Session{
 				"group1").build();
 		
 		job.getJobDataMap().put("SessionInstance", this);
-		
+		job.getJobDataMap().put("TaskId", task.getId());
 		
     	Trigger trigger = newTrigger().withIdentity(
 				this.m_sessionId + "_" + registerTaskRequest.getTaskId() + "_job", 

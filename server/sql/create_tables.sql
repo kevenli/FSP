@@ -29,6 +29,17 @@ create table `tasks` (
   UNIQUE KEY `idx_tasks_application_id_task_client_id` (`application_id`,`client_task_id`)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+create table `task_instances` (
+  `id` char(36) not null,
+  `task_id` int not null,
+  `session_id` int not null,
+  `fire_time` datetime not null,
+  `update_time` datetime null,
+  `complete_time` datetime null,
+  `status` int not null,
+  PRIMARY KEY (`id`)
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 create table `worker_status`(
   `id` int not null primary key,
   `name` varchar(20) not null
