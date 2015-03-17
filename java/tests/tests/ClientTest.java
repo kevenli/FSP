@@ -48,8 +48,8 @@ public class ClientTest implements IClientCallback, ITaskNotifyCallback {
 	}
 
 	@Override
-	public void onTaskNotify(String taskName, Client client) {
-		System.out.println("OnNotify, taskname : " + taskName);
+	public void onTaskNotify(Task task, Client client) {
+		System.out.println("OnNotify, taskname : " + task.getId());
 	}
 
 }

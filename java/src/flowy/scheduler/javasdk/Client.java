@@ -79,6 +79,7 @@ public class Client {
 	private Channel channel;
 	
 	private HashMap<String, ITaskNotifyCallback> taskCallbacks = new HashMap<String, ITaskNotifyCallback>();
+	private HashMap<String, Task> tasks = new HashMap<String, Task>();
 
 	public Client(String hosts, String app_key, String app_secret) {
 
@@ -171,6 +172,7 @@ public class Client {
 			throw registerTaskException;
 		}
 		taskCallbacks.put(task.getId(), callback);
+		tasks.put(task.getId(), task);
 	}
 
 	void login(ChannelHandlerContext ctx) {
@@ -267,7 +269,9 @@ public class Client {
 	}
 
 	public void onTaskNotify(TaskNotify notify) {
-		ITaskNotifyCallback callback = taskCallbacks.get(notify.getTaskId());
-		callback.onTaskNotify(notify.getTaskId(), this);
+		String taskId = notify.getTaskId();
+		ITaskNotifyCallback callback = taskCallbacks.get(taskId);
+		Task task = tasks.get(taskId);
+		callback.onTaskNotify(task, this);
 	}
 }
