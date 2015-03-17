@@ -9,6 +9,7 @@ message Request {
     CONNECT_REQUEST = 1;
     LOGIN_REQUEST = 2;
     REGISTER_TASK = 3;
+    TASK_STATUS_UPDATE = 4;
   }
   required RequestType type = 1;
 }
@@ -18,6 +19,7 @@ extend Request {
   optional ConnectRequest connect_request = 1001;
   optional LoginRequest login_request = 1002;
   optional RegisterTask register_task = 1003;
+  optional TaskStatusUpdate task_status_update = 1004;
 }
 
 message Heartbeat {
@@ -37,6 +39,19 @@ message RegisterTask{
   required string task_id = 1;
   required string execute_time = 2;
 }
+
+message TaskStatusUpdate{
+	enum Status{
+		START = 0;
+		RUNNING = 1;
+		COMPLETE = 2;
+		FAILED = 3;
+	}
+	required string instance_id = 1;
+	required Status status = 2;
+	optional int32 percentage = 3;
+	optional string error_message = 4;
+}	
 
 
 message Response {
@@ -106,19 +121,7 @@ message StartListenRequest {
 	required string worker_id = 1;
 }
 
-message TaskStatusUpdate{
-	enum Status{
-		START = 0;
-		RUNNING = 1;
-		STOP = 2;
-	}	
 
-	required string worker_id = 1;
-	required string task_id = 2;
-	required Status status = 3;
-	optional int32 percentage = 4;
-	optional string error_message = 5;
-}	
 
 message TaskStart {
 	required string worker_id = 1;

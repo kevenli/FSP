@@ -17,6 +17,7 @@ import flowy.scheduler.javasdk.exceptions.TaskAlreadyExistsException;
 public class ClientTests implements ITaskNotifyCallback {
 
 	private Client client;
+
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 	}
@@ -29,7 +30,7 @@ public class ClientTests implements ITaskNotifyCallback {
 	public void setUp() throws Exception {
 		String app_key = "abc";
 		String app_secret = "123";
-		
+
 		client = new Client("127.0.0.1:3092", app_key, app_secret);
 	}
 
@@ -42,33 +43,60 @@ public class ClientTests implements ITaskNotifyCallback {
 	public void testConnect() throws Exception {
 		client.connect();
 	}
-	
+
 	@Test
-	public void testRegisterTask() throws Exception{
+	public void testRegisterTask() throws Exception {
 		client.connect();
 		Task task = new Task("TestTask", "*/5 * * * * ?");
 		client.registerTask(task, this);
 	}
-	
+
 	@Test
-	public void testRegisterTaskWithException() throws Exception{
+	public void testRegisterTaskWithException() throws Exception {
 		client.connect();
 		Task task = new Task("TestTask", "*/5 * * * * ?");
-		
+
 		Task task2 = new Task("TestTask", "*/5 * * * * *");
 		client.registerTask(task, this);
-		
-		try{
+
+		try {
 			client.registerTask(task2, this);
-			fail("show raise exception here");
-		}catch(TaskAlreadyExistsException e){
-			
+			fail("should raise exception here");
+		} catch (TaskAlreadyExistsException e) {
+
 		}
 	}
 
-	@Override
-	public void onTaskNotify(Task task, Client client) {
-		System.out.println("OnNotify, taskname : " + task.getId());
+	@Test
+	public void testTaskRun() throws Exception {
+		client.connect();
+		Task task = new Task("TestTask", "*/5 * * * * ?");
+		client.registerTask(task, new ITaskNotifyCallback() {
+			@Override
+			public void onTaskNotify(Client client, Task task, String instanceId) {
+				client.taskStart(instanceId);
+
+				try {
+					Thread.sleep(10l);
+					client.taskRunning(instanceId, 10);
+
+					Thread.sleep(10l);
+					client.taskRunning(instanceId, 50);
+
+					Thread.sleep(10l);
+					client.taskComplete(instanceId);
+					
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+		});
+		client.start();
 	}
 
+	@Override
+	public void onTaskNotify(Client client, Task task, String instanceId) {
+		System.out.println("OnNotify, taskname : " + task.getId());
+
+	}
 }

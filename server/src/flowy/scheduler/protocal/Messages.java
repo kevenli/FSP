@@ -11,6 +11,7 @@ public final class Messages {
     registry.add(flowy.scheduler.protocal.Messages.connectRequest);
     registry.add(flowy.scheduler.protocal.Messages.loginRequest);
     registry.add(flowy.scheduler.protocal.Messages.registerTask);
+    registry.add(flowy.scheduler.protocal.Messages.taskStatusUpdate);
     registry.add(flowy.scheduler.protocal.Messages.connectResponse);
     registry.add(flowy.scheduler.protocal.Messages.loginResponse);
     registry.add(flowy.scheduler.protocal.Messages.registerTaskResponse);
@@ -152,6 +153,10 @@ public final class Messages {
        * <code>REGISTER_TASK = 3;</code>
        */
       REGISTER_TASK(3, 3),
+      /**
+       * <code>TASK_STATUS_UPDATE = 4;</code>
+       */
+      TASK_STATUS_UPDATE(4, 4),
       ;
 
       /**
@@ -170,6 +175,10 @@ public final class Messages {
        * <code>REGISTER_TASK = 3;</code>
        */
       public static final int REGISTER_TASK_VALUE = 3;
+      /**
+       * <code>TASK_STATUS_UPDATE = 4;</code>
+       */
+      public static final int TASK_STATUS_UPDATE_VALUE = 4;
 
 
       public final int getNumber() { return value; }
@@ -180,6 +189,7 @@ public final class Messages {
           case 1: return CONNECT_REQUEST;
           case 2: return LOGIN_REQUEST;
           case 3: return REGISTER_TASK;
+          case 4: return TASK_STATUS_UPDATE;
           default: return null;
         }
       }
@@ -2616,6 +2626,920 @@ public final class Messages {
     }
 
     // @@protoc_insertion_point(class_scope:RegisterTask)
+  }
+
+  public interface TaskStatusUpdateOrBuilder
+      extends com.google.protobuf.MessageOrBuilder {
+
+    // required string instance_id = 1;
+    /**
+     * <code>required string instance_id = 1;</code>
+     */
+    boolean hasInstanceId();
+    /**
+     * <code>required string instance_id = 1;</code>
+     */
+    java.lang.String getInstanceId();
+    /**
+     * <code>required string instance_id = 1;</code>
+     */
+    com.google.protobuf.ByteString
+        getInstanceIdBytes();
+
+    // required .TaskStatusUpdate.Status status = 2;
+    /**
+     * <code>required .TaskStatusUpdate.Status status = 2;</code>
+     */
+    boolean hasStatus();
+    /**
+     * <code>required .TaskStatusUpdate.Status status = 2;</code>
+     */
+    flowy.scheduler.protocal.Messages.TaskStatusUpdate.Status getStatus();
+
+    // optional int32 percentage = 3;
+    /**
+     * <code>optional int32 percentage = 3;</code>
+     */
+    boolean hasPercentage();
+    /**
+     * <code>optional int32 percentage = 3;</code>
+     */
+    int getPercentage();
+
+    // optional string error_message = 4;
+    /**
+     * <code>optional string error_message = 4;</code>
+     */
+    boolean hasErrorMessage();
+    /**
+     * <code>optional string error_message = 4;</code>
+     */
+    java.lang.String getErrorMessage();
+    /**
+     * <code>optional string error_message = 4;</code>
+     */
+    com.google.protobuf.ByteString
+        getErrorMessageBytes();
+  }
+  /**
+   * Protobuf type {@code TaskStatusUpdate}
+   */
+  public static final class TaskStatusUpdate extends
+      com.google.protobuf.GeneratedMessage
+      implements TaskStatusUpdateOrBuilder {
+    // Use TaskStatusUpdate.newBuilder() to construct.
+    private TaskStatusUpdate(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+      this.unknownFields = builder.getUnknownFields();
+    }
+    private TaskStatusUpdate(boolean noInit) { this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance(); }
+
+    private static final TaskStatusUpdate defaultInstance;
+    public static TaskStatusUpdate getDefaultInstance() {
+      return defaultInstance;
+    }
+
+    public TaskStatusUpdate getDefaultInstanceForType() {
+      return defaultInstance;
+    }
+
+    private final com.google.protobuf.UnknownFieldSet unknownFields;
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+        getUnknownFields() {
+      return this.unknownFields;
+    }
+    private TaskStatusUpdate(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      initFields();
+      int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!parseUnknownField(input, unknownFields,
+                                     extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+            case 10: {
+              bitField0_ |= 0x00000001;
+              instanceId_ = input.readBytes();
+              break;
+            }
+            case 16: {
+              int rawValue = input.readEnum();
+              flowy.scheduler.protocal.Messages.TaskStatusUpdate.Status value = flowy.scheduler.protocal.Messages.TaskStatusUpdate.Status.valueOf(rawValue);
+              if (value == null) {
+                unknownFields.mergeVarintField(2, rawValue);
+              } else {
+                bitField0_ |= 0x00000002;
+                status_ = value;
+              }
+              break;
+            }
+            case 24: {
+              bitField0_ |= 0x00000004;
+              percentage_ = input.readInt32();
+              break;
+            }
+            case 34: {
+              bitField0_ |= 0x00000008;
+              errorMessage_ = input.readBytes();
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e.getMessage()).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return flowy.scheduler.protocal.Messages.internal_static_TaskStatusUpdate_descriptor;
+    }
+
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return flowy.scheduler.protocal.Messages.internal_static_TaskStatusUpdate_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              flowy.scheduler.protocal.Messages.TaskStatusUpdate.class, flowy.scheduler.protocal.Messages.TaskStatusUpdate.Builder.class);
+    }
+
+    public static com.google.protobuf.Parser<TaskStatusUpdate> PARSER =
+        new com.google.protobuf.AbstractParser<TaskStatusUpdate>() {
+      public TaskStatusUpdate parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new TaskStatusUpdate(input, extensionRegistry);
+      }
+    };
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<TaskStatusUpdate> getParserForType() {
+      return PARSER;
+    }
+
+    /**
+     * Protobuf enum {@code TaskStatusUpdate.Status}
+     */
+    public enum Status
+        implements com.google.protobuf.ProtocolMessageEnum {
+      /**
+       * <code>START = 0;</code>
+       */
+      START(0, 0),
+      /**
+       * <code>RUNNING = 1;</code>
+       */
+      RUNNING(1, 1),
+      /**
+       * <code>COMPLETE = 2;</code>
+       */
+      COMPLETE(2, 2),
+      /**
+       * <code>FAILED = 3;</code>
+       */
+      FAILED(3, 3),
+      ;
+
+      /**
+       * <code>START = 0;</code>
+       */
+      public static final int START_VALUE = 0;
+      /**
+       * <code>RUNNING = 1;</code>
+       */
+      public static final int RUNNING_VALUE = 1;
+      /**
+       * <code>COMPLETE = 2;</code>
+       */
+      public static final int COMPLETE_VALUE = 2;
+      /**
+       * <code>FAILED = 3;</code>
+       */
+      public static final int FAILED_VALUE = 3;
+
+
+      public final int getNumber() { return value; }
+
+      public static Status valueOf(int value) {
+        switch (value) {
+          case 0: return START;
+          case 1: return RUNNING;
+          case 2: return COMPLETE;
+          case 3: return FAILED;
+          default: return null;
+        }
+      }
+
+      public static com.google.protobuf.Internal.EnumLiteMap<Status>
+          internalGetValueMap() {
+        return internalValueMap;
+      }
+      private static com.google.protobuf.Internal.EnumLiteMap<Status>
+          internalValueMap =
+            new com.google.protobuf.Internal.EnumLiteMap<Status>() {
+              public Status findValueByNumber(int number) {
+                return Status.valueOf(number);
+              }
+            };
+
+      public final com.google.protobuf.Descriptors.EnumValueDescriptor
+          getValueDescriptor() {
+        return getDescriptor().getValues().get(index);
+      }
+      public final com.google.protobuf.Descriptors.EnumDescriptor
+          getDescriptorForType() {
+        return getDescriptor();
+      }
+      public static final com.google.protobuf.Descriptors.EnumDescriptor
+          getDescriptor() {
+        return flowy.scheduler.protocal.Messages.TaskStatusUpdate.getDescriptor().getEnumTypes().get(0);
+      }
+
+      private static final Status[] VALUES = values();
+
+      public static Status valueOf(
+          com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
+        if (desc.getType() != getDescriptor()) {
+          throw new java.lang.IllegalArgumentException(
+            "EnumValueDescriptor is not for this type.");
+        }
+        return VALUES[desc.getIndex()];
+      }
+
+      private final int index;
+      private final int value;
+
+      private Status(int index, int value) {
+        this.index = index;
+        this.value = value;
+      }
+
+      // @@protoc_insertion_point(enum_scope:TaskStatusUpdate.Status)
+    }
+
+    private int bitField0_;
+    // required string instance_id = 1;
+    public static final int INSTANCE_ID_FIELD_NUMBER = 1;
+    private java.lang.Object instanceId_;
+    /**
+     * <code>required string instance_id = 1;</code>
+     */
+    public boolean hasInstanceId() {
+      return ((bitField0_ & 0x00000001) == 0x00000001);
+    }
+    /**
+     * <code>required string instance_id = 1;</code>
+     */
+    public java.lang.String getInstanceId() {
+      java.lang.Object ref = instanceId_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        if (bs.isValidUtf8()) {
+          instanceId_ = s;
+        }
+        return s;
+      }
+    }
+    /**
+     * <code>required string instance_id = 1;</code>
+     */
+    public com.google.protobuf.ByteString
+        getInstanceIdBytes() {
+      java.lang.Object ref = instanceId_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        instanceId_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    // required .TaskStatusUpdate.Status status = 2;
+    public static final int STATUS_FIELD_NUMBER = 2;
+    private flowy.scheduler.protocal.Messages.TaskStatusUpdate.Status status_;
+    /**
+     * <code>required .TaskStatusUpdate.Status status = 2;</code>
+     */
+    public boolean hasStatus() {
+      return ((bitField0_ & 0x00000002) == 0x00000002);
+    }
+    /**
+     * <code>required .TaskStatusUpdate.Status status = 2;</code>
+     */
+    public flowy.scheduler.protocal.Messages.TaskStatusUpdate.Status getStatus() {
+      return status_;
+    }
+
+    // optional int32 percentage = 3;
+    public static final int PERCENTAGE_FIELD_NUMBER = 3;
+    private int percentage_;
+    /**
+     * <code>optional int32 percentage = 3;</code>
+     */
+    public boolean hasPercentage() {
+      return ((bitField0_ & 0x00000004) == 0x00000004);
+    }
+    /**
+     * <code>optional int32 percentage = 3;</code>
+     */
+    public int getPercentage() {
+      return percentage_;
+    }
+
+    // optional string error_message = 4;
+    public static final int ERROR_MESSAGE_FIELD_NUMBER = 4;
+    private java.lang.Object errorMessage_;
+    /**
+     * <code>optional string error_message = 4;</code>
+     */
+    public boolean hasErrorMessage() {
+      return ((bitField0_ & 0x00000008) == 0x00000008);
+    }
+    /**
+     * <code>optional string error_message = 4;</code>
+     */
+    public java.lang.String getErrorMessage() {
+      java.lang.Object ref = errorMessage_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        if (bs.isValidUtf8()) {
+          errorMessage_ = s;
+        }
+        return s;
+      }
+    }
+    /**
+     * <code>optional string error_message = 4;</code>
+     */
+    public com.google.protobuf.ByteString
+        getErrorMessageBytes() {
+      java.lang.Object ref = errorMessage_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        errorMessage_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    private void initFields() {
+      instanceId_ = "";
+      status_ = flowy.scheduler.protocal.Messages.TaskStatusUpdate.Status.START;
+      percentage_ = 0;
+      errorMessage_ = "";
+    }
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized != -1) return isInitialized == 1;
+
+      if (!hasInstanceId()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      if (!hasStatus()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      getSerializedSize();
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        output.writeBytes(1, getInstanceIdBytes());
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        output.writeEnum(2, status_.getNumber());
+      }
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        output.writeInt32(3, percentage_);
+      }
+      if (((bitField0_ & 0x00000008) == 0x00000008)) {
+        output.writeBytes(4, getErrorMessageBytes());
+      }
+      getUnknownFields().writeTo(output);
+    }
+
+    private int memoizedSerializedSize = -1;
+    public int getSerializedSize() {
+      int size = memoizedSerializedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(1, getInstanceIdBytes());
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeEnumSize(2, status_.getNumber());
+      }
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(3, percentage_);
+      }
+      if (((bitField0_ & 0x00000008) == 0x00000008)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(4, getErrorMessageBytes());
+      }
+      size += getUnknownFields().getSerializedSize();
+      memoizedSerializedSize = size;
+      return size;
+    }
+
+    private static final long serialVersionUID = 0L;
+    @java.lang.Override
+    protected java.lang.Object writeReplace()
+        throws java.io.ObjectStreamException {
+      return super.writeReplace();
+    }
+
+    public static flowy.scheduler.protocal.Messages.TaskStatusUpdate parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static flowy.scheduler.protocal.Messages.TaskStatusUpdate parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static flowy.scheduler.protocal.Messages.TaskStatusUpdate parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static flowy.scheduler.protocal.Messages.TaskStatusUpdate parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static flowy.scheduler.protocal.Messages.TaskStatusUpdate parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input);
+    }
+    public static flowy.scheduler.protocal.Messages.TaskStatusUpdate parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input, extensionRegistry);
+    }
+    public static flowy.scheduler.protocal.Messages.TaskStatusUpdate parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return PARSER.parseDelimitedFrom(input);
+    }
+    public static flowy.scheduler.protocal.Messages.TaskStatusUpdate parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return PARSER.parseDelimitedFrom(input, extensionRegistry);
+    }
+    public static flowy.scheduler.protocal.Messages.TaskStatusUpdate parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input);
+    }
+    public static flowy.scheduler.protocal.Messages.TaskStatusUpdate parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input, extensionRegistry);
+    }
+
+    public static Builder newBuilder() { return Builder.create(); }
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder(flowy.scheduler.protocal.Messages.TaskStatusUpdate prototype) {
+      return newBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() { return newBuilder(this); }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code TaskStatusUpdate}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder>
+       implements flowy.scheduler.protocal.Messages.TaskStatusUpdateOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return flowy.scheduler.protocal.Messages.internal_static_TaskStatusUpdate_descriptor;
+      }
+
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return flowy.scheduler.protocal.Messages.internal_static_TaskStatusUpdate_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                flowy.scheduler.protocal.Messages.TaskStatusUpdate.class, flowy.scheduler.protocal.Messages.TaskStatusUpdate.Builder.class);
+      }
+
+      // Construct using flowy.scheduler.protocal.Messages.TaskStatusUpdate.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+        }
+      }
+      private static Builder create() {
+        return new Builder();
+      }
+
+      public Builder clear() {
+        super.clear();
+        instanceId_ = "";
+        bitField0_ = (bitField0_ & ~0x00000001);
+        status_ = flowy.scheduler.protocal.Messages.TaskStatusUpdate.Status.START;
+        bitField0_ = (bitField0_ & ~0x00000002);
+        percentage_ = 0;
+        bitField0_ = (bitField0_ & ~0x00000004);
+        errorMessage_ = "";
+        bitField0_ = (bitField0_ & ~0x00000008);
+        return this;
+      }
+
+      public Builder clone() {
+        return create().mergeFrom(buildPartial());
+      }
+
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return flowy.scheduler.protocal.Messages.internal_static_TaskStatusUpdate_descriptor;
+      }
+
+      public flowy.scheduler.protocal.Messages.TaskStatusUpdate getDefaultInstanceForType() {
+        return flowy.scheduler.protocal.Messages.TaskStatusUpdate.getDefaultInstance();
+      }
+
+      public flowy.scheduler.protocal.Messages.TaskStatusUpdate build() {
+        flowy.scheduler.protocal.Messages.TaskStatusUpdate result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      public flowy.scheduler.protocal.Messages.TaskStatusUpdate buildPartial() {
+        flowy.scheduler.protocal.Messages.TaskStatusUpdate result = new flowy.scheduler.protocal.Messages.TaskStatusUpdate(this);
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
+          to_bitField0_ |= 0x00000001;
+        }
+        result.instanceId_ = instanceId_;
+        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
+          to_bitField0_ |= 0x00000002;
+        }
+        result.status_ = status_;
+        if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
+          to_bitField0_ |= 0x00000004;
+        }
+        result.percentage_ = percentage_;
+        if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
+          to_bitField0_ |= 0x00000008;
+        }
+        result.errorMessage_ = errorMessage_;
+        result.bitField0_ = to_bitField0_;
+        onBuilt();
+        return result;
+      }
+
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof flowy.scheduler.protocal.Messages.TaskStatusUpdate) {
+          return mergeFrom((flowy.scheduler.protocal.Messages.TaskStatusUpdate)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(flowy.scheduler.protocal.Messages.TaskStatusUpdate other) {
+        if (other == flowy.scheduler.protocal.Messages.TaskStatusUpdate.getDefaultInstance()) return this;
+        if (other.hasInstanceId()) {
+          bitField0_ |= 0x00000001;
+          instanceId_ = other.instanceId_;
+          onChanged();
+        }
+        if (other.hasStatus()) {
+          setStatus(other.getStatus());
+        }
+        if (other.hasPercentage()) {
+          setPercentage(other.getPercentage());
+        }
+        if (other.hasErrorMessage()) {
+          bitField0_ |= 0x00000008;
+          errorMessage_ = other.errorMessage_;
+          onChanged();
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        return this;
+      }
+
+      public final boolean isInitialized() {
+        if (!hasInstanceId()) {
+          
+          return false;
+        }
+        if (!hasStatus()) {
+          
+          return false;
+        }
+        return true;
+      }
+
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        flowy.scheduler.protocal.Messages.TaskStatusUpdate parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (flowy.scheduler.protocal.Messages.TaskStatusUpdate) e.getUnfinishedMessage();
+          throw e;
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+      private int bitField0_;
+
+      // required string instance_id = 1;
+      private java.lang.Object instanceId_ = "";
+      /**
+       * <code>required string instance_id = 1;</code>
+       */
+      public boolean hasInstanceId() {
+        return ((bitField0_ & 0x00000001) == 0x00000001);
+      }
+      /**
+       * <code>required string instance_id = 1;</code>
+       */
+      public java.lang.String getInstanceId() {
+        java.lang.Object ref = instanceId_;
+        if (!(ref instanceof java.lang.String)) {
+          java.lang.String s = ((com.google.protobuf.ByteString) ref)
+              .toStringUtf8();
+          instanceId_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>required string instance_id = 1;</code>
+       */
+      public com.google.protobuf.ByteString
+          getInstanceIdBytes() {
+        java.lang.Object ref = instanceId_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          instanceId_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>required string instance_id = 1;</code>
+       */
+      public Builder setInstanceId(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000001;
+        instanceId_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required string instance_id = 1;</code>
+       */
+      public Builder clearInstanceId() {
+        bitField0_ = (bitField0_ & ~0x00000001);
+        instanceId_ = getDefaultInstance().getInstanceId();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required string instance_id = 1;</code>
+       */
+      public Builder setInstanceIdBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000001;
+        instanceId_ = value;
+        onChanged();
+        return this;
+      }
+
+      // required .TaskStatusUpdate.Status status = 2;
+      private flowy.scheduler.protocal.Messages.TaskStatusUpdate.Status status_ = flowy.scheduler.protocal.Messages.TaskStatusUpdate.Status.START;
+      /**
+       * <code>required .TaskStatusUpdate.Status status = 2;</code>
+       */
+      public boolean hasStatus() {
+        return ((bitField0_ & 0x00000002) == 0x00000002);
+      }
+      /**
+       * <code>required .TaskStatusUpdate.Status status = 2;</code>
+       */
+      public flowy.scheduler.protocal.Messages.TaskStatusUpdate.Status getStatus() {
+        return status_;
+      }
+      /**
+       * <code>required .TaskStatusUpdate.Status status = 2;</code>
+       */
+      public Builder setStatus(flowy.scheduler.protocal.Messages.TaskStatusUpdate.Status value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        bitField0_ |= 0x00000002;
+        status_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required .TaskStatusUpdate.Status status = 2;</code>
+       */
+      public Builder clearStatus() {
+        bitField0_ = (bitField0_ & ~0x00000002);
+        status_ = flowy.scheduler.protocal.Messages.TaskStatusUpdate.Status.START;
+        onChanged();
+        return this;
+      }
+
+      // optional int32 percentage = 3;
+      private int percentage_ ;
+      /**
+       * <code>optional int32 percentage = 3;</code>
+       */
+      public boolean hasPercentage() {
+        return ((bitField0_ & 0x00000004) == 0x00000004);
+      }
+      /**
+       * <code>optional int32 percentage = 3;</code>
+       */
+      public int getPercentage() {
+        return percentage_;
+      }
+      /**
+       * <code>optional int32 percentage = 3;</code>
+       */
+      public Builder setPercentage(int value) {
+        bitField0_ |= 0x00000004;
+        percentage_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional int32 percentage = 3;</code>
+       */
+      public Builder clearPercentage() {
+        bitField0_ = (bitField0_ & ~0x00000004);
+        percentage_ = 0;
+        onChanged();
+        return this;
+      }
+
+      // optional string error_message = 4;
+      private java.lang.Object errorMessage_ = "";
+      /**
+       * <code>optional string error_message = 4;</code>
+       */
+      public boolean hasErrorMessage() {
+        return ((bitField0_ & 0x00000008) == 0x00000008);
+      }
+      /**
+       * <code>optional string error_message = 4;</code>
+       */
+      public java.lang.String getErrorMessage() {
+        java.lang.Object ref = errorMessage_;
+        if (!(ref instanceof java.lang.String)) {
+          java.lang.String s = ((com.google.protobuf.ByteString) ref)
+              .toStringUtf8();
+          errorMessage_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>optional string error_message = 4;</code>
+       */
+      public com.google.protobuf.ByteString
+          getErrorMessageBytes() {
+        java.lang.Object ref = errorMessage_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          errorMessage_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>optional string error_message = 4;</code>
+       */
+      public Builder setErrorMessage(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000008;
+        errorMessage_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string error_message = 4;</code>
+       */
+      public Builder clearErrorMessage() {
+        bitField0_ = (bitField0_ & ~0x00000008);
+        errorMessage_ = getDefaultInstance().getErrorMessage();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string error_message = 4;</code>
+       */
+      public Builder setErrorMessageBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000008;
+        errorMessage_ = value;
+        onChanged();
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:TaskStatusUpdate)
+    }
+
+    static {
+      defaultInstance = new TaskStatusUpdate(true);
+      defaultInstance.initFields();
+    }
+
+    // @@protoc_insertion_point(class_scope:TaskStatusUpdate)
   }
 
   public interface ResponseOrBuilder extends
@@ -7299,1075 +8223,6 @@ public final class Messages {
     // @@protoc_insertion_point(class_scope:StartListenRequest)
   }
 
-  public interface TaskStatusUpdateOrBuilder
-      extends com.google.protobuf.MessageOrBuilder {
-
-    // required string worker_id = 1;
-    /**
-     * <code>required string worker_id = 1;</code>
-     */
-    boolean hasWorkerId();
-    /**
-     * <code>required string worker_id = 1;</code>
-     */
-    java.lang.String getWorkerId();
-    /**
-     * <code>required string worker_id = 1;</code>
-     */
-    com.google.protobuf.ByteString
-        getWorkerIdBytes();
-
-    // required string task_id = 2;
-    /**
-     * <code>required string task_id = 2;</code>
-     */
-    boolean hasTaskId();
-    /**
-     * <code>required string task_id = 2;</code>
-     */
-    java.lang.String getTaskId();
-    /**
-     * <code>required string task_id = 2;</code>
-     */
-    com.google.protobuf.ByteString
-        getTaskIdBytes();
-
-    // required .TaskStatusUpdate.Status status = 3;
-    /**
-     * <code>required .TaskStatusUpdate.Status status = 3;</code>
-     */
-    boolean hasStatus();
-    /**
-     * <code>required .TaskStatusUpdate.Status status = 3;</code>
-     */
-    flowy.scheduler.protocal.Messages.TaskStatusUpdate.Status getStatus();
-
-    // optional int32 percentage = 4;
-    /**
-     * <code>optional int32 percentage = 4;</code>
-     */
-    boolean hasPercentage();
-    /**
-     * <code>optional int32 percentage = 4;</code>
-     */
-    int getPercentage();
-
-    // optional string error_message = 5;
-    /**
-     * <code>optional string error_message = 5;</code>
-     */
-    boolean hasErrorMessage();
-    /**
-     * <code>optional string error_message = 5;</code>
-     */
-    java.lang.String getErrorMessage();
-    /**
-     * <code>optional string error_message = 5;</code>
-     */
-    com.google.protobuf.ByteString
-        getErrorMessageBytes();
-  }
-  /**
-   * Protobuf type {@code TaskStatusUpdate}
-   */
-  public static final class TaskStatusUpdate extends
-      com.google.protobuf.GeneratedMessage
-      implements TaskStatusUpdateOrBuilder {
-    // Use TaskStatusUpdate.newBuilder() to construct.
-    private TaskStatusUpdate(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
-      super(builder);
-      this.unknownFields = builder.getUnknownFields();
-    }
-    private TaskStatusUpdate(boolean noInit) { this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance(); }
-
-    private static final TaskStatusUpdate defaultInstance;
-    public static TaskStatusUpdate getDefaultInstance() {
-      return defaultInstance;
-    }
-
-    public TaskStatusUpdate getDefaultInstanceForType() {
-      return defaultInstance;
-    }
-
-    private final com.google.protobuf.UnknownFieldSet unknownFields;
-    @java.lang.Override
-    public final com.google.protobuf.UnknownFieldSet
-        getUnknownFields() {
-      return this.unknownFields;
-    }
-    private TaskStatusUpdate(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      initFields();
-      int mutable_bitField0_ = 0;
-      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-          com.google.protobuf.UnknownFieldSet.newBuilder();
-      try {
-        boolean done = false;
-        while (!done) {
-          int tag = input.readTag();
-          switch (tag) {
-            case 0:
-              done = true;
-              break;
-            default: {
-              if (!parseUnknownField(input, unknownFields,
-                                     extensionRegistry, tag)) {
-                done = true;
-              }
-              break;
-            }
-            case 10: {
-              bitField0_ |= 0x00000001;
-              workerId_ = input.readBytes();
-              break;
-            }
-            case 18: {
-              bitField0_ |= 0x00000002;
-              taskId_ = input.readBytes();
-              break;
-            }
-            case 24: {
-              int rawValue = input.readEnum();
-              flowy.scheduler.protocal.Messages.TaskStatusUpdate.Status value = flowy.scheduler.protocal.Messages.TaskStatusUpdate.Status.valueOf(rawValue);
-              if (value == null) {
-                unknownFields.mergeVarintField(3, rawValue);
-              } else {
-                bitField0_ |= 0x00000004;
-                status_ = value;
-              }
-              break;
-            }
-            case 32: {
-              bitField0_ |= 0x00000008;
-              percentage_ = input.readInt32();
-              break;
-            }
-            case 42: {
-              bitField0_ |= 0x00000010;
-              errorMessage_ = input.readBytes();
-              break;
-            }
-          }
-        }
-      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-        throw e.setUnfinishedMessage(this);
-      } catch (java.io.IOException e) {
-        throw new com.google.protobuf.InvalidProtocolBufferException(
-            e.getMessage()).setUnfinishedMessage(this);
-      } finally {
-        this.unknownFields = unknownFields.build();
-        makeExtensionsImmutable();
-      }
-    }
-    public static final com.google.protobuf.Descriptors.Descriptor
-        getDescriptor() {
-      return flowy.scheduler.protocal.Messages.internal_static_TaskStatusUpdate_descriptor;
-    }
-
-    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
-        internalGetFieldAccessorTable() {
-      return flowy.scheduler.protocal.Messages.internal_static_TaskStatusUpdate_fieldAccessorTable
-          .ensureFieldAccessorsInitialized(
-              flowy.scheduler.protocal.Messages.TaskStatusUpdate.class, flowy.scheduler.protocal.Messages.TaskStatusUpdate.Builder.class);
-    }
-
-    public static com.google.protobuf.Parser<TaskStatusUpdate> PARSER =
-        new com.google.protobuf.AbstractParser<TaskStatusUpdate>() {
-      public TaskStatusUpdate parsePartialFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        return new TaskStatusUpdate(input, extensionRegistry);
-      }
-    };
-
-    @java.lang.Override
-    public com.google.protobuf.Parser<TaskStatusUpdate> getParserForType() {
-      return PARSER;
-    }
-
-    /**
-     * Protobuf enum {@code TaskStatusUpdate.Status}
-     */
-    public enum Status
-        implements com.google.protobuf.ProtocolMessageEnum {
-      /**
-       * <code>START = 0;</code>
-       */
-      START(0, 0),
-      /**
-       * <code>RUNNING = 1;</code>
-       */
-      RUNNING(1, 1),
-      /**
-       * <code>STOP = 2;</code>
-       */
-      STOP(2, 2),
-      ;
-
-      /**
-       * <code>START = 0;</code>
-       */
-      public static final int START_VALUE = 0;
-      /**
-       * <code>RUNNING = 1;</code>
-       */
-      public static final int RUNNING_VALUE = 1;
-      /**
-       * <code>STOP = 2;</code>
-       */
-      public static final int STOP_VALUE = 2;
-
-
-      public final int getNumber() { return value; }
-
-      public static Status valueOf(int value) {
-        switch (value) {
-          case 0: return START;
-          case 1: return RUNNING;
-          case 2: return STOP;
-          default: return null;
-        }
-      }
-
-      public static com.google.protobuf.Internal.EnumLiteMap<Status>
-          internalGetValueMap() {
-        return internalValueMap;
-      }
-      private static com.google.protobuf.Internal.EnumLiteMap<Status>
-          internalValueMap =
-            new com.google.protobuf.Internal.EnumLiteMap<Status>() {
-              public Status findValueByNumber(int number) {
-                return Status.valueOf(number);
-              }
-            };
-
-      public final com.google.protobuf.Descriptors.EnumValueDescriptor
-          getValueDescriptor() {
-        return getDescriptor().getValues().get(index);
-      }
-      public final com.google.protobuf.Descriptors.EnumDescriptor
-          getDescriptorForType() {
-        return getDescriptor();
-      }
-      public static final com.google.protobuf.Descriptors.EnumDescriptor
-          getDescriptor() {
-        return flowy.scheduler.protocal.Messages.TaskStatusUpdate.getDescriptor().getEnumTypes().get(0);
-      }
-
-      private static final Status[] VALUES = values();
-
-      public static Status valueOf(
-          com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
-        if (desc.getType() != getDescriptor()) {
-          throw new java.lang.IllegalArgumentException(
-            "EnumValueDescriptor is not for this type.");
-        }
-        return VALUES[desc.getIndex()];
-      }
-
-      private final int index;
-      private final int value;
-
-      private Status(int index, int value) {
-        this.index = index;
-        this.value = value;
-      }
-
-      // @@protoc_insertion_point(enum_scope:TaskStatusUpdate.Status)
-    }
-
-    private int bitField0_;
-    // required string worker_id = 1;
-    public static final int WORKER_ID_FIELD_NUMBER = 1;
-    private java.lang.Object workerId_;
-    /**
-     * <code>required string worker_id = 1;</code>
-     */
-    public boolean hasWorkerId() {
-      return ((bitField0_ & 0x00000001) == 0x00000001);
-    }
-    /**
-     * <code>required string worker_id = 1;</code>
-     */
-    public java.lang.String getWorkerId() {
-      java.lang.Object ref = workerId_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          workerId_ = s;
-        }
-        return s;
-      }
-    }
-    /**
-     * <code>required string worker_id = 1;</code>
-     */
-    public com.google.protobuf.ByteString
-        getWorkerIdBytes() {
-      java.lang.Object ref = workerId_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        workerId_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-
-    // required string task_id = 2;
-    public static final int TASK_ID_FIELD_NUMBER = 2;
-    private java.lang.Object taskId_;
-    /**
-     * <code>required string task_id = 2;</code>
-     */
-    public boolean hasTaskId() {
-      return ((bitField0_ & 0x00000002) == 0x00000002);
-    }
-    /**
-     * <code>required string task_id = 2;</code>
-     */
-    public java.lang.String getTaskId() {
-      java.lang.Object ref = taskId_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          taskId_ = s;
-        }
-        return s;
-      }
-    }
-    /**
-     * <code>required string task_id = 2;</code>
-     */
-    public com.google.protobuf.ByteString
-        getTaskIdBytes() {
-      java.lang.Object ref = taskId_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        taskId_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-
-    // required .TaskStatusUpdate.Status status = 3;
-    public static final int STATUS_FIELD_NUMBER = 3;
-    private flowy.scheduler.protocal.Messages.TaskStatusUpdate.Status status_;
-    /**
-     * <code>required .TaskStatusUpdate.Status status = 3;</code>
-     */
-    public boolean hasStatus() {
-      return ((bitField0_ & 0x00000004) == 0x00000004);
-    }
-    /**
-     * <code>required .TaskStatusUpdate.Status status = 3;</code>
-     */
-    public flowy.scheduler.protocal.Messages.TaskStatusUpdate.Status getStatus() {
-      return status_;
-    }
-
-    // optional int32 percentage = 4;
-    public static final int PERCENTAGE_FIELD_NUMBER = 4;
-    private int percentage_;
-    /**
-     * <code>optional int32 percentage = 4;</code>
-     */
-    public boolean hasPercentage() {
-      return ((bitField0_ & 0x00000008) == 0x00000008);
-    }
-    /**
-     * <code>optional int32 percentage = 4;</code>
-     */
-    public int getPercentage() {
-      return percentage_;
-    }
-
-    // optional string error_message = 5;
-    public static final int ERROR_MESSAGE_FIELD_NUMBER = 5;
-    private java.lang.Object errorMessage_;
-    /**
-     * <code>optional string error_message = 5;</code>
-     */
-    public boolean hasErrorMessage() {
-      return ((bitField0_ & 0x00000010) == 0x00000010);
-    }
-    /**
-     * <code>optional string error_message = 5;</code>
-     */
-    public java.lang.String getErrorMessage() {
-      java.lang.Object ref = errorMessage_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          errorMessage_ = s;
-        }
-        return s;
-      }
-    }
-    /**
-     * <code>optional string error_message = 5;</code>
-     */
-    public com.google.protobuf.ByteString
-        getErrorMessageBytes() {
-      java.lang.Object ref = errorMessage_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        errorMessage_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-
-    private void initFields() {
-      workerId_ = "";
-      taskId_ = "";
-      status_ = flowy.scheduler.protocal.Messages.TaskStatusUpdate.Status.START;
-      percentage_ = 0;
-      errorMessage_ = "";
-    }
-    private byte memoizedIsInitialized = -1;
-    public final boolean isInitialized() {
-      byte isInitialized = memoizedIsInitialized;
-      if (isInitialized != -1) return isInitialized == 1;
-
-      if (!hasWorkerId()) {
-        memoizedIsInitialized = 0;
-        return false;
-      }
-      if (!hasTaskId()) {
-        memoizedIsInitialized = 0;
-        return false;
-      }
-      if (!hasStatus()) {
-        memoizedIsInitialized = 0;
-        return false;
-      }
-      memoizedIsInitialized = 1;
-      return true;
-    }
-
-    public void writeTo(com.google.protobuf.CodedOutputStream output)
-                        throws java.io.IOException {
-      getSerializedSize();
-      if (((bitField0_ & 0x00000001) == 0x00000001)) {
-        output.writeBytes(1, getWorkerIdBytes());
-      }
-      if (((bitField0_ & 0x00000002) == 0x00000002)) {
-        output.writeBytes(2, getTaskIdBytes());
-      }
-      if (((bitField0_ & 0x00000004) == 0x00000004)) {
-        output.writeEnum(3, status_.getNumber());
-      }
-      if (((bitField0_ & 0x00000008) == 0x00000008)) {
-        output.writeInt32(4, percentage_);
-      }
-      if (((bitField0_ & 0x00000010) == 0x00000010)) {
-        output.writeBytes(5, getErrorMessageBytes());
-      }
-      getUnknownFields().writeTo(output);
-    }
-
-    private int memoizedSerializedSize = -1;
-    public int getSerializedSize() {
-      int size = memoizedSerializedSize;
-      if (size != -1) return size;
-
-      size = 0;
-      if (((bitField0_ & 0x00000001) == 0x00000001)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeBytesSize(1, getWorkerIdBytes());
-      }
-      if (((bitField0_ & 0x00000002) == 0x00000002)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeBytesSize(2, getTaskIdBytes());
-      }
-      if (((bitField0_ & 0x00000004) == 0x00000004)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeEnumSize(3, status_.getNumber());
-      }
-      if (((bitField0_ & 0x00000008) == 0x00000008)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(4, percentage_);
-      }
-      if (((bitField0_ & 0x00000010) == 0x00000010)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeBytesSize(5, getErrorMessageBytes());
-      }
-      size += getUnknownFields().getSerializedSize();
-      memoizedSerializedSize = size;
-      return size;
-    }
-
-    private static final long serialVersionUID = 0L;
-    @java.lang.Override
-    protected java.lang.Object writeReplace()
-        throws java.io.ObjectStreamException {
-      return super.writeReplace();
-    }
-
-    public static flowy.scheduler.protocal.Messages.TaskStatusUpdate parseFrom(
-        com.google.protobuf.ByteString data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static flowy.scheduler.protocal.Messages.TaskStatusUpdate parseFrom(
-        com.google.protobuf.ByteString data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static flowy.scheduler.protocal.Messages.TaskStatusUpdate parseFrom(byte[] data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static flowy.scheduler.protocal.Messages.TaskStatusUpdate parseFrom(
-        byte[] data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static flowy.scheduler.protocal.Messages.TaskStatusUpdate parseFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return PARSER.parseFrom(input);
-    }
-    public static flowy.scheduler.protocal.Messages.TaskStatusUpdate parseFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return PARSER.parseFrom(input, extensionRegistry);
-    }
-    public static flowy.scheduler.protocal.Messages.TaskStatusUpdate parseDelimitedFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return PARSER.parseDelimitedFrom(input);
-    }
-    public static flowy.scheduler.protocal.Messages.TaskStatusUpdate parseDelimitedFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return PARSER.parseDelimitedFrom(input, extensionRegistry);
-    }
-    public static flowy.scheduler.protocal.Messages.TaskStatusUpdate parseFrom(
-        com.google.protobuf.CodedInputStream input)
-        throws java.io.IOException {
-      return PARSER.parseFrom(input);
-    }
-    public static flowy.scheduler.protocal.Messages.TaskStatusUpdate parseFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return PARSER.parseFrom(input, extensionRegistry);
-    }
-
-    public static Builder newBuilder() { return Builder.create(); }
-    public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder(flowy.scheduler.protocal.Messages.TaskStatusUpdate prototype) {
-      return newBuilder().mergeFrom(prototype);
-    }
-    public Builder toBuilder() { return newBuilder(this); }
-
-    @java.lang.Override
-    protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
-      Builder builder = new Builder(parent);
-      return builder;
-    }
-    /**
-     * Protobuf type {@code TaskStatusUpdate}
-     */
-    public static final class Builder extends
-        com.google.protobuf.GeneratedMessage.Builder<Builder>
-       implements flowy.scheduler.protocal.Messages.TaskStatusUpdateOrBuilder {
-      public static final com.google.protobuf.Descriptors.Descriptor
-          getDescriptor() {
-        return flowy.scheduler.protocal.Messages.internal_static_TaskStatusUpdate_descriptor;
-      }
-
-      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
-          internalGetFieldAccessorTable() {
-        return flowy.scheduler.protocal.Messages.internal_static_TaskStatusUpdate_fieldAccessorTable
-            .ensureFieldAccessorsInitialized(
-                flowy.scheduler.protocal.Messages.TaskStatusUpdate.class, flowy.scheduler.protocal.Messages.TaskStatusUpdate.Builder.class);
-      }
-
-      // Construct using flowy.scheduler.protocal.Messages.TaskStatusUpdate.newBuilder()
-      private Builder() {
-        maybeForceBuilderInitialization();
-      }
-
-      private Builder(
-          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
-        super(parent);
-        maybeForceBuilderInitialization();
-      }
-      private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
-        }
-      }
-      private static Builder create() {
-        return new Builder();
-      }
-
-      public Builder clear() {
-        super.clear();
-        workerId_ = "";
-        bitField0_ = (bitField0_ & ~0x00000001);
-        taskId_ = "";
-        bitField0_ = (bitField0_ & ~0x00000002);
-        status_ = flowy.scheduler.protocal.Messages.TaskStatusUpdate.Status.START;
-        bitField0_ = (bitField0_ & ~0x00000004);
-        percentage_ = 0;
-        bitField0_ = (bitField0_ & ~0x00000008);
-        errorMessage_ = "";
-        bitField0_ = (bitField0_ & ~0x00000010);
-        return this;
-      }
-
-      public Builder clone() {
-        return create().mergeFrom(buildPartial());
-      }
-
-      public com.google.protobuf.Descriptors.Descriptor
-          getDescriptorForType() {
-        return flowy.scheduler.protocal.Messages.internal_static_TaskStatusUpdate_descriptor;
-      }
-
-      public flowy.scheduler.protocal.Messages.TaskStatusUpdate getDefaultInstanceForType() {
-        return flowy.scheduler.protocal.Messages.TaskStatusUpdate.getDefaultInstance();
-      }
-
-      public flowy.scheduler.protocal.Messages.TaskStatusUpdate build() {
-        flowy.scheduler.protocal.Messages.TaskStatusUpdate result = buildPartial();
-        if (!result.isInitialized()) {
-          throw newUninitializedMessageException(result);
-        }
-        return result;
-      }
-
-      public flowy.scheduler.protocal.Messages.TaskStatusUpdate buildPartial() {
-        flowy.scheduler.protocal.Messages.TaskStatusUpdate result = new flowy.scheduler.protocal.Messages.TaskStatusUpdate(this);
-        int from_bitField0_ = bitField0_;
-        int to_bitField0_ = 0;
-        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
-          to_bitField0_ |= 0x00000001;
-        }
-        result.workerId_ = workerId_;
-        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
-          to_bitField0_ |= 0x00000002;
-        }
-        result.taskId_ = taskId_;
-        if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
-          to_bitField0_ |= 0x00000004;
-        }
-        result.status_ = status_;
-        if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
-          to_bitField0_ |= 0x00000008;
-        }
-        result.percentage_ = percentage_;
-        if (((from_bitField0_ & 0x00000010) == 0x00000010)) {
-          to_bitField0_ |= 0x00000010;
-        }
-        result.errorMessage_ = errorMessage_;
-        result.bitField0_ = to_bitField0_;
-        onBuilt();
-        return result;
-      }
-
-      public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof flowy.scheduler.protocal.Messages.TaskStatusUpdate) {
-          return mergeFrom((flowy.scheduler.protocal.Messages.TaskStatusUpdate)other);
-        } else {
-          super.mergeFrom(other);
-          return this;
-        }
-      }
-
-      public Builder mergeFrom(flowy.scheduler.protocal.Messages.TaskStatusUpdate other) {
-        if (other == flowy.scheduler.protocal.Messages.TaskStatusUpdate.getDefaultInstance()) return this;
-        if (other.hasWorkerId()) {
-          bitField0_ |= 0x00000001;
-          workerId_ = other.workerId_;
-          onChanged();
-        }
-        if (other.hasTaskId()) {
-          bitField0_ |= 0x00000002;
-          taskId_ = other.taskId_;
-          onChanged();
-        }
-        if (other.hasStatus()) {
-          setStatus(other.getStatus());
-        }
-        if (other.hasPercentage()) {
-          setPercentage(other.getPercentage());
-        }
-        if (other.hasErrorMessage()) {
-          bitField0_ |= 0x00000010;
-          errorMessage_ = other.errorMessage_;
-          onChanged();
-        }
-        this.mergeUnknownFields(other.getUnknownFields());
-        return this;
-      }
-
-      public final boolean isInitialized() {
-        if (!hasWorkerId()) {
-          
-          return false;
-        }
-        if (!hasTaskId()) {
-          
-          return false;
-        }
-        if (!hasStatus()) {
-          
-          return false;
-        }
-        return true;
-      }
-
-      public Builder mergeFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        flowy.scheduler.protocal.Messages.TaskStatusUpdate parsedMessage = null;
-        try {
-          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
-        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (flowy.scheduler.protocal.Messages.TaskStatusUpdate) e.getUnfinishedMessage();
-          throw e;
-        } finally {
-          if (parsedMessage != null) {
-            mergeFrom(parsedMessage);
-          }
-        }
-        return this;
-      }
-      private int bitField0_;
-
-      // required string worker_id = 1;
-      private java.lang.Object workerId_ = "";
-      /**
-       * <code>required string worker_id = 1;</code>
-       */
-      public boolean hasWorkerId() {
-        return ((bitField0_ & 0x00000001) == 0x00000001);
-      }
-      /**
-       * <code>required string worker_id = 1;</code>
-       */
-      public java.lang.String getWorkerId() {
-        java.lang.Object ref = workerId_;
-        if (!(ref instanceof java.lang.String)) {
-          java.lang.String s = ((com.google.protobuf.ByteString) ref)
-              .toStringUtf8();
-          workerId_ = s;
-          return s;
-        } else {
-          return (java.lang.String) ref;
-        }
-      }
-      /**
-       * <code>required string worker_id = 1;</code>
-       */
-      public com.google.protobuf.ByteString
-          getWorkerIdBytes() {
-        java.lang.Object ref = workerId_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          workerId_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <code>required string worker_id = 1;</code>
-       */
-      public Builder setWorkerId(
-          java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000001;
-        workerId_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>required string worker_id = 1;</code>
-       */
-      public Builder clearWorkerId() {
-        bitField0_ = (bitField0_ & ~0x00000001);
-        workerId_ = getDefaultInstance().getWorkerId();
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>required string worker_id = 1;</code>
-       */
-      public Builder setWorkerIdBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000001;
-        workerId_ = value;
-        onChanged();
-        return this;
-      }
-
-      // required string task_id = 2;
-      private java.lang.Object taskId_ = "";
-      /**
-       * <code>required string task_id = 2;</code>
-       */
-      public boolean hasTaskId() {
-        return ((bitField0_ & 0x00000002) == 0x00000002);
-      }
-      /**
-       * <code>required string task_id = 2;</code>
-       */
-      public java.lang.String getTaskId() {
-        java.lang.Object ref = taskId_;
-        if (!(ref instanceof java.lang.String)) {
-          java.lang.String s = ((com.google.protobuf.ByteString) ref)
-              .toStringUtf8();
-          taskId_ = s;
-          return s;
-        } else {
-          return (java.lang.String) ref;
-        }
-      }
-      /**
-       * <code>required string task_id = 2;</code>
-       */
-      public com.google.protobuf.ByteString
-          getTaskIdBytes() {
-        java.lang.Object ref = taskId_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          taskId_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <code>required string task_id = 2;</code>
-       */
-      public Builder setTaskId(
-          java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000002;
-        taskId_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>required string task_id = 2;</code>
-       */
-      public Builder clearTaskId() {
-        bitField0_ = (bitField0_ & ~0x00000002);
-        taskId_ = getDefaultInstance().getTaskId();
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>required string task_id = 2;</code>
-       */
-      public Builder setTaskIdBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000002;
-        taskId_ = value;
-        onChanged();
-        return this;
-      }
-
-      // required .TaskStatusUpdate.Status status = 3;
-      private flowy.scheduler.protocal.Messages.TaskStatusUpdate.Status status_ = flowy.scheduler.protocal.Messages.TaskStatusUpdate.Status.START;
-      /**
-       * <code>required .TaskStatusUpdate.Status status = 3;</code>
-       */
-      public boolean hasStatus() {
-        return ((bitField0_ & 0x00000004) == 0x00000004);
-      }
-      /**
-       * <code>required .TaskStatusUpdate.Status status = 3;</code>
-       */
-      public flowy.scheduler.protocal.Messages.TaskStatusUpdate.Status getStatus() {
-        return status_;
-      }
-      /**
-       * <code>required .TaskStatusUpdate.Status status = 3;</code>
-       */
-      public Builder setStatus(flowy.scheduler.protocal.Messages.TaskStatusUpdate.Status value) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        bitField0_ |= 0x00000004;
-        status_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>required .TaskStatusUpdate.Status status = 3;</code>
-       */
-      public Builder clearStatus() {
-        bitField0_ = (bitField0_ & ~0x00000004);
-        status_ = flowy.scheduler.protocal.Messages.TaskStatusUpdate.Status.START;
-        onChanged();
-        return this;
-      }
-
-      // optional int32 percentage = 4;
-      private int percentage_ ;
-      /**
-       * <code>optional int32 percentage = 4;</code>
-       */
-      public boolean hasPercentage() {
-        return ((bitField0_ & 0x00000008) == 0x00000008);
-      }
-      /**
-       * <code>optional int32 percentage = 4;</code>
-       */
-      public int getPercentage() {
-        return percentage_;
-      }
-      /**
-       * <code>optional int32 percentage = 4;</code>
-       */
-      public Builder setPercentage(int value) {
-        bitField0_ |= 0x00000008;
-        percentage_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional int32 percentage = 4;</code>
-       */
-      public Builder clearPercentage() {
-        bitField0_ = (bitField0_ & ~0x00000008);
-        percentage_ = 0;
-        onChanged();
-        return this;
-      }
-
-      // optional string error_message = 5;
-      private java.lang.Object errorMessage_ = "";
-      /**
-       * <code>optional string error_message = 5;</code>
-       */
-      public boolean hasErrorMessage() {
-        return ((bitField0_ & 0x00000010) == 0x00000010);
-      }
-      /**
-       * <code>optional string error_message = 5;</code>
-       */
-      public java.lang.String getErrorMessage() {
-        java.lang.Object ref = errorMessage_;
-        if (!(ref instanceof java.lang.String)) {
-          java.lang.String s = ((com.google.protobuf.ByteString) ref)
-              .toStringUtf8();
-          errorMessage_ = s;
-          return s;
-        } else {
-          return (java.lang.String) ref;
-        }
-      }
-      /**
-       * <code>optional string error_message = 5;</code>
-       */
-      public com.google.protobuf.ByteString
-          getErrorMessageBytes() {
-        java.lang.Object ref = errorMessage_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          errorMessage_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <code>optional string error_message = 5;</code>
-       */
-      public Builder setErrorMessage(
-          java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000010;
-        errorMessage_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional string error_message = 5;</code>
-       */
-      public Builder clearErrorMessage() {
-        bitField0_ = (bitField0_ & ~0x00000010);
-        errorMessage_ = getDefaultInstance().getErrorMessage();
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional string error_message = 5;</code>
-       */
-      public Builder setErrorMessageBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000010;
-        errorMessage_ = value;
-        onChanged();
-        return this;
-      }
-
-      // @@protoc_insertion_point(builder_scope:TaskStatusUpdate)
-    }
-
-    static {
-      defaultInstance = new TaskStatusUpdate(true);
-      defaultInstance.initFields();
-    }
-
-    // @@protoc_insertion_point(class_scope:TaskStatusUpdate)
-  }
-
   public interface TaskStartOrBuilder
       extends com.google.protobuf.MessageOrBuilder {
 
@@ -10758,6 +10613,17 @@ public final class Messages {
           .newFileScopedGeneratedExtension(
         flowy.scheduler.protocal.Messages.RegisterTask.class,
         flowy.scheduler.protocal.Messages.RegisterTask.getDefaultInstance());
+  public static final int TASK_STATUS_UPDATE_FIELD_NUMBER = 1004;
+  /**
+   * <code>extend .Request { ... }</code>
+   */
+  public static final
+    com.google.protobuf.GeneratedMessage.GeneratedExtension<
+      flowy.scheduler.protocal.Messages.Request,
+      flowy.scheduler.protocal.Messages.TaskStatusUpdate> taskStatusUpdate = com.google.protobuf.GeneratedMessage
+          .newFileScopedGeneratedExtension(
+        flowy.scheduler.protocal.Messages.TaskStatusUpdate.class,
+        flowy.scheduler.protocal.Messages.TaskStatusUpdate.getDefaultInstance());
   public static final int CONNECT_RESPONSE_FIELD_NUMBER = 2001;
   /**
    * <code>extend .Response { ... }</code>
@@ -10828,6 +10694,11 @@ public final class Messages {
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_RegisterTask_fieldAccessorTable;
   private static com.google.protobuf.Descriptors.Descriptor
+    internal_static_TaskStatusUpdate_descriptor;
+  private static
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_TaskStatusUpdate_fieldAccessorTable;
+  private static com.google.protobuf.Descriptors.Descriptor
     internal_static_Response_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
@@ -10868,11 +10739,6 @@ public final class Messages {
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_StartListenRequest_fieldAccessorTable;
   private static com.google.protobuf.Descriptors.Descriptor
-    internal_static_TaskStatusUpdate_descriptor;
-  private static
-    com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_TaskStatusUpdate_fieldAccessorTable;
-  private static com.google.protobuf.Descriptors.Descriptor
     internal_static_TaskStart_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
@@ -10896,59 +10762,62 @@ public final class Messages {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\017fsp_0.0.1.proto\"\220\001\n\007Request\022\"\n\004type\030\001 " +
-      "\002(\0162\024.Request.RequestType\"W\n\013RequestType" +
+      "\n\017fsp_0.0.1.proto\"\250\001\n\007Request\022\"\n\004type\030\001 " +
+      "\002(\0162\024.Request.RequestType\"o\n\013RequestType" +
       "\022\r\n\tHEARTBEAT\020\000\022\023\n\017CONNECT_REQUEST\020\001\022\021\n\r" +
-      "LOGIN_REQUEST\020\002\022\021\n\rREGISTER_TASK\020\003*\010\010d\020\200" +
-      "\200\200\200\002\"\013\n\tHeartbeat\"1\n\016ConnectRequest\022\037\n\027c" +
-      "lient_protocol_version\030\001 \002(\t\"3\n\014LoginReq" +
-      "uest\022\017\n\007app_key\030\001 \002(\t\022\022\n\napp_secret\030\002 \002(" +
-      "\t\"5\n\014RegisterTask\022\017\n\007task_id\030\001 \002(\t\022\024\n\014ex" +
-      "ecute_time\030\002 \002(\t\"\241\001\n\010Response\022$\n\004type\030\001 " +
-      "\002(\0162\026.Response.ResponseType\"e\n\014ResponseT",
-      "ype\022\024\n\020CONNECT_RESPONSE\020\001\022\022\n\016LOGIN_RESPO" +
-      "NSE\020\002\022\032\n\026REGISTER_TASK_RESPONSE\020\003\022\017\n\013TAS" +
-      "K_NOTIFY\020\004*\010\010d\020\200\200\200\200\002\"\021\n\017ConnectResponse\"" +
-      "\207\001\n\rLoginResponse\0223\n\013result_type\030\001 \002(\0162\036" +
-      ".LoginResponse.LoginResultType\022\025\n\013fail_r" +
-      "eason\030\002 \001(\t:\000\"*\n\017LoginResultType\022\013\n\007SUCC" +
-      "ESS\020\000\022\n\n\006FAILED\020\001\"\235\001\n\024RegisterTaskRespon" +
-      "se\022E\n\017register_result\030\001 \002(\0162,.RegisterTa" +
-      "skResponse.RegisterTaskResultType\">\n\026Reg" +
-      "isterTaskResultType\022\013\n\007SUCCESS\020\000\022\027\n\023TASK",
-      "_ALREADY_EXISTS\020\001\"\342\001\n\025WorkerRegisterRequ" +
-      "est\022\021\n\tworker_id\030\001 \002(\t\022\023\n\013worker_name\030\002 " +
-      "\002(\t\022\024\n\014execute_time\030\003 \003(\t\022\017\n\007timeout\030\004 \002" +
-      "(\005\022K\n\024execute_last_expired\030\005 \002(\0162-.Worke" +
-      "rRegisterRequest.ExecuteLastExpiredType\"" +
-      "-\n\026ExecuteLastExpiredType\022\007\n\003RUN\020\000\022\n\n\006IG" +
-      "NORE\020\001\"+\n\026WorkerRegisterResponse\022\021\n\twork" +
-      "er_id\030\001 \002(\t\"7\n\nTaskNotify\022\017\n\007task_id\030\001 \002" +
-      "(\t\022\030\n\020task_instance_id\030\002 \002(\t\"\'\n\022StartLis" +
-      "tenRequest\022\021\n\tworker_id\030\001 \002(\t\"\267\001\n\020TaskSt",
-      "atusUpdate\022\021\n\tworker_id\030\001 \002(\t\022\017\n\007task_id" +
-      "\030\002 \002(\t\022(\n\006status\030\003 \002(\0162\030.TaskStatusUpdat" +
-      "e.Status\022\022\n\npercentage\030\004 \001(\005\022\025\n\rerror_me" +
-      "ssage\030\005 \001(\t\"*\n\006Status\022\t\n\005START\020\000\022\013\n\007RUNN" +
-      "ING\020\001\022\010\n\004STOP\020\002\"/\n\tTaskStart\022\021\n\tworker_i" +
-      "d\030\001 \002(\t\022\017\n\007task_id\030\002 \002(\t\"H\n\013TaskRunning\022" +
-      "\021\n\tworker_id\030\001 \002(\t\022\017\n\007task_id\030\002 \002(\t\022\025\n\np" +
-      "ercentage\030\003 \001(\005:\0010\"\244\001\n\014TaskComplete\022\021\n\tw" +
-      "orker_id\030\001 \002(\t\022\017\n\007task_id\030\002 \002(\t\022,\n\006resul" +
-      "t\030\003 \002(\0162\034.TaskComplete.TaskResultType\022\027\n",
-      "\rerror_message\030\004 \001(\t:\000\")\n\016TaskResultType" +
-      "\022\013\n\007SUCCESS\020\000\022\n\n\006FAILED\020\001:(\n\theartbeat\022\010" +
-      ".Request\030\350\007 \001(\0132\n.Heartbeat:3\n\017connect_r" +
-      "equest\022\010.Request\030\351\007 \001(\0132\017.ConnectRequest" +
-      ":/\n\rlogin_request\022\010.Request\030\352\007 \001(\0132\r.Log" +
-      "inRequest:/\n\rregister_task\022\010.Request\030\353\007 " +
-      "\001(\0132\r.RegisterTask:6\n\020connect_response\022\t" +
-      ".Response\030\321\017 \001(\0132\020.ConnectResponse:2\n\016lo" +
-      "gin_response\022\t.Response\030\322\017 \001(\0132\016.LoginRe" +
-      "sponse:A\n\026register_task_response\022\t.Respo",
-      "nse\030\323\017 \001(\0132\025.RegisterTaskResponse:,\n\013tas" +
-      "k_notify\022\t.Response\030\324\017 \001(\0132\013.TaskNotifyB" +
-      "&\n\030flowy.scheduler.protocalB\010MessagesH\001"
+      "LOGIN_REQUEST\020\002\022\021\n\rREGISTER_TASK\020\003\022\026\n\022TA" +
+      "SK_STATUS_UPDATE\020\004*\010\010d\020\200\200\200\200\002\"\013\n\tHeartbea" +
+      "t\"1\n\016ConnectRequest\022\037\n\027client_protocol_v" +
+      "ersion\030\001 \002(\t\"3\n\014LoginRequest\022\017\n\007app_key\030" +
+      "\001 \002(\t\022\022\n\napp_secret\030\002 \002(\t\"5\n\014RegisterTas" +
+      "k\022\017\n\007task_id\030\001 \002(\t\022\024\n\014execute_time\030\002 \002(\t" +
+      "\"\270\001\n\020TaskStatusUpdate\022\023\n\013instance_id\030\001 \002",
+      "(\t\022(\n\006status\030\002 \002(\0162\030.TaskStatusUpdate.St" +
+      "atus\022\022\n\npercentage\030\003 \001(\005\022\025\n\rerror_messag" +
+      "e\030\004 \001(\t\":\n\006Status\022\t\n\005START\020\000\022\013\n\007RUNNING\020" +
+      "\001\022\014\n\010COMPLETE\020\002\022\n\n\006FAILED\020\003\"\241\001\n\010Response" +
+      "\022$\n\004type\030\001 \002(\0162\026.Response.ResponseType\"e" +
+      "\n\014ResponseType\022\024\n\020CONNECT_RESPONSE\020\001\022\022\n\016" +
+      "LOGIN_RESPONSE\020\002\022\032\n\026REGISTER_TASK_RESPON" +
+      "SE\020\003\022\017\n\013TASK_NOTIFY\020\004*\010\010d\020\200\200\200\200\002\"\021\n\017Conne" +
+      "ctResponse\"\207\001\n\rLoginResponse\0223\n\013result_t" +
+      "ype\030\001 \002(\0162\036.LoginResponse.LoginResultTyp",
+      "e\022\025\n\013fail_reason\030\002 \001(\t:\000\"*\n\017LoginResultT" +
+      "ype\022\013\n\007SUCCESS\020\000\022\n\n\006FAILED\020\001\"\235\001\n\024Registe" +
+      "rTaskResponse\022E\n\017register_result\030\001 \002(\0162," +
+      ".RegisterTaskResponse.RegisterTaskResult" +
+      "Type\">\n\026RegisterTaskResultType\022\013\n\007SUCCES" +
+      "S\020\000\022\027\n\023TASK_ALREADY_EXISTS\020\001\"\342\001\n\025WorkerR" +
+      "egisterRequest\022\021\n\tworker_id\030\001 \002(\t\022\023\n\013wor" +
+      "ker_name\030\002 \002(\t\022\024\n\014execute_time\030\003 \003(\t\022\017\n\007" +
+      "timeout\030\004 \002(\005\022K\n\024execute_last_expired\030\005 " +
+      "\002(\0162-.WorkerRegisterRequest.ExecuteLastE",
+      "xpiredType\"-\n\026ExecuteLastExpiredType\022\007\n\003" +
+      "RUN\020\000\022\n\n\006IGNORE\020\001\"+\n\026WorkerRegisterRespo" +
+      "nse\022\021\n\tworker_id\030\001 \002(\t\"7\n\nTaskNotify\022\017\n\007" +
+      "task_id\030\001 \002(\t\022\030\n\020task_instance_id\030\002 \002(\t\"" +
+      "\'\n\022StartListenRequest\022\021\n\tworker_id\030\001 \002(\t" +
+      "\"/\n\tTaskStart\022\021\n\tworker_id\030\001 \002(\t\022\017\n\007task" +
+      "_id\030\002 \002(\t\"H\n\013TaskRunning\022\021\n\tworker_id\030\001 " +
+      "\002(\t\022\017\n\007task_id\030\002 \002(\t\022\025\n\npercentage\030\003 \001(\005" +
+      ":\0010\"\244\001\n\014TaskComplete\022\021\n\tworker_id\030\001 \002(\t\022" +
+      "\017\n\007task_id\030\002 \002(\t\022,\n\006result\030\003 \002(\0162\034.TaskC",
+      "omplete.TaskResultType\022\027\n\rerror_message\030" +
+      "\004 \001(\t:\000\")\n\016TaskResultType\022\013\n\007SUCCESS\020\000\022\n" +
+      "\n\006FAILED\020\001:(\n\theartbeat\022\010.Request\030\350\007 \001(\013" +
+      "2\n.Heartbeat:3\n\017connect_request\022\010.Reques" +
+      "t\030\351\007 \001(\0132\017.ConnectRequest:/\n\rlogin_reque" +
+      "st\022\010.Request\030\352\007 \001(\0132\r.LoginRequest:/\n\rre" +
+      "gister_task\022\010.Request\030\353\007 \001(\0132\r.RegisterT" +
+      "ask:8\n\022task_status_update\022\010.Request\030\354\007 \001" +
+      "(\0132\021.TaskStatusUpdate:6\n\020connect_respons" +
+      "e\022\t.Response\030\321\017 \001(\0132\020.ConnectResponse:2\n",
+      "\016login_response\022\t.Response\030\322\017 \001(\0132\016.Logi" +
+      "nResponse:A\n\026register_task_response\022\t.Re" +
+      "sponse\030\323\017 \001(\0132\025.RegisterTaskResponse:,\n\013" +
+      "task_notify\022\t.Response\030\324\017 \001(\0132\013.TaskNoti" +
+      "fyB&\n\030flowy.scheduler.protocalB\010Messages" +
+      "H\001"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -10985,60 +10854,60 @@ public final class Messages {
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_RegisterTask_descriptor,
               new java.lang.String[] { "TaskId", "ExecuteTime", });
-          internal_static_Response_descriptor =
+          internal_static_TaskStatusUpdate_descriptor =
             getDescriptor().getMessageTypes().get(5);
+          internal_static_TaskStatusUpdate_fieldAccessorTable = new
+            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+              internal_static_TaskStatusUpdate_descriptor,
+              new java.lang.String[] { "InstanceId", "Status", "Percentage", "ErrorMessage", });
+          internal_static_Response_descriptor =
+            getDescriptor().getMessageTypes().get(6);
           internal_static_Response_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_Response_descriptor,
               new java.lang.String[] { "Type", });
           internal_static_ConnectResponse_descriptor =
-            getDescriptor().getMessageTypes().get(6);
+            getDescriptor().getMessageTypes().get(7);
           internal_static_ConnectResponse_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_ConnectResponse_descriptor,
               new java.lang.String[] { });
           internal_static_LoginResponse_descriptor =
-            getDescriptor().getMessageTypes().get(7);
+            getDescriptor().getMessageTypes().get(8);
           internal_static_LoginResponse_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_LoginResponse_descriptor,
               new java.lang.String[] { "ResultType", "FailReason", });
           internal_static_RegisterTaskResponse_descriptor =
-            getDescriptor().getMessageTypes().get(8);
+            getDescriptor().getMessageTypes().get(9);
           internal_static_RegisterTaskResponse_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_RegisterTaskResponse_descriptor,
               new java.lang.String[] { "RegisterResult", });
           internal_static_WorkerRegisterRequest_descriptor =
-            getDescriptor().getMessageTypes().get(9);
+            getDescriptor().getMessageTypes().get(10);
           internal_static_WorkerRegisterRequest_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_WorkerRegisterRequest_descriptor,
               new java.lang.String[] { "WorkerId", "WorkerName", "ExecuteTime", "Timeout", "ExecuteLastExpired", });
           internal_static_WorkerRegisterResponse_descriptor =
-            getDescriptor().getMessageTypes().get(10);
+            getDescriptor().getMessageTypes().get(11);
           internal_static_WorkerRegisterResponse_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_WorkerRegisterResponse_descriptor,
               new java.lang.String[] { "WorkerId", });
           internal_static_TaskNotify_descriptor =
-            getDescriptor().getMessageTypes().get(11);
+            getDescriptor().getMessageTypes().get(12);
           internal_static_TaskNotify_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_TaskNotify_descriptor,
               new java.lang.String[] { "TaskId", "TaskInstanceId", });
           internal_static_StartListenRequest_descriptor =
-            getDescriptor().getMessageTypes().get(12);
+            getDescriptor().getMessageTypes().get(13);
           internal_static_StartListenRequest_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_StartListenRequest_descriptor,
               new java.lang.String[] { "WorkerId", });
-          internal_static_TaskStatusUpdate_descriptor =
-            getDescriptor().getMessageTypes().get(13);
-          internal_static_TaskStatusUpdate_fieldAccessorTable = new
-            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_TaskStatusUpdate_descriptor,
-              new java.lang.String[] { "WorkerId", "TaskId", "Status", "Percentage", "ErrorMessage", });
           internal_static_TaskStart_descriptor =
             getDescriptor().getMessageTypes().get(14);
           internal_static_TaskStart_fieldAccessorTable = new
@@ -11061,10 +10930,11 @@ public final class Messages {
           connectRequest.internalInit(descriptor.getExtensions().get(1));
           loginRequest.internalInit(descriptor.getExtensions().get(2));
           registerTask.internalInit(descriptor.getExtensions().get(3));
-          connectResponse.internalInit(descriptor.getExtensions().get(4));
-          loginResponse.internalInit(descriptor.getExtensions().get(5));
-          registerTaskResponse.internalInit(descriptor.getExtensions().get(6));
-          taskNotify.internalInit(descriptor.getExtensions().get(7));
+          taskStatusUpdate.internalInit(descriptor.getExtensions().get(4));
+          connectResponse.internalInit(descriptor.getExtensions().get(5));
+          loginResponse.internalInit(descriptor.getExtensions().get(6));
+          registerTaskResponse.internalInit(descriptor.getExtensions().get(7));
+          taskNotify.internalInit(descriptor.getExtensions().get(8));
           return null;
         }
       };

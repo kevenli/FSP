@@ -231,5 +231,31 @@ public class Session{
 				.setExtension(extension, value).build();
 		return response;
 	}
+
+	public void onTaskStatusUpdate(ChannelHandlerContext ctx,
+			TaskStatusUpdate taskStatusUpdate) {
+		TaskDAO dao = new TaskDAO();
+		TaskInstance instance = dao.getTaskInstance(taskStatusUpdate.getInstanceId());
+		if (taskStatusUpdate.getStatus() == Status.START){
+			instance.setStatus(TaskStatus.Start);
+			instance.setUpdateTime(new Date());
+			dao.updateTaskInstance(instance);
+		}else if(taskStatusUpdate.getStatus() == Status.RUNNING){
+			instance.setStatus(TaskStatus.Running);
+			instance.setUpdateTime(new Date());
+			dao.updateTaskInstance(instance);
+		}else if(taskStatusUpdate.getStatus() == Status.COMPLETE){
+			instance.setStatus(TaskStatus.Success);
+			instance.setUpdateTime(new Date());
+			instance.setCompleteTime(new Date());
+			dao.updateTaskInstance(instance);
+		}else if(taskStatusUpdate.getStatus() == Status.FAILED){
+			instance.setStatus(TaskStatus.Failed);
+			instance.setUpdateTime(new Date());
+			instance.setCompleteTime(new Date());
+			dao.updateTaskInstance(instance);
+		}
+		
+	}
 }
 

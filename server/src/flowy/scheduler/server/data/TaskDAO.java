@@ -81,4 +81,18 @@ public class TaskDAO {
 		session.close();
 		return instance;
 	}
+	
+	public TaskInstance getTaskInstance(String id){
+		Session session = OpenSession();
+		return (TaskInstance)session.get(TaskInstance.class, id);
+	}
+	
+	public TaskInstance updateTaskInstance(TaskInstance taskInstance){
+		Session session = OpenSession();
+		Transaction trans = session.beginTransaction();
+		session.update(taskInstance);
+		trans.commit();
+		session.close();
+		return taskInstance;
+	}
 }

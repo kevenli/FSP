@@ -44,8 +44,9 @@ public class SessionHandler extends ChannelHandlerAdapter {
         	doLogin(ctx, request.getExtension(Messages.loginRequest));
         }else if(request.getType() == RequestType.REGISTER_TASK){
         	session.onRegisterTask(ctx, request.getExtension(Messages.registerTask));
+        }else if(request.getType() == RequestType.TASK_STATUS_UPDATE){
+        	session.onTaskStatusUpdate(ctx, request.getExtension(Messages.taskStatusUpdate));
         }
-        //m_session.handleMessage(message);
     }
 	
 	@Override

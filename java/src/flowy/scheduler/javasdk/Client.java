@@ -272,6 +272,60 @@ public class Client {
 		String taskId = notify.getTaskId();
 		ITaskNotifyCallback callback = taskCallbacks.get(taskId);
 		Task task = tasks.get(taskId);
-		callback.onTaskNotify(task, this);
+		callback.onTaskNotify(this, task, notify.getTaskInstanceId());
+	}
+	
+	public void taskStart(String taskInstanceId){
+		TaskStatusUpdate taskStatusUpdate = TaskStatusUpdate.newBuilder()
+				.setInstanceId(taskInstanceId)
+				.setStatus(Status.START)
+				.build();
+		
+		Request request = Request.newBuilder()
+				.setType(Request.RequestType.TASK_STATUS_UPDATE)
+				.setExtension(Messages.taskStatusUpdate, taskStatusUpdate).build();
+
+		this.channel.writeAndFlush(request);
+	}
+	
+	public void taskRunning(String taskInstanceId, int percentage){
+		TaskStatusUpdate taskStatusUpdate = TaskStatusUpdate.newBuilder()
+				.setInstanceId(taskInstanceId)
+				.setStatus(Status.RUNNING)
+				.setPercentage(percentage)
+				.build();
+		
+		Request request = Request.newBuilder()
+				.setType(Request.RequestType.TASK_STATUS_UPDATE)
+				.setExtension(Messages.taskStatusUpdate, taskStatusUpdate).build();
+
+		this.channel.writeAndFlush(request);
+	}
+	
+	public void taskComplete(String taskInstanceId){
+		TaskStatusUpdate taskStatusUpdate = TaskStatusUpdate.newBuilder()
+				.setInstanceId(taskInstanceId)
+				.setStatus(Status.COMPLETE)
+				.build();
+		
+		Request request = Request.newBuilder()
+				.setType(Request.RequestType.TASK_STATUS_UPDATE)
+				.setExtension(Messages.taskStatusUpdate, taskStatusUpdate).build();
+
+		this.channel.writeAndFlush(request);
+	}
+	
+	public void taskFail(String taskInstanceId, String errorMessage){
+		TaskStatusUpdate taskStatusUpdate = TaskStatusUpdate.newBuilder()
+				.setInstanceId(taskInstanceId)
+				.setStatus(Status.FAILED)
+				.setErrorMessage(errorMessage)
+				.build();
+		
+		Request request = Request.newBuilder()
+				.setType(Request.RequestType.TASK_STATUS_UPDATE)
+				.setExtension(Messages.taskStatusUpdate, taskStatusUpdate).build();
+
+		this.channel.writeAndFlush(request);
 	}
 }
