@@ -75,13 +75,13 @@ public class ClientTests implements ITaskNotifyCallback {
 				client.taskStart(instanceId);
 
 				try {
-					Thread.sleep(10l);
+					Thread.sleep(10000l);
 					client.taskRunning(instanceId, 10);
 
-					Thread.sleep(10l);
+					Thread.sleep(10000l);
 					client.taskRunning(instanceId, 50);
 
-					Thread.sleep(10l);
+					Thread.sleep(10000l);
 					client.taskComplete(instanceId);
 					
 					client.close();
