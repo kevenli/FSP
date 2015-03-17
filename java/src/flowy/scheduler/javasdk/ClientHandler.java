@@ -34,6 +34,9 @@ public class ClientHandler extends ChannelHandlerAdapter {
 		case REGISTER_TASK_RESPONSE:
 			client.onTaskRegisterResponse(response.getExtension(Messages.registerTaskResponse));
 			break;
+		case TASK_NOTIFY:
+			client.onTaskNotify(response.getExtension(Messages.taskNotify));
+			break;
 		default:
 			throw new MessageInvalidException(); 
         }

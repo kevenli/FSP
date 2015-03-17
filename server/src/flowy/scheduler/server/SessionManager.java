@@ -49,12 +49,15 @@ public class SessionManager {
 
 	public Session newSession(int applicationId, String remoteAddress, SessionHandler handler) {
 		synchronized (this) {
+			// generate random sessionId
 			int newSessionId;
 			do {
 				newSessionId = m_randomSeed.nextInt();
 			} while (newSessionId <= 0 || m_sessions.containsKey(newSessionId));
+			
 			Session session = new Session(newSessionId, applicationId, handler, scheduler);
-			m_sessions.put(newSessionId, session);
+			
+			// save to database
 			SessionDAO dao = new SessionDAO();
 			SessionVO sessionVO = new SessionVO();
 			sessionVO.setApplicationId(applicationId);
@@ -62,6 +65,10 @@ public class SessionManager {
 			sessionVO.setClientIp(remoteAddress);
 			sessionVO.setCreateTime(new Date());
 			dao.SaveSession(sessionVO);
+			
+			// add to collection
+			m_sessions.put(newSessionId, session);
+			
 			return session;
 		}
 	}

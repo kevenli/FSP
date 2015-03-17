@@ -10,10 +10,11 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import flowy.scheduler.javasdk.Client;
+import flowy.scheduler.javasdk.ITaskNotifyCallback;
 import flowy.scheduler.javasdk.Task;
 import flowy.scheduler.javasdk.exceptions.TaskAlreadyExistsException;
 
-public class ClientTests {
+public class ClientTests implements ITaskNotifyCallback {
 
 	private Client client;
 	@BeforeClass
@@ -46,7 +47,7 @@ public class ClientTests {
 	public void testRegisterTask() throws Exception{
 		client.connect();
 		Task task = new Task("TestTask", "*/5 * * * * ?");
-		client.registerTask(task);
+		client.registerTask(task, this);
 	}
 	
 	@Test
@@ -55,14 +56,19 @@ public class ClientTests {
 		Task task = new Task("TestTask", "*/5 * * * * ?");
 		
 		Task task2 = new Task("TestTask", "*/5 * * * * *");
-		client.registerTask(task);
+		client.registerTask(task, this);
 		
 		try{
-			client.registerTask(task2);
+			client.registerTask(task2, this);
 			fail("show raise exception here");
 		}catch(TaskAlreadyExistsException e){
 			
 		}
+	}
+
+	@Override
+	public void onTaskNotify(String taskName, Client client) {
+		System.out.println("OnNotify, taskname : " + taskName);
 	}
 
 }

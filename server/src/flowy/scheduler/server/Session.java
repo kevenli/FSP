@@ -1,5 +1,6 @@
 package flowy.scheduler.server;
 
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 
 import java.io.IOException;
@@ -58,6 +59,7 @@ public class Session{
 	private int m_sessionId;
 	private SessionHandler m_sessionHandler;
 	private int applicationId;
+	private Channel channel;
 
 	private static Logger logger = Logger.getLogger(Session.class);
 	
@@ -74,6 +76,10 @@ public class Session{
 		this.applicationId = applicationId;
 		m_sessionHandler = sessionHandler;
 		this.m_scheduler = scheduler;
+	}
+	
+	public void setChannel(Channel channel){
+		this.channel = channel;
 	}
 
 
@@ -156,6 +162,14 @@ public class Session{
 		instance.setStatus(TaskStatus.NotStart);
 		
 		dao.saveTaskInstance(instance);
+		
+		TaskNotify notify = TaskNotify.newBuilder()
+				.setTaskId(task.getClientTaskId())
+				.setTaskInstanceId(instance.getId())
+				.build();
+		
+		channel.writeAndFlush(buildResponseMessage(ResponseType.TASK_NOTIFY, 
+				Messages.taskNotify, notify));
 	}
 	
 	public void bindHandler(SessionHandler sessionHandler){

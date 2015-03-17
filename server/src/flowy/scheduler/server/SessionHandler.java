@@ -91,6 +91,7 @@ public class SessionHandler extends ChannelHandlerAdapter {
 					remoteHost, 
 					this);
 			this.session = session;
+			session.setChannel(ctx.channel());
 			
 			LoginResponse loginResponse = LoginResponse.newBuilder()
 				.setResultType(LoginResultType.SUCCESS).build();

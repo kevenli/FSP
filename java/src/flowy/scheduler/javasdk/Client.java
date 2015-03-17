@@ -21,6 +21,7 @@ import java.net.SocketAddress;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
+import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
 import flowy.scheduler.javasdk.exceptions.AuthenticationFailException;
@@ -76,6 +77,8 @@ public class Client {
 	private TaskAlreadyExistsException registerTaskException;
 	
 	private Channel channel;
+	
+	private HashMap<String, ITaskNotifyCallback> taskCallbacks = new HashMap<String, ITaskNotifyCallback>();
 
 	public Client(String hosts, String app_key, String app_secret) {
 
@@ -151,7 +154,7 @@ public class Client {
 		// }
 	}
 	
-	public void registerTask(Task task) throws InterruptedException, TaskAlreadyExistsException{
+	public void registerTask(Task task, ITaskNotifyCallback callback) throws InterruptedException, TaskAlreadyExistsException{
 		RegisterTask registerTaskRequest = RegisterTask.newBuilder()
 				.setTaskId(task.getId())
 				.setExecuteTime(task.getExecuteTime()).build();
@@ -167,6 +170,7 @@ public class Client {
 		if (registerTaskException != null){
 			throw registerTaskException;
 		}
+		taskCallbacks.put(task.getId(), callback);
 	}
 
 	void login(ChannelHandlerContext ctx) {
@@ -260,5 +264,10 @@ public class Client {
 	public void close() {
 		this.isShutdown = true;
 		this.channel.close();
+	}
+
+	public void onTaskNotify(TaskNotify notify) {
+		ITaskNotifyCallback callback = taskCallbacks.get(notify.getTaskId());
+		callback.onTaskNotify(notify.getTaskId(), this);
 	}
 }

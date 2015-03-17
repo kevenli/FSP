@@ -45,6 +45,7 @@ message Response {
     CONNECT_RESPONSE = 1;
     LOGIN_RESPONSE = 2;
     REGISTER_TASK_RESPONSE = 3;
+    TASK_NOTIFY = 4;
   }
   required ResponseType type = 1;
 }
@@ -53,6 +54,7 @@ extend Response {
   optional ConnectResponse connect_response = 2001;
   optional LoginResponse login_response = 2002;
   optional RegisterTaskResponse register_task_response = 2003;
+  optional TaskNotify task_notify = 2004;
 }
 
 message ConnectResponse{
@@ -95,13 +97,13 @@ message WorkerRegisterResponse {
 	required string worker_id = 1;
 }
 
-message StartListenRequest {
-	required string worker_id = 1;
+message TaskNotify {
+	required string task_id = 1;
+	required string task_instance_id = 2;
 }
 
-message TaskNotify {
+message StartListenRequest {
 	required string worker_id = 1;
-	required string task_id = 2;
 }
 
 message TaskStatusUpdate{
