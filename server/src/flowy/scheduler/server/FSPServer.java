@@ -58,7 +58,7 @@ public class FSPServer {
 
 	public static void main(String[] args) throws Exception {
 		// load log4j configuration 
-		PropertyConfigurator.configure("conf/log4j.properties");
+		PropertyConfigurator.configure("../conf/log4j.properties");
 		
 		// start server
 		FSPServer server = new FSPServer();
