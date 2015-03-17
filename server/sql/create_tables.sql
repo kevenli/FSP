@@ -1,13 +1,16 @@
-
-
 CREATE TABLE `applications` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(50) NOT NULL,
   `app_key` varchar(50) NOT NULL,
   `app_secret` varchar(50) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `idx_app_key` (`app_key`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+insert into applications
+(id, name, app_key, app_secret)
+values
+(1, 'testapp', 'abc', '123');
 
 CREATE TABLE `sessions` (
   `id` int(11) NOT NULL,

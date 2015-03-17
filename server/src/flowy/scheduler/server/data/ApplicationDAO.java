@@ -13,13 +13,11 @@ import flowy.scheduler.entities.Application;
 public class ApplicationDAO {
 	
 	
-	public static Application getApplication(String appKey){
+	public Application getApplication(String appKey){
 		SessionFactory sf = new Configuration().configure()
 				.buildSessionFactory();
 		Session session = sf.openSession();
 		try {
-			
-			
 			Criteria criteria = session.createCriteria(Application.class);
 			criteria.add(Restrictions.eq("appKey", appKey));
 			Object obj = criteria.uniqueResult();

@@ -5,6 +5,7 @@ import java.net.InetSocketAddress;
 import org.apache.log4j.Logger;
 import org.quartz.SchedulerException;
 
+import flowy.scheduler.entities.Application;
 import flowy.scheduler.protocal.Messages;
 import flowy.scheduler.protocal.Messages.ConnectResponse;
 import flowy.scheduler.protocal.Messages.LoginRequest;
@@ -14,6 +15,7 @@ import flowy.scheduler.protocal.Messages.LoginResponse.LoginResultType;
 import flowy.scheduler.protocal.Messages.Request;
 import flowy.scheduler.protocal.Messages.Request.RequestType;
 import flowy.scheduler.protocal.Messages.Response.ResponseType;
+import flowy.scheduler.server.data.ApplicationDAO;
 import io.netty.channel.ChannelHandlerAdapter;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.timeout.IdleState;
@@ -68,7 +70,11 @@ public class SessionHandler extends ChannelHandlerAdapter {
 	private void doLogin(ChannelHandlerContext ctx, LoginRequest request){
 		Response.Builder responseBuilder = Response.newBuilder();
 		responseBuilder.setType(ResponseType.LOGIN_RESPONSE);
-		if (!request.getAppKey().equals("abc") || !request.getAppSecret().equals("123")){
+		
+		ApplicationDAO dao = new ApplicationDAO();
+		Application application = dao.getApplication(request.getAppKey());
+		
+		if (application == null || !application.getAppSecret().equals(request.getAppSecret())){
 			// auth failed 
 			LoginResponse loginResponse = LoginResponse.newBuilder()
 					.setResultType(LoginResultType.FAILED).build();
@@ -76,7 +82,14 @@ public class SessionHandler extends ChannelHandlerAdapter {
 			return;
 		} else{
 			// authentication passed, bind session
-			Session session = SessionManager.getInstance().newSession(this);
+			// get remote address
+			InetSocketAddress remoteAddress = (InetSocketAddress)ctx.channel().remoteAddress();
+        	String remoteHost = remoteAddress.getAddress().getHostAddress();
+        	
+			Session session = SessionManager.getInstance().newSession(
+					application.getId(), 
+					remoteHost, 
+					this);
 			this.session = session;
 			
 			LoginResponse loginResponse = LoginResponse.newBuilder()

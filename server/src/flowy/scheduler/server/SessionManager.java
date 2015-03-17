@@ -47,7 +47,7 @@ public class SessionManager {
 		return null;
 	}
 
-	public Session newSession(SessionHandler handler) {
+	public Session newSession(int applicationId, String remoteAddress, SessionHandler handler) {
 		synchronized (this) {
 			int newSessionId;
 			do {
@@ -57,9 +57,9 @@ public class SessionManager {
 			m_sessions.put(newSessionId, session);
 			SessionDAO dao = new SessionDAO();
 			SessionVO sessionVO = new SessionVO();
-			sessionVO.setApplicationId(0);
+			sessionVO.setApplicationId(applicationId);
 			sessionVO.setId(newSessionId);
-			sessionVO.setClientIp("");
+			sessionVO.setClientIp(remoteAddress);
 			sessionVO.setCreateTime(new Date());
 			dao.SaveSession(sessionVO);
 			return session;

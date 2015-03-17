@@ -40,7 +40,7 @@ import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.Trigger;
 
-public class Session implements Runnable {
+public class Session{
 	private Socket m_socket;
 	private WorkerRegisterRequest m_request;
 	private Scheduler m_scheduler;
@@ -67,93 +67,6 @@ public class Session implements Runnable {
 		this.m_scheduler = scheduler;
 	}
 
-	@Override
-	public void run() {
-		if (!Auth()) {
-			try {
-				m_socket.close();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			return;
-		}
-		try {
-			WaitRegister();
-
-			while (true) {
-				synchronized(m_notifylock){
-					m_notifylock.wait();
-				}
-				TaskDAO dao = new TaskDAO();
-				Task newTask = new Task();
-				newTask.setWorkerId(m_worker.getId());
-				newTask.setCreateTime(new Date());
-				newTask.setUpdateTime(new Date());
-				newTask.setStatus(TaskStatus.NotStart);
-
-				dao.createTask(newTask);
-				
-				Notify(m_worker.getClientWorkerId(),
-					Long.toString(newTask.getId()));
-				
-			}
-
-		} 
-		catch(SocketException e){
-			logger.info(String.format("Connection closed %s", clientAddress));
-			System.out.println(String.format("Connection closed %s", clientAddress));
-			if ( m_worker != null){
-				m_worker.setUpdateTime(new Date());
-				m_worker.setStatus(WorkerStatus.Offline);
-				WorkerDAO dao = new WorkerDAO();
-				dao.updateWorker(m_worker);
-			}
-		}
-		catch (IOException e) {
-			logger.error(e);
-		} 
-		catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			logger.error(e);
-		} catch (SchedulerException e) {
-			// TODO Auto-generated catch block
-			logger.error(e);
-		}
-	}
-
-	private boolean Auth() {
-		try {
-			LoginRequest loginRequest = LoginRequest
-					.parseFrom(getNextMessage());
-			String app_id = loginRequest.getAppKey();
-			String app_secret = loginRequest.getAppSecret();
-
-			Application application = ApplicationDAO.getApplication(app_id);
-			if (application != null
-					&& application.getAppSecret().equals(app_secret)) {
-				// authorization successed
-				m_application = application;
-				LoginResponse.Builder builder = LoginResponse.newBuilder();
-				builder.setResultType(LoginResultType.SUCCESS);
-				LoginResponse response = builder.build();
-				send(response.toByteArray());
-				return true;
-			}
-
-			LoginResponse.Builder builder = LoginResponse.newBuilder();
-			builder.setResultType(LoginResultType.FAILED);
-			LoginResponse response = builder.build();
-			send(response.toByteArray());
-
-			return false;
-
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return false;
-		}
-	}
 
 	private void WaitRegister() throws IOException, SchedulerException {
 		// receive register request
