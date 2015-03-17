@@ -267,6 +267,8 @@ public class Client {
 	public void close() {
 		this.isShutdown = true;
 		this.channel.close();
+		workerGroup.shutdownGracefully();
+		workerGroup = null;
 	}
 
 	public void onTaskNotify(TaskNotify notify) {
