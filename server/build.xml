@@ -64,7 +64,7 @@ xmlns:maven="antlib:org.apache.maven.artifact.ant">
             <compilerarg value="-Xlint:all"/>
             <compilerarg value="-Xlint:-path"/>
         </javac>
-		<copy todir="${classes.dir}">
+		<copy todir="${build.classes}">
 			<fileset file="${java.src.dir}\hibernate.cfg.xml"/>
 		</copy>
     </target>
