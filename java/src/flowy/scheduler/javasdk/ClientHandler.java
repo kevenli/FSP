@@ -32,6 +32,7 @@ public class ClientHandler extends ChannelHandlerAdapter {
 			client.onLoginResponse(ctx, response.getExtension(Messages.loginResponse));
 			break;
 		case REGISTER_TASK_RESPONSE:
+			client.onTaskRegisterResponse(response.getExtension(Messages.registerTaskResponse));
 			break;
 		default:
 			throw new MessageInvalidException(); 

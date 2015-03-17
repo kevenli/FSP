@@ -24,11 +24,13 @@ import java.nio.charset.Charset;
 import java.util.concurrent.TimeUnit;
 
 import flowy.scheduler.javasdk.exceptions.AuthenticationFailException;
+import flowy.scheduler.javasdk.exceptions.TaskAlreadyExistsException;
 import flowy.scheduler.protocal.Messages;
 import flowy.scheduler.protocal.Messages.LoginRequest;
 import flowy.scheduler.protocal.Messages.LoginResponse;
 import flowy.scheduler.protocal.Messages.LoginResponse.LoginResultType;
 import flowy.scheduler.protocal.Messages.RegisterTask;
+import flowy.scheduler.protocal.Messages.RegisterTaskResponse;
 import flowy.scheduler.protocal.Messages.Request;
 import flowy.scheduler.protocal.Messages.Request.RequestType;
 import flowy.scheduler.protocal.Messages.TaskNotify;
@@ -70,14 +72,14 @@ public class Client {
 	// lock this object when connecting and authenticating
 	private Object connectLock = new Object(); 
 	
+	private Object registerTaskLock = new Object();
+	private TaskAlreadyExistsException registerTaskException;
+	
 	private Channel channel;
 
-	public Client(String hosts, String app_key, String app_secret,
-			WorkerSetting workerSetting, IClientCallback callback) {
+	public Client(String hosts, String app_key, String app_secret) {
 
 		m_hosts = hosts.split(";");
-		m_callback = callback;
-		m_worker_setting = workerSetting;
 		m_app_key = app_key;
 		m_app_secret = app_secret;
 	}
@@ -149,7 +151,7 @@ public class Client {
 		// }
 	}
 	
-	public void registerTask(Task task){
+	public void registerTask(Task task) throws InterruptedException, TaskAlreadyExistsException{
 		RegisterTask registerTaskRequest = RegisterTask.newBuilder()
 				.setTaskId(task.getId())
 				.setExecuteTime(task.getExecuteTime()).build();
@@ -158,7 +160,13 @@ public class Client {
 				.setType(RequestType.REGISTER_TASK)
 				.setExtension(Messages.registerTask, registerTaskRequest).build();
 		
-		this.channel.writeAndFlush(request);
+		synchronized(registerTaskLock){ 
+			this.channel.writeAndFlush(request);
+			registerTaskLock.wait();
+		}
+		if (registerTaskException != null){
+			throw registerTaskException;
+		}
 	}
 
 	void login(ChannelHandlerContext ctx) {
@@ -205,7 +213,15 @@ public class Client {
 		synchronized(connectLock){
 			connectLock.notify();
 		}
-		
+	}
+	
+	public void onTaskRegisterResponse(RegisterTaskResponse registerTaskResponse){
+		synchronized(registerTaskLock){
+			if(registerTaskResponse.getRegisterResult() != RegisterTaskResponse.RegisterTaskResultType.SUCCESS){
+				registerTaskException = new TaskAlreadyExistsException();
+			}
+			registerTaskLock.notify();
+		}
 	}
 
 	public class ConnectionListener implements ChannelFutureListener {
@@ -239,5 +255,10 @@ public class Client {
 				}
 			}
 		}
+	}
+
+	public void close() {
+		this.isShutdown = true;
+		this.channel.close();
 	}
 }

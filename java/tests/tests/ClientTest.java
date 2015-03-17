@@ -18,7 +18,7 @@ public class ClientTest implements IClientCallback {
 		WorkerSetting setting = new WorkerSetting("Test_Worker", "²âÊÔ",
 				"*/5 * * * * ?", 30);
 
-		Client client = new Client("127.0.0.1:3092", app_key, app_secret, setting, test);
+		Client client = new Client("127.0.0.1:3092", app_key, app_secret);
 		
 		try {
 			client.connect();
