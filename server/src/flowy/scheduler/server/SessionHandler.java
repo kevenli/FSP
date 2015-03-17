@@ -53,11 +53,17 @@ public class SessionHandler extends ChannelHandlerAdapter {
     public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
         if (evt instanceof IdleStateEvent) {
             IdleStateEvent e = (IdleStateEvent) evt;
-            if (e.state() == IdleState.READER_IDLE) {
-                ctx.close();
+            if (e.state() == IdleState.ALL_IDLE) {
+            	SessionManager.getInstance().sessionTimeout(session);
             }
         }
     }
+	
+	@Override
+	public void channelInactive(ChannelHandlerContext ctx) throws Exception{
+		SessionManager.getInstance().sessionTimeout(session);
+		super.channelInactive(ctx);
+	}
 	
 	private void ackConnection(ChannelHandlerContext ctx){
 		ConnectResponse ackMessage = ConnectResponse.newBuilder()

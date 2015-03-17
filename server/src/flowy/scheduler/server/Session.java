@@ -3,7 +3,9 @@ package flowy.scheduler.server;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 import static org.quartz.JobBuilder.*;
@@ -25,7 +27,9 @@ import flowy.scheduler.protocal.Messages.TaskNotify;
 import flowy.scheduler.protocal.Messages.TaskStatusUpdate;
 import flowy.scheduler.protocal.Messages.TaskStatusUpdate.Status;
 import flowy.scheduler.server.data.TaskDAO;
+
 import org.quartz.JobDetail;
+import org.quartz.JobKey;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.Trigger;
@@ -35,11 +39,16 @@ public class Session{
 	private int m_sessionId;
 	private int applicationId;
 	private Channel channel;
+	private List<String> jobs = new ArrayList<String>();
 
 	public Session(int sessionId, int applicationId, SessionHandler sessionHandler, Scheduler scheduler){
 		m_sessionId = sessionId;
 		this.applicationId = applicationId;
 		this.m_scheduler = scheduler;
+	}
+	
+	public int getId() {
+		return this.m_sessionId;
 	}
 	
 	public void setChannel(Channel channel){
@@ -95,8 +104,9 @@ public class Session{
 		taskDAO.saveTask(task);
 		
 		// register quartz scheduler
+		String jobName = this.m_sessionId + "_" + registerTaskRequest.getTaskId() + "_job";
 		JobDetail job = newJob(TaskNotifyJob.class).withIdentity(
-				this.m_sessionId + "_" + registerTaskRequest.getTaskId() + "_job", 
+				jobName, 
 				"group1").build();
 		
 		job.getJobDataMap().put("SessionInstance", this);
@@ -107,9 +117,10 @@ public class Session{
 				"group1")
 				.startNow().withSchedule(
 						cronSchedule(registerTaskRequest.getExecuteTime())).build();
-
+    	
 		// Tell quartz to schedule the job using our trigger
 		m_scheduler.scheduleJob(job, trigger);
+		jobs.add(jobName);
 		RegisterTaskResponse responseMessage = RegisterTaskResponse.newBuilder()
 				.setRegisterResult(RegisterTaskResultType.SUCCESS)
 				.build();
@@ -151,6 +162,17 @@ public class Session{
 			dao.updateTaskInstance(instance);
 		}
 		
+	}
+
+	public void teardown() {
+		for(String jobName :jobs){
+			try {
+				this.m_scheduler.deleteJob(new JobKey(jobName, "group1"));
+			} catch (SchedulerException e) {
+				e.printStackTrace();
+			}
+		}
+		channel.close();
 	}
 }
 

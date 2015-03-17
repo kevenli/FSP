@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.Hashtable;
 import java.util.Random;
 
+import org.apache.log4j.Logger;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.impl.StdSchedulerFactory;
@@ -13,6 +14,8 @@ import flowy.scheduler.server.data.SessionDAO;
 
 public class SessionManager {
 
+	private static Logger logger = Logger.getLogger(SessionManager.class);
+	
 	private Scheduler scheduler;
 	private SessionManager() throws SchedulerException {
 		scheduler = StdSchedulerFactory.getDefaultScheduler();
@@ -71,5 +74,12 @@ public class SessionManager {
 			
 			return session;
 		}
+	}
+
+	public void sessionTimeout(Session session) {
+		int sessionId = session.getId();
+		logger.debug("Session timeout : " + sessionId);
+		session.teardown();
+		m_sessions.remove(sessionId);
 	}
 }

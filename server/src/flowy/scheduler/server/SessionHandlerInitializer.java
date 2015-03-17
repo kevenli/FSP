@@ -14,6 +14,8 @@ import io.netty.handler.timeout.IdleStateHandler;
 
 public class SessionHandlerInitializer extends ChannelInitializer<SocketChannel> {
 
+	public static final int SESSION_TIMEOUT = 10;
+	
 	public SessionHandlerInitializer() {
 
 	}
@@ -25,7 +27,7 @@ public class SessionHandlerInitializer extends ChannelInitializer<SocketChannel>
 		
 		 ChannelPipeline pipeline = ch.pipeline();
     	 pipeline.addLast(
-    			 new IdleStateHandler(10, 10, 0),
+    			 new IdleStateHandler(0, 0, SESSION_TIMEOUT),
     			 new ProtobufVarint32LengthFieldPrepender(),
                  new ProtobufEncoder(), 
     			 new ProtobufVarint32FrameDecoder(),
