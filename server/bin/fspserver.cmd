@@ -16,7 +16,9 @@ set CLASSPATH=
 set CLASSPATH=!CLASSPATH!
 
 SET CLASSPATH=%~dp0..\lib\*;%CLASSPATH%
-SET CLASSPATH=%~dp0..\build\;%CLASSPATH%
+SET CLASSPATH=%~dp0..\build;%CLASSPATH%
+SET CLASSPATH=%~dp0..\build\classes;%CLASSPATH%
+SET CLASSPATH=%~dp0..\build\fspserver-0.1.0.jar;%CLASSPATH%
 
 REM make it work for developers
 REM SET CLASSPATH=%~dp0..\build\classes;%CLASSPATH%

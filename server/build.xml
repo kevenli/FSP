@@ -84,6 +84,7 @@ xmlns:maven="antlib:org.apache.maven.artifact.ant">
 		<jar jarfile="${build.dir}/${final.name}.jar">
             <fileset file="LICENSE.txt" />
             <fileset dir="${build.classes}" excludes="**/.generated"/>
+			<fileset file="${java.src.dir}\hibernate.cfg.xml"/>
             <manifest>
                 <attribute name="Main-Class" value="flowy.scheduler.server.FSPServer" />
                 <attribute name="Built-By" value="${user.name}"/>
