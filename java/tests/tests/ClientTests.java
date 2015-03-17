@@ -1,8 +1,6 @@
 package tests;
 
 import static org.junit.Assert.*;
-import junit.framework.Assert;
-
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -85,6 +83,8 @@ public class ClientTests implements ITaskNotifyCallback {
 
 					Thread.sleep(10l);
 					client.taskComplete(instanceId);
+					
+					client.close();
 					
 				} catch (InterruptedException e) {
 					e.printStackTrace();
