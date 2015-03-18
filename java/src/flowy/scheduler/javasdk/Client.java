@@ -39,11 +39,11 @@ import flowy.scheduler.protocal.Messages.TaskStatusUpdate.Status;
 public class Client {
 	public static int DEFAULT_HOST_PORT = 3092;
 
-	private String[] m_hosts;
+	private String[] hosts;
 
-	private String m_app_key;
+	private String appKey;
 
-	private String m_app_secret;
+	private String appSecret;
 
 	private boolean isShutdown = false;
 
@@ -67,14 +67,13 @@ public class Client {
 	private ExecutorService threadPool = Executors.newFixedThreadPool(10);
 
 	public Client(String hosts, String app_key, String app_secret) {
-
-		m_hosts = hosts.split(";");
-		m_app_key = app_key;
-		m_app_secret = app_secret;
+		this.hosts = hosts.split(";");
+		appKey = app_key;
+		appSecret = app_secret;
 	}
 
 	private SocketAddress pickRemoteAddress() {
-		String host = m_hosts[0];
+		String host = hosts[0];
 
 		String[] host_parts = host.split(":");
 		String host_name = host_parts[0];
@@ -177,8 +176,8 @@ public class Client {
 
 	void login(ChannelHandlerContext ctx) {
 		LoginRequest loginRequest = LoginRequest.newBuilder()
-				.setAppKey(this.m_app_key)
-				.setAppSecret(this.m_app_secret).build();
+				.setAppKey(this.appKey)
+				.setAppSecret(this.appSecret).build();
 		
 		Request request = Request.newBuilder()
 				.setType(Request.RequestType.LOGIN_REQUEST)
