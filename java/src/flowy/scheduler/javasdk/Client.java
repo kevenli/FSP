@@ -18,7 +18,6 @@ import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import flowy.scheduler.javasdk.exceptions.AuthenticationFailException;
@@ -26,7 +25,6 @@ import flowy.scheduler.javasdk.exceptions.TaskAlreadyExistsException;
 import flowy.scheduler.protocal.Messages;
 import flowy.scheduler.protocal.Messages.LoginRequest;
 import flowy.scheduler.protocal.Messages.LoginResponse;
-import flowy.scheduler.protocal.Messages.LogoutRequest;
 import flowy.scheduler.protocal.Messages.LogoutResponse;
 import flowy.scheduler.protocal.Messages.RegisterTask;
 import flowy.scheduler.protocal.Messages.RegisterTaskResponse;
