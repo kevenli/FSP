@@ -36,11 +36,16 @@ import org.quartz.SchedulerException;
 import org.quartz.Trigger;
 
 public class Session{
+	
+	private static final String DEFAULT_GROUP_NAME = "session_tasks";
+	
 	private Scheduler m_scheduler;
 	private int m_sessionId;
 	private int applicationId;
 	private Channel channel;
 	private List<String> jobs = new ArrayList<String>();
+	
+	
 
 	public Session(int sessionId, int applicationId, SessionHandler sessionHandler, Scheduler scheduler){
 		m_sessionId = sessionId;
@@ -108,14 +113,14 @@ public class Session{
 		String jobName = this.m_sessionId + "_" + registerTaskRequest.getTaskId() + "_job";
 		JobDetail job = newJob(TaskNotifyJob.class).withIdentity(
 				jobName, 
-				"group1").build();
+				DEFAULT_GROUP_NAME).build();
 		
 		job.getJobDataMap().put("SessionInstance", this);
 		job.getJobDataMap().put("TaskId", task.getId());
 		
     	Trigger trigger = newTrigger().withIdentity(
 				this.m_sessionId + "_" + registerTaskRequest.getTaskId() + "_job", 
-				"group1")
+				DEFAULT_GROUP_NAME)
 				.startNow().withSchedule(
 						cronSchedule(registerTaskRequest.getExecuteTime())).build();
     	
@@ -169,7 +174,7 @@ public class Session{
 	public void teardown() {
 		for(String jobName :jobs){
 			try {
-				this.m_scheduler.deleteJob(new JobKey(jobName, "group1"));
+				this.m_scheduler.deleteJob(new JobKey(jobName, DEFAULT_GROUP_NAME));
 			} catch (SchedulerException e) {
 				e.printStackTrace();
 			}
