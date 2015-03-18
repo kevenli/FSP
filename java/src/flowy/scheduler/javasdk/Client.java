@@ -11,10 +11,8 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
 
-import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
-import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -63,6 +61,8 @@ public class Client {
 	private HashMap<String, Task> tasks = new HashMap<String, Task>();
 	
 	private ExecutorService threadPool = Executors.newFixedThreadPool(10);
+	
+	private Object closeLock = new Object();
 
 	public Client(String hosts, String app_key, String app_secret) {
 		this.hosts = hosts.split(";");
@@ -138,17 +138,9 @@ public class Client {
 		this.channel = channelFuture.channel();
 	}
 
-	public void start() throws UnknownHostException, IOException,
-			InterruptedException {
-		// wait until connection closed
-		// channelFuture.channel().closeFuture().sync();
-		while (!isShutdown) {
-			// // if not shutting down, reconnect automatically
-			// connect();
-			//
-			//channelFuture.channel().closeFuture().sync();
-			channelFuture.channel().closeFuture().sync();
-			reconnect();
+	public void waitTillClose() throws InterruptedException{
+		synchronized (this.closeLock){
+			closeLock.wait();
 		}
 	}
 	
@@ -256,10 +248,15 @@ public class Client {
 	}
 
 	public void close() throws InterruptedException {
-		this.isShutdown = true;
-		this.channel.close();
-		workerGroup.shutdownGracefully();
-		workerGroup = null;
+		if(!this.isShutdown){
+			this.isShutdown = true;
+			this.channel.close();
+			workerGroup.shutdownGracefully();
+			workerGroup = null;
+			synchronized (this.closeLock){
+				this.closeLock.notify();
+			}
+		}
 	}
 
 	public void onTaskNotify(TaskNotify notify) {
