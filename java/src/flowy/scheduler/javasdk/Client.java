@@ -23,6 +23,8 @@ import flowy.scheduler.javasdk.exceptions.TaskAlreadyExistsException;
 import flowy.scheduler.protocal.Messages;
 import flowy.scheduler.protocal.Messages.LoginRequest;
 import flowy.scheduler.protocal.Messages.LoginResponse;
+import flowy.scheduler.protocal.Messages.LogoutRequest;
+import flowy.scheduler.protocal.Messages.LogoutResponse;
 import flowy.scheduler.protocal.Messages.RegisterTask;
 import flowy.scheduler.protocal.Messages.RegisterTaskResponse;
 import flowy.scheduler.protocal.Messages.Request;
@@ -83,7 +85,7 @@ public class Client {
 		SocketAddress remoteAddress = pickRemoteAddress();
 
 		if (workerGroup == null) {
-			workerGroup = new NioEventLoopGroup();
+			workerGroup = new NioEventLoopGroup(2);
 		}
 
 		Bootstrap bootstrap = new Bootstrap();
@@ -113,7 +115,7 @@ public class Client {
 		SocketAddress remoteAddress = pickRemoteAddress();
 
 		if (workerGroup == null) {
-			workerGroup = new NioEventLoopGroup();
+			workerGroup = new NioEventLoopGroup(2);
 		}
 
 		Bootstrap bootstrap = new Bootstrap();
@@ -136,10 +138,8 @@ public class Client {
 
 	public void start() throws UnknownHostException, IOException,
 			InterruptedException {
-
 		// wait until connection closed
 		// channelFuture.channel().closeFuture().sync();
-
 		while (!isShutdown) {
 			// // if not shutting down, reconnect automatically
 			// connect();
@@ -148,15 +148,6 @@ public class Client {
 			channelFuture.channel().closeFuture().sync();
 			reconnect();
 		}
-
-		// m_socket = new Socket(InetAddress.getByName(host_name), host_port);
-
-		// sendVersion();
-		// auth();
-		// register();
-		// while (true) {
-		// startListen();
-		// }
 	}
 	
 	public void registerTask(Task task, ITaskNotifyCallback callback) throws InterruptedException, TaskAlreadyExistsException{
@@ -195,20 +186,24 @@ public class Client {
 			throws InterruptedException {
 		final Client client = this;
 		final EventLoop eventLoop = ctx.channel().eventLoop();
-		eventLoop.schedule(new Runnable() {
-			@Override
-			public void run() {
-				try {
-					client.connect();
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+		if(this.isShutdown){
+			channel.close();
+			workerGroup.shutdownGracefully();
+			workerGroup = null;
+		}
+		else{
+			eventLoop.schedule(new Runnable() {
+				@Override
+				public void run() {
+					try {
+						client.reconnect();
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				}
-			}
-		}, 0L, TimeUnit.SECONDS);
+			}, 0L, TimeUnit.SECONDS);
+		}
 	}
 	
 	public void onLoginResponse(ChannelHandlerContext ctx, LoginResponse loginResponse){
@@ -264,7 +259,7 @@ public class Client {
 		}
 	}
 
-	public void close() {
+	public void close() throws InterruptedException {
 		this.isShutdown = true;
 		this.channel.close();
 		workerGroup.shutdownGracefully();
@@ -330,5 +325,9 @@ public class Client {
 				.setExtension(Messages.taskStatusUpdate, taskStatusUpdate).build();
 
 		this.channel.writeAndFlush(request);
+	}
+
+	public void onLogoutResponse(LogoutResponse extension) {
+		this.channel.close();
 	}
 }

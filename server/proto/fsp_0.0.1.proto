@@ -10,6 +10,7 @@ message Request {
     LOGIN_REQUEST = 2;
     REGISTER_TASK = 3;
     TASK_STATUS_UPDATE = 4;
+    LOGOUT_REQUEST = 5;
   }
   required RequestType type = 1;
 }
@@ -20,6 +21,7 @@ extend Request {
   optional LoginRequest login_request = 1002;
   optional RegisterTask register_task = 1003;
   optional TaskStatusUpdate task_status_update = 1004;
+  optional LogoutRequest logout_request = 1005;
 }
 
 message Heartbeat {
@@ -53,6 +55,9 @@ message TaskStatusUpdate{
 	optional string error_message = 4;
 }	
 
+message LogoutRequest{
+    
+}
 
 message Response {
   extensions 100 to max;
@@ -61,6 +66,7 @@ message Response {
     LOGIN_RESPONSE = 2;
     REGISTER_TASK_RESPONSE = 3;
     TASK_NOTIFY = 4;
+    LOGOUT_RESPONSE = 5;
   }
   required ResponseType type = 1;
 }
@@ -70,6 +76,7 @@ extend Response {
   optional LoginResponse login_response = 2002;
   optional RegisterTaskResponse register_task_response = 2003;
   optional TaskNotify task_notify = 2004;
+  optional LogoutResponse logout_response = 2005;
 }
 
 message ConnectResponse{
@@ -96,4 +103,8 @@ message RegisterTaskResponse {
 message TaskNotify {
 	required string task_id = 1;
 	required string task_instance_id = 2;
+}
+
+message LogoutResponse {
+
 }

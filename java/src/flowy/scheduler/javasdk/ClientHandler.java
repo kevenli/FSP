@@ -36,6 +36,8 @@ public class ClientHandler extends ChannelHandlerAdapter {
 		case TASK_NOTIFY:
 			client.onTaskNotify(response.getExtension(Messages.taskNotify));
 			break;
+		case LOGOUT_RESPONSE:
+			client.onLogoutResponse(response.getExtension(Messages.logoutResponse));
 		default:
 			throw new MessageInvalidException(); 
         }

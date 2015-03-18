@@ -46,6 +46,8 @@ public class SessionHandler extends ChannelHandlerAdapter {
         	session.onRegisterTask(ctx, request.getExtension(Messages.registerTask));
         }else if(request.getType() == RequestType.TASK_STATUS_UPDATE){
         	session.onTaskStatusUpdate(ctx, request.getExtension(Messages.taskStatusUpdate));
+        }else if(request.getType() == RequestType.LOGOUT_REQUEST){
+        	SessionManager.getInstance().sessionLogout(session);
         }
     }
 	

@@ -18,6 +18,7 @@ import flowy.scheduler.entities.Task;
 import flowy.scheduler.entities.TaskInstance;
 import flowy.scheduler.entities.TaskStatus;
 import flowy.scheduler.protocal.Messages;
+import flowy.scheduler.protocal.Messages.LogoutResponse;
 import flowy.scheduler.protocal.Messages.RegisterTask;
 import flowy.scheduler.protocal.Messages.RegisterTaskResponse;
 import flowy.scheduler.protocal.Messages.RegisterTaskResponse.RegisterTaskResultType;
@@ -174,6 +175,14 @@ public class Session{
 			}
 		}
 		channel.close();
+	}
+
+	public void onLogout() {
+		LogoutResponse logoutResponse = LogoutResponse.newBuilder().build();
+		
+		channel.writeAndFlush(buildResponseMessage(Response.ResponseType.LOGOUT_RESPONSE,
+				Messages.logoutResponse, logoutResponse)).syncUninterruptibly();
+		this.teardown();
 	}
 }
 

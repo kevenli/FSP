@@ -82,4 +82,11 @@ public class SessionManager {
 		session.teardown();
 		m_sessions.remove(sessionId);
 	}
+	
+	public void sessionLogout(Session session){
+		int sessionId = session.getId();
+		logger.debug("Session logout : " + sessionId);
+		session.onLogout();
+		m_sessions.remove(sessionId);
+	}
 }
