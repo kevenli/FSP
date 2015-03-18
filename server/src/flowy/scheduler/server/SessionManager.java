@@ -92,15 +92,15 @@ public class SessionManager {
 		m_sessions.remove(sessionId);
 	}
 
-	public Session resumeSession(Session session, int sessionId, Channel channel) {
-		if (!this.m_sessions.containsKey(sessionId)){
+	public Session resumeSession(Session currentSession, int resumeToSessionId, Channel channel) {
+		if (!this.m_sessions.containsKey(resumeToSessionId)){
 			return null;
 		}
 		
-		Session resumeToSession = m_sessions.get(sessionId);
-		session.suspend();
-		session.teardown();
-		m_sessions.remove(session.getId());
+		Session resumeToSession = m_sessions.get(resumeToSessionId);
+		currentSession.suspend();
+		currentSession.teardown();
+		m_sessions.remove(currentSession.getId());
 		resumeToSession.resume(channel);
 		return resumeToSession;
 	}
