@@ -16,6 +16,9 @@ import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.net.UnknownHostException;
 import java.util.HashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import flowy.scheduler.javasdk.exceptions.AuthenticationFailException;
@@ -60,6 +63,8 @@ public class Client {
 	
 	private HashMap<String, ITaskNotifyCallback> taskCallbacks = new HashMap<String, ITaskNotifyCallback>();
 	private HashMap<String, Task> tasks = new HashMap<String, Task>();
+	
+	private ExecutorService threadPool = Executors.newFixedThreadPool(10);
 
 	public Client(String hosts, String app_key, String app_secret) {
 
@@ -186,19 +191,13 @@ public class Client {
 			throws InterruptedException {
 		final Client client = this;
 		final EventLoop eventLoop = ctx.channel().eventLoop();
-		if(this.isShutdown){
-			channel.close();
-			workerGroup.shutdownGracefully();
-			workerGroup = null;
-		}
-		else{
+		if(!this.isShutdown){
 			eventLoop.schedule(new Runnable() {
 				@Override
 				public void run() {
 					try {
 						client.reconnect();
 					} catch (Exception e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 				}
@@ -267,10 +266,12 @@ public class Client {
 	}
 
 	public void onTaskNotify(TaskNotify notify) {
+		
 		String taskId = notify.getTaskId();
 		ITaskNotifyCallback callback = taskCallbacks.get(taskId);
 		Task task = tasks.get(taskId);
 		callback.onTaskNotify(this, task, notify.getTaskInstanceId());
+		threadPool.execute(new TaskNotifyCallbackRunner(this, task, notify.getTaskInstanceId(), callback));
 	}
 	
 	public void taskStart(String taskInstanceId){
