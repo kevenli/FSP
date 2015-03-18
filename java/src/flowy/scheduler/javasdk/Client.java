@@ -260,11 +260,9 @@ public class Client {
 	}
 
 	public void onTaskNotify(TaskNotify notify) {
-		
 		String taskId = notify.getTaskId();
 		ITaskNotifyCallback callback = taskCallbacks.get(taskId);
 		Task task = tasks.get(taskId);
-		callback.onTaskNotify(this, task, notify.getTaskInstanceId());
 		threadPool.execute(new TaskNotifyCallbackRunner(this, task, notify.getTaskInstanceId(), callback));
 	}
 	

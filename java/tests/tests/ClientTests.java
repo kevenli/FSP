@@ -91,7 +91,7 @@ public class ClientTests implements ITaskNotifyCallback {
 				}
 			}
 		});
-		client.start();
+		client.waitTillClose();
 	}
 
 	@Override

@@ -1,6 +1,7 @@
 package tests;
 
 import java.io.IOException;
+import java.util.Date;
 
 import flowy.scheduler.javasdk.Client;
 import flowy.scheduler.javasdk.ITaskNotifyCallback;
@@ -19,7 +20,7 @@ public class ClientTest implements ITaskNotifyCallback {
 		try {
 			client.connect();
 			client.registerTask(new Task("TestTask", "*/5 * * * * ?"), test);
-			client.start();
+			client.waitTillClose();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -38,7 +39,19 @@ public class ClientTest implements ITaskNotifyCallback {
 
 	@Override
 	public void onTaskNotify(Client client, Task task, String instanceId) {
-		System.out.println("OnNotify, taskname : " + task.getId());
+		System.out.println("OnNotify, taskname : " + task.getId() + 
+				", instanceid : " + instanceId + 
+				new Date());
+		client.taskStart(instanceId);
+		try {
+			Thread.sleep(1000l);
+			client.taskRunning(instanceId, 0);
+			Thread.sleep(1000l);
+			client.taskComplete(instanceId);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 	}
 
