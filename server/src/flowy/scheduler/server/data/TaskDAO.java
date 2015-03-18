@@ -22,8 +22,6 @@ public class TaskDAO extends DAOBase {
 		finally{
 			session.close();
 		}
-		
-		
 	}
 	
 	public Task getTask(int id){
@@ -36,11 +34,16 @@ public class TaskDAO extends DAOBase {
 	
 	public Task getTask(int applicationId, String clientTaskId){
 		Session session = openSession();
-		Criteria criteria = session.createCriteria(Task.class);
-		criteria.add(Restrictions.eq("applicationId", applicationId));
-		criteria.add(Restrictions.eq("clientTaskId", clientTaskId));
-		Task task = (Task)criteria.uniqueResult();
-		return task;
+		try{
+			Criteria criteria = session.createCriteria(Task.class);
+			criteria.add(Restrictions.eq("applicationId", applicationId));
+			criteria.add(Restrictions.eq("clientTaskId", clientTaskId));
+			Task task = (Task)criteria.uniqueResult();
+			return task;
+		}
+		finally{
+			session.close();
+		}
 	}
 	
 	public Task updateTask(Task task) {
@@ -70,7 +73,12 @@ public class TaskDAO extends DAOBase {
 	
 	public TaskInstance getTaskInstance(String id){
 		Session session = openSession();
-		return (TaskInstance)session.get(TaskInstance.class, id);
+		try{
+			return (TaskInstance)session.get(TaskInstance.class, id);
+		}
+		finally{
+			session.close();
+		}
 	}
 	
 	public TaskInstance updateTaskInstance(TaskInstance taskInstance){

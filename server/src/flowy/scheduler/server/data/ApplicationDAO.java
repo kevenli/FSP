@@ -10,14 +10,18 @@ public class ApplicationDAO extends DAOBase {
 
 	public Application getApplication(String appKey) {
 		Session session = openSession();
-		Criteria criteria = session.createCriteria(Application.class);
-		criteria.add(Restrictions.eq("appKey", appKey));
-		Object obj = criteria.uniqueResult();
-		if (obj == null) {
-			return null;
+		try {
+			Criteria criteria = session.createCriteria(Application.class);
+			criteria.add(Restrictions.eq("appKey", appKey));
+			Object obj = criteria.uniqueResult();
+			if (obj == null) {
+				return null;
+			}
+			Application application = (Application) obj;
+			return application;
 		}
-		Application application = (Application) obj;
-		return application;
-
+		finally{
+			session.close();
+		}
 	}
 }
