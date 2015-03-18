@@ -16,6 +16,8 @@ import flowy.scheduler.protocal.Messages.Request;
 import flowy.scheduler.protocal.Messages.Request.RequestType;
 import flowy.scheduler.protocal.Messages.Response.ResponseType;
 import flowy.scheduler.protocal.Messages.ResumeSessionRequest;
+import flowy.scheduler.protocal.Messages.ResumeSessionResponse;
+import flowy.scheduler.protocal.Messages.ResumeSessionResponse.ResumeResultType;
 import flowy.scheduler.server.data.ApplicationDAO;
 import io.netty.channel.ChannelHandlerAdapter;
 import io.netty.channel.ChannelHandlerContext;
@@ -80,7 +82,29 @@ public class SessionHandler extends ChannelHandlerAdapter {
 	}
 	
 	private void resumeSession(ChannelHandlerContext ctx, ResumeSessionRequest request){
+		Session resumeToSession = 
+				SessionManager.getInstance().resumeSession(
+						session, request.getSessionId(), ctx.channel());
 		
+		if (resumeToSession != null){
+			// success, 
+			this.session = resumeToSession;
+			sendResumeSessionResponse(
+					ctx, 
+					ResumeSessionResponse.newBuilder()
+						.setResultType(ResumeResultType.SUCCESS)
+						.setSessionId(session.getId())
+						.build()
+					);
+		}else{
+			sendResumeSessionResponse(
+					ctx, 
+					ResumeSessionResponse.newBuilder()
+						.setResultType(ResumeResultType.SESSION_EXPIRED)
+						.setSessionId(session.getId())
+						.build()
+					);
+		}
 	}
 	
 	private void doLogin(ChannelHandlerContext ctx, LoginRequest request){
@@ -119,6 +143,14 @@ public class SessionHandler extends ChannelHandlerAdapter {
 		Response response = Response.newBuilder()
 				.setType(ResponseType.LOGIN_RESPONSE)
 				.setExtension(Messages.loginResponse, loginResponse)
+				.build();
+		ctx.writeAndFlush(response);
+	}
+	
+	private void sendResumeSessionResponse(ChannelHandlerContext ctx, ResumeSessionResponse resumeResponse){
+		Response response = Response.newBuilder()
+				.setType(ResponseType.RESUME_SESSION_RESPONSE)
+				.setExtension(Messages.resumeSessionResponse, resumeResponse)
 				.build();
 		ctx.writeAndFlush(response);
 	}

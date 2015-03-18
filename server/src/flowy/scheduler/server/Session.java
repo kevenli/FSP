@@ -5,6 +5,7 @@ import io.netty.channel.ChannelHandlerContext;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Queue;
@@ -64,8 +65,20 @@ public class Session{
 		return this.m_sessionId;
 	}
 	
-	public void setChannel(Channel channel){
+	public void resume(Channel channel){
+		// resume the session with channel
 		this.channel = channel;
+		
+		// send all suspended notifications
+		Enumeration<Integer> keys=taskQueues.keys();
+		while(keys.hasMoreElements()){
+			int taskId = keys.nextElement();
+			Queue<TaskInstance> queue = taskQueues.get(taskId);
+			TaskInstance taskInstance = queue.peek();
+			if (taskInstance != null){
+				sendTaskNotification(taskInstance);
+			}
+		}
 	}
 
 	public void onNotify(int taskId){
@@ -228,7 +241,10 @@ public class Session{
 				e.printStackTrace();
 			}
 		}
-		channel.close();
+		
+		if (channel != null){
+			channel.close();
+		}
 	}
 
 	public void onLogout() {
@@ -238,5 +254,22 @@ public class Session{
 				Messages.logoutResponse, logoutResponse)).syncUninterruptibly();
 		this.teardown();
 	}
+
+	public void suspend() {
+		this.channel = null;
+	}
+	
+	private void sendTaskNotification(TaskInstance taskInstance){
+		TaskDAO dao = new TaskDAO();
+		Task task = dao.getTask(taskInstance.getTaskId());
+		TaskNotify notify = TaskNotify.newBuilder()
+				.setTaskId(task.getClientTaskId())
+				.setTaskInstanceId(taskInstance.getId())
+				.build();
+		
+		channel.writeAndFlush(buildResponseMessage(ResponseType.TASK_NOTIFY, 
+				Messages.taskNotify, notify));
+	}
+	
 }
 

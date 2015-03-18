@@ -91,4 +91,17 @@ public class SessionManager {
 		session.onLogout();
 		m_sessions.remove(sessionId);
 	}
+
+	public Session resumeSession(Session session, int sessionId, Channel channel) {
+		if (!this.m_sessions.containsKey(sessionId)){
+			return null;
+		}
+		
+		Session resumeToSession = m_sessions.get(sessionId);
+		session.suspend();
+		session.teardown();
+		m_sessions.remove(session.getId());
+		resumeToSession.resume(channel);
+		return resumeToSession;
+	}
 }
