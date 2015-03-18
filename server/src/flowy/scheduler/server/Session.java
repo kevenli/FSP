@@ -51,14 +51,13 @@ public class Session{
 	private Channel channel;
 	private List<String> jobs = new ArrayList<String>();
 	
-	
-	
 	private Hashtable<Integer, Queue<TaskInstance>> taskQueues = new Hashtable<Integer, Queue<TaskInstance>>();
 
-	public Session(int sessionId, int applicationId, SessionHandler sessionHandler, Scheduler scheduler){
+	public Session(int sessionId, int applicationId, Scheduler scheduler, Channel channel){
 		m_sessionId = sessionId;
 		this.applicationId = applicationId;
 		this.m_scheduler = scheduler;
+		this.channel = channel;
 	}
 	
 	public int getId() {

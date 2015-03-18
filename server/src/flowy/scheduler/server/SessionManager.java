@@ -1,5 +1,7 @@
 package flowy.scheduler.server;
 
+import io.netty.channel.Channel;
+
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.Random;
@@ -50,7 +52,7 @@ public class SessionManager {
 		return null;
 	}
 
-	public Session newSession(int applicationId, String remoteAddress, SessionHandler handler) {
+	public Session newSession(int applicationId, String remoteAddress, Channel channel) {
 		synchronized (this) {
 			// generate random sessionId
 			int newSessionId;
@@ -58,7 +60,7 @@ public class SessionManager {
 				newSessionId = m_randomSeed.nextInt();
 			} while (newSessionId <= 0 || m_sessions.containsKey(newSessionId));
 			
-			Session session = new Session(newSessionId, applicationId, handler, scheduler);
+			Session session = new Session(newSessionId, applicationId, scheduler, channel);
 			
 			// save to database
 			SessionDAO dao = new SessionDAO();
