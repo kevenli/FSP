@@ -90,6 +90,7 @@ message LoginResponse {
    }
    required LoginResultType result_type = 1;
    optional string fail_reason = 2 [default = ''];
+   optional int32 session_id = 3;
 }
 
 message RegisterTaskResponse {

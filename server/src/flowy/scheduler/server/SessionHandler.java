@@ -77,17 +77,15 @@ public class SessionHandler extends ChannelHandlerAdapter {
 	}
 	
 	private void doLogin(ChannelHandlerContext ctx, LoginRequest request){
-		Response.Builder responseBuilder = Response.newBuilder();
-		responseBuilder.setType(ResponseType.LOGIN_RESPONSE);
-		
 		ApplicationDAO dao = new ApplicationDAO();
 		Application application = dao.getApplication(request.getAppKey());
 		
 		if (application == null || !application.getAppSecret().equals(request.getAppSecret())){
 			// auth failed 
 			LoginResponse loginResponse = LoginResponse.newBuilder()
-					.setResultType(LoginResultType.FAILED).build();
-			ctx.writeAndFlush(responseBuilder.setExtension(Messages.loginResponse, loginResponse));
+					.setResultType(LoginResultType.FAILED)
+					.build();
+			sendLoginResponse(ctx, loginResponse);
 			return;
 		} else{
 			// authentication passed, bind session
@@ -103,9 +101,19 @@ public class SessionHandler extends ChannelHandlerAdapter {
 			session.setChannel(ctx.channel());
 			
 			LoginResponse loginResponse = LoginResponse.newBuilder()
-				.setResultType(LoginResultType.SUCCESS).build();
-			ctx.writeAndFlush(responseBuilder.setExtension(Messages.loginResponse, loginResponse));
+				.setResultType(LoginResultType.SUCCESS)
+				.setSessionId(session.getId())
+				.build();
+			sendLoginResponse(ctx, loginResponse);
 			return;
 		}
+	}
+	
+	private void sendLoginResponse(ChannelHandlerContext ctx, LoginResponse loginResponse){
+		Response response = Response.newBuilder()
+				.setType(ResponseType.LOGIN_RESPONSE)
+				.setExtension(Messages.loginResponse, loginResponse)
+				.build();
+		ctx.writeAndFlush(response);
 	}
 }

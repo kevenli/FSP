@@ -4735,6 +4735,16 @@ public final class Messages {
      */
     com.google.protobuf.ByteString
         getFailReasonBytes();
+
+    // optional int32 session_id = 3;
+    /**
+     * <code>optional int32 session_id = 3;</code>
+     */
+    boolean hasSessionId();
+    /**
+     * <code>optional int32 session_id = 3;</code>
+     */
+    int getSessionId();
   }
   /**
    * Protobuf type {@code LoginResponse}
@@ -4801,6 +4811,11 @@ public final class Messages {
             case 18: {
               bitField0_ |= 0x00000002;
               failReason_ = input.readBytes();
+              break;
+            }
+            case 24: {
+              bitField0_ |= 0x00000004;
+              sessionId_ = input.readInt32();
               break;
             }
           }
@@ -4984,9 +4999,26 @@ public final class Messages {
       }
     }
 
+    // optional int32 session_id = 3;
+    public static final int SESSION_ID_FIELD_NUMBER = 3;
+    private int sessionId_;
+    /**
+     * <code>optional int32 session_id = 3;</code>
+     */
+    public boolean hasSessionId() {
+      return ((bitField0_ & 0x00000004) == 0x00000004);
+    }
+    /**
+     * <code>optional int32 session_id = 3;</code>
+     */
+    public int getSessionId() {
+      return sessionId_;
+    }
+
     private void initFields() {
       resultType_ = flowy.scheduler.protocal.Messages.LoginResponse.LoginResultType.SUCCESS;
       failReason_ = "";
+      sessionId_ = 0;
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -5010,6 +5042,9 @@ public final class Messages {
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
         output.writeBytes(2, getFailReasonBytes());
       }
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        output.writeInt32(3, sessionId_);
+      }
       getUnknownFields().writeTo(output);
     }
 
@@ -5026,6 +5061,10 @@ public final class Messages {
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
         size += com.google.protobuf.CodedOutputStream
           .computeBytesSize(2, getFailReasonBytes());
+      }
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(3, sessionId_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -5147,6 +5186,8 @@ public final class Messages {
         bitField0_ = (bitField0_ & ~0x00000001);
         failReason_ = "";
         bitField0_ = (bitField0_ & ~0x00000002);
+        sessionId_ = 0;
+        bitField0_ = (bitField0_ & ~0x00000004);
         return this;
       }
 
@@ -5183,6 +5224,10 @@ public final class Messages {
           to_bitField0_ |= 0x00000002;
         }
         result.failReason_ = failReason_;
+        if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
+          to_bitField0_ |= 0x00000004;
+        }
+        result.sessionId_ = sessionId_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -5206,6 +5251,9 @@ public final class Messages {
           bitField0_ |= 0x00000002;
           failReason_ = other.failReason_;
           onChanged();
+        }
+        if (other.hasSessionId()) {
+          setSessionId(other.getSessionId());
         }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
@@ -5344,6 +5392,39 @@ public final class Messages {
   }
   bitField0_ |= 0x00000002;
         failReason_ = value;
+        onChanged();
+        return this;
+      }
+
+      // optional int32 session_id = 3;
+      private int sessionId_ ;
+      /**
+       * <code>optional int32 session_id = 3;</code>
+       */
+      public boolean hasSessionId() {
+        return ((bitField0_ & 0x00000004) == 0x00000004);
+      }
+      /**
+       * <code>optional int32 session_id = 3;</code>
+       */
+      public int getSessionId() {
+        return sessionId_;
+      }
+      /**
+       * <code>optional int32 session_id = 3;</code>
+       */
+      public Builder setSessionId(int value) {
+        bitField0_ |= 0x00000004;
+        sessionId_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional int32 session_id = 3;</code>
+       */
+      public Builder clearSessionId() {
+        bitField0_ = (bitField0_ & ~0x00000004);
+        sessionId_ = 0;
         onChanged();
         return this;
       }
@@ -7020,32 +7101,32 @@ public final class Messages {
       "ResponseType\022\024\n\020CONNECT_RESPONSE\020\001\022\022\n\016LO" +
       "GIN_RESPONSE\020\002\022\032\n\026REGISTER_TASK_RESPONSE" +
       "\020\003\022\017\n\013TASK_NOTIFY\020\004\022\023\n\017LOGOUT_RESPONSE\020\005" +
-      "*\010\010d\020\200\200\200\200\002\"\021\n\017ConnectResponse\"\207\001\n\rLoginR",
+      "*\010\010d\020\200\200\200\200\002\"\021\n\017ConnectResponse\"\233\001\n\rLoginR",
       "esponse\0223\n\013result_type\030\001 \002(\0162\036.LoginResp" +
       "onse.LoginResultType\022\025\n\013fail_reason\030\002 \001(" +
-      "\t:\000\"*\n\017LoginResultType\022\013\n\007SUCCESS\020\000\022\n\n\006F" +
-      "AILED\020\001\"\235\001\n\024RegisterTaskResponse\022E\n\017regi" +
-      "ster_result\030\001 \002(\0162,.RegisterTaskResponse" +
-      ".RegisterTaskResultType\">\n\026RegisterTaskR" +
-      "esultType\022\013\n\007SUCCESS\020\000\022\027\n\023TASK_ALREADY_E" +
-      "XISTS\020\001\"7\n\nTaskNotify\022\017\n\007task_id\030\001 \002(\t\022\030" +
-      "\n\020task_instance_id\030\002 \002(\t\"\020\n\016LogoutRespon" +
-      "se:(\n\theartbeat\022\010.Request\030\350\007 \001(\0132\n.Heart",
-      "beat:3\n\017connect_request\022\010.Request\030\351\007 \001(\013" +
-      "2\017.ConnectRequest:/\n\rlogin_request\022\010.Req" +
-      "uest\030\352\007 \001(\0132\r.LoginRequest:/\n\rregister_t" +
-      "ask\022\010.Request\030\353\007 \001(\0132\r.RegisterTask:8\n\022t" +
-      "ask_status_update\022\010.Request\030\354\007 \001(\0132\021.Tas" +
-      "kStatusUpdate:1\n\016logout_request\022\010.Reques" +
-      "t\030\355\007 \001(\0132\016.LogoutRequest:6\n\020connect_resp" +
-      "onse\022\t.Response\030\321\017 \001(\0132\020.ConnectResponse" +
-      ":2\n\016login_response\022\t.Response\030\322\017 \001(\0132\016.L" +
-      "oginResponse:A\n\026register_task_response\022\t",
-      ".Response\030\323\017 \001(\0132\025.RegisterTaskResponse:" +
-      ",\n\013task_notify\022\t.Response\030\324\017 \001(\0132\013.TaskN" +
-      "otify:4\n\017logout_response\022\t.Response\030\325\017 \001" +
-      "(\0132\017.LogoutResponseB&\n\030flowy.scheduler.p" +
-      "rotocalB\010MessagesH\001"
+      "\t:\000\022\022\n\nsession_id\030\003 \001(\005\"*\n\017LoginResultTy" +
+      "pe\022\013\n\007SUCCESS\020\000\022\n\n\006FAILED\020\001\"\235\001\n\024Register" +
+      "TaskResponse\022E\n\017register_result\030\001 \002(\0162,." +
+      "RegisterTaskResponse.RegisterTaskResultT" +
+      "ype\">\n\026RegisterTaskResultType\022\013\n\007SUCCESS" +
+      "\020\000\022\027\n\023TASK_ALREADY_EXISTS\020\001\"7\n\nTaskNotif" +
+      "y\022\017\n\007task_id\030\001 \002(\t\022\030\n\020task_instance_id\030\002" +
+      " \002(\t\"\020\n\016LogoutResponse:(\n\theartbeat\022\010.Re",
+      "quest\030\350\007 \001(\0132\n.Heartbeat:3\n\017connect_requ" +
+      "est\022\010.Request\030\351\007 \001(\0132\017.ConnectRequest:/\n" +
+      "\rlogin_request\022\010.Request\030\352\007 \001(\0132\r.LoginR" +
+      "equest:/\n\rregister_task\022\010.Request\030\353\007 \001(\013" +
+      "2\r.RegisterTask:8\n\022task_status_update\022\010." +
+      "Request\030\354\007 \001(\0132\021.TaskStatusUpdate:1\n\016log" +
+      "out_request\022\010.Request\030\355\007 \001(\0132\016.LogoutReq" +
+      "uest:6\n\020connect_response\022\t.Response\030\321\017 \001" +
+      "(\0132\020.ConnectResponse:2\n\016login_response\022\t" +
+      ".Response\030\322\017 \001(\0132\016.LoginResponse:A\n\026regi",
+      "ster_task_response\022\t.Response\030\323\017 \001(\0132\025.R" +
+      "egisterTaskResponse:,\n\013task_notify\022\t.Res" +
+      "ponse\030\324\017 \001(\0132\013.TaskNotify:4\n\017logout_resp" +
+      "onse\022\t.Response\030\325\017 \001(\0132\017.LogoutResponseB" +
+      "&\n\030flowy.scheduler.protocalB\010MessagesH\001"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -7111,7 +7192,7 @@ public final class Messages {
           internal_static_LoginResponse_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_LoginResponse_descriptor,
-              new java.lang.String[] { "ResultType", "FailReason", });
+              new java.lang.String[] { "ResultType", "FailReason", "SessionId", });
           internal_static_RegisterTaskResponse_descriptor =
             getDescriptor().getMessageTypes().get(10);
           internal_static_RegisterTaskResponse_fieldAccessorTable = new
