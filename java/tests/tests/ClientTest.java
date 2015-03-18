@@ -44,9 +44,9 @@ public class ClientTest implements ITaskNotifyCallback {
 				new Date());
 		client.taskStart(instanceId);
 		try {
-			Thread.sleep(1000l);
+			Thread.sleep(10000l);
 			client.taskRunning(instanceId, 0);
-			Thread.sleep(1000l);
+			Thread.sleep(10000l);
 			client.taskComplete(instanceId);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
