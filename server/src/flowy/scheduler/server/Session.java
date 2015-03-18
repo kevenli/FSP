@@ -3,9 +3,12 @@ package flowy.scheduler.server;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Hashtable;
 import java.util.List;
+import java.util.Queue;
 import java.util.UUID;
 
 import static org.quartz.JobBuilder.*;
@@ -45,7 +48,7 @@ public class Session{
 	private Channel channel;
 	private List<String> jobs = new ArrayList<String>();
 	
-	
+	private Hashtable<Integer, Queue<TaskInstance>> taskQueues = new Hashtable<Integer, Queue<TaskInstance>>();
 
 	public Session(int sessionId, int applicationId, SessionHandler sessionHandler, Scheduler scheduler){
 		m_sessionId = sessionId;
@@ -62,25 +65,38 @@ public class Session{
 	}
 
 	public void onNotify(int taskId){
+		synchronized(taskQueues){
+			if(!taskQueues.containsKey(taskId)){
+				taskQueues.put(taskId, new ArrayDeque<TaskInstance>());
+			}
+		}
+		
 		TaskDAO dao = new TaskDAO();
 		Task task = dao.getTask(taskId);
-		
-		TaskInstance instance = new TaskInstance();
-		instance.setId(UUID.randomUUID().toString());
-		instance.setTaskId(task.getId());
-		instance.setSessionId(m_sessionId);
-		instance.setFireTime(new Date());
-		instance.setStatus(TaskStatus.NotStart);
-		
-		dao.saveTaskInstance(instance);
-		
-		TaskNotify notify = TaskNotify.newBuilder()
-				.setTaskId(task.getClientTaskId())
-				.setTaskInstanceId(instance.getId())
-				.build();
-		
-		channel.writeAndFlush(buildResponseMessage(ResponseType.TASK_NOTIFY, 
-				Messages.taskNotify, notify));
+		// at most contains 2 elements: 1 executing, 1 waiting
+		// otherwise, ignore the new fire.
+		Queue<TaskInstance> queue = taskQueues.get(taskId);
+		int queueSize = queue.size();
+		if (queueSize<2){
+			TaskInstance instance = new TaskInstance();
+			instance.setId(UUID.randomUUID().toString());
+			instance.setTaskId(task.getId());
+			instance.setSessionId(m_sessionId);
+			instance.setFireTime(new Date());
+			instance.setStatus(TaskStatus.NotStart);
+			
+			dao.saveTaskInstance(instance);
+			queue.add(instance);
+			if (queueSize == 0){
+				TaskNotify notify = TaskNotify.newBuilder()
+						.setTaskId(task.getClientTaskId())
+						.setTaskInstanceId(instance.getId())
+						.build();
+				
+				channel.writeAndFlush(buildResponseMessage(ResponseType.TASK_NOTIFY, 
+						Messages.taskNotify, notify));
+			}
+		}
 	}
 	
 	public void bindHandler(SessionHandler sessionHandler){
@@ -148,6 +164,8 @@ public class Session{
 			TaskStatusUpdate taskStatusUpdate) {
 		TaskDAO dao = new TaskDAO();
 		TaskInstance instance = dao.getTaskInstance(taskStatusUpdate.getInstanceId());
+		int taskId = instance.getTaskId();
+		
 		if (taskStatusUpdate.getStatus() == Status.START){
 			instance.setStatus(TaskStatus.Start);
 			instance.setStartTime(new Date());
@@ -162,11 +180,32 @@ public class Session{
 			instance.setUpdateTime(new Date());
 			instance.setCompleteTime(new Date());
 			dao.updateTaskInstance(instance);
+			pollAndNotifyNext(taskId);
 		}else if(taskStatusUpdate.getStatus() == Status.FAILED){
 			instance.setStatus(TaskStatus.Failed);
 			instance.setUpdateTime(new Date());
 			instance.setCompleteTime(new Date());
 			dao.updateTaskInstance(instance);
+			pollAndNotifyNext(taskId);
+		}
+	}
+	
+	private void pollAndNotifyNext(int taskId){
+		Queue<TaskInstance> queue = taskQueues.get(taskId);
+		// remove the first element which is complete
+		queue.poll();
+		TaskDAO dao = new TaskDAO();
+		if (queue.size()>0){
+			// there is still a task instance waiting, notify it to the client.
+			TaskInstance instance = queue.peek();
+			Task task = dao.getTask(taskId);
+			TaskNotify notify = TaskNotify.newBuilder()
+					.setTaskId(task.getClientTaskId())
+					.setTaskInstanceId(instance.getId())
+					.build();
+			
+			channel.writeAndFlush(buildResponseMessage(ResponseType.TASK_NOTIFY, 
+					Messages.taskNotify, notify));
 		}
 		
 	}
