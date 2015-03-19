@@ -1,4 +1,4 @@
-package flowy.scheduler.server;
+package flowy.scheduler.server.util;
 import java.util.Random;
 
 

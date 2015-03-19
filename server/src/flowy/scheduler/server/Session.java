@@ -32,6 +32,7 @@ import flowy.scheduler.protocal.Messages.TaskNotify;
 import flowy.scheduler.protocal.Messages.TaskStatusUpdate;
 import flowy.scheduler.protocal.Messages.TaskStatusUpdate.Status;
 import flowy.scheduler.server.data.TaskDAO;
+import flowy.scheduler.server.util.RandomUtil;
 
 import org.apache.log4j.Logger;
 import org.quartz.JobDetail;
@@ -51,6 +52,7 @@ public class Session{
 	private int applicationId;
 	private Channel channel;
 	private List<String> jobs = new ArrayList<String>();
+	private int suspensionId = -1;
 	
 	private Hashtable<Integer, Queue<TaskInstance>> taskQueues = new Hashtable<Integer, Queue<TaskInstance>>();
 
@@ -69,6 +71,7 @@ public class Session{
 		// resume the session with channel
 		this.channel = channel;
 		
+		this.suspensionId = -1;
 		// send all suspended notifications
 		Enumeration<Integer> keys=taskQueues.keys();
 		while(keys.hasMoreElements()){
@@ -150,7 +153,7 @@ public class Session{
 				jobName, 
 				DEFAULT_GROUP_NAME).build();
 		
-		job.getJobDataMap().put("SessionInstance", this);
+		job.getJobDataMap().put("SessionId", this.m_sessionId);
 		job.getJobDataMap().put("TaskId", task.getId());
 		
     	Trigger trigger = newTrigger().withIdentity(
@@ -183,6 +186,10 @@ public class Session{
 			TaskStatusUpdate taskStatusUpdate) {
 		TaskDAO dao = new TaskDAO();
 		TaskInstance instance = dao.getTaskInstance(taskStatusUpdate.getInstanceId());
+		if (instance == null){
+			logger.warn("Cannot find task instance " + taskStatusUpdate.getInstanceId());
+			return;
+		}
 		int taskId = instance.getTaskId();
 		
 		if (taskStatusUpdate.getStatus() == Status.START){
@@ -257,7 +264,16 @@ public class Session{
 	}
 
 	public void suspend() {
+		this.suspensionId = RandomUtil.randomPositiveInt();
 		this.channel = null;
+	}
+	
+	public void unbindChannel(){
+		this.channel = null;
+	}
+	
+	public int getSuspensionId(){
+		return this.suspensionId;
 	}
 	
 	private void sendTaskNotification(TaskInstance taskInstance){
