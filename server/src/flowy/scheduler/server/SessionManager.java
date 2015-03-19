@@ -73,7 +73,7 @@ public class SessionManager {
 			
 			// add to collection
 			m_sessions.put(newSessionId, session);
-			
+			logger.debug("New session established: " + newSessionId);
 			return session;
 		}
 	}
@@ -89,6 +89,9 @@ public class SessionManager {
 		logger.debug("Session logout : " + sessionId);
 		session.onLogout();
 		m_sessions.remove(sessionId);
+		
+		SessionDAO dao = new SessionDAO();
+		dao.deleteSession(sessionId);
 	}
 
 	public Session resumeSession(Session currentSession, int resumeToSessionId, Channel channel) {

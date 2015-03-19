@@ -110,14 +110,10 @@ public class Session{
 			
 			dao.saveTaskInstance(instance);
 			queue.offer(instance);
+
+			// if this is the first element in the queue, send it to client.
 			if (queueSize == 0){
-				TaskNotify notify = TaskNotify.newBuilder()
-						.setTaskId(task.getClientTaskId())
-						.setTaskInstanceId(instance.getId())
-						.build();
-				
-				channel.writeAndFlush(buildResponseMessage(ResponseType.TASK_NOTIFY, 
-						Messages.taskNotify, notify));
+				sendTaskNotification(instance);
 			}
 		}
 	}
@@ -272,8 +268,12 @@ public class Session{
 				.setTaskInstanceId(taskInstance.getId())
 				.build();
 		
-		channel.writeAndFlush(buildResponseMessage(ResponseType.TASK_NOTIFY, 
-				Messages.taskNotify, notify));
+		// channel would be null when suspending
+		// notification will be sent when session resumed
+		if (channel != null){
+			channel.writeAndFlush(buildResponseMessage(ResponseType.TASK_NOTIFY, 
+					Messages.taskNotify, notify));
+		}
 	}
 	
 }

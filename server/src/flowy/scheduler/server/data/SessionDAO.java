@@ -17,5 +17,20 @@ public class SessionDAO extends DAOBase {
 		session.close();
 		return sessionVO;
 	}
+	
+	public void deleteSession(int sessionId){
+		Session session = openSession();
+		try{
+			Transaction trans = session.beginTransaction();
+			SessionVO sessionVO = (SessionVO)session.get(SessionVO.class, sessionId);
+			if (sessionVO!=null){
+				session.delete(sessionVO);
+			}
+			trans.commit();
+		}
+		finally{
+			session.close();
+		}
+	}
 
 }
