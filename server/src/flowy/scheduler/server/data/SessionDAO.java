@@ -1,35 +1,53 @@
 package flowy.scheduler.server.data;
 
+import org.apache.log4j.Logger;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+
 import flowy.scheduler.entities.SessionVO;
 
 public class SessionDAO extends DAOBase {
+	
+	private static Logger logger = Logger.getLogger(SessionDAO.class);
+	
 	public SessionDAO() {
 
 	}
 	
 	public SessionVO SaveSession(SessionVO sessionVO){
-		Session session = openSession();
-		Transaction trans = session.beginTransaction();
-		session.save(sessionVO);
-		trans.commit();
-		session.close();
-		return sessionVO;
+		synchronized(SessionDAO.class){
+			Session session = openSession();
+			try{
+				Transaction trans = session.beginTransaction();
+				session.save(sessionVO);
+				session.flush();
+				trans.commit();
+				return sessionVO;
+			}
+			finally{
+				session.close();
+			}
+		}
+		
 	}
 	
 	public void deleteSession(int sessionId){
-		Session session = openSession();
-		try{
-			Transaction trans = session.beginTransaction();
-			SessionVO sessionVO = (SessionVO)session.get(SessionVO.class, sessionId);
-			if (sessionVO!=null){
+		synchronized(SessionDAO.class){
+			Session session = openSession();
+			try{
+				Transaction trans = session.beginTransaction();
+				SessionVO sessionVO = (SessionVO)session.get(SessionVO.class, sessionId);
+				if (sessionVO==null){
+					logger.warn("deleteSession, cannot find session " + sessionId);
+					return;
+				}
 				session.delete(sessionVO);
+				session.flush();
+				trans.commit();
 			}
-			trans.commit();
-		}
-		finally{
-			session.close();
+			finally{
+				session.close();
+			}
 		}
 	}
 

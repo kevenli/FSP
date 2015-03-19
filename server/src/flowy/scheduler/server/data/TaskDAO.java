@@ -16,6 +16,7 @@ public class TaskDAO extends DAOBase {
 		Transaction trans = session.beginTransaction();
 		try{
 			session.save(task);
+			session.flush();
 			trans.commit();
 			return task;
 		}
@@ -26,10 +27,13 @@ public class TaskDAO extends DAOBase {
 	
 	public Task getTask(int id){
 		Session session = openSession();
-		Task task = (Task)session.get(Task.class, id);
-		
-		session.close();
-		return task;
+		try{
+			Task task = (Task)session.get(Task.class, id);
+			return task;
+		}
+		finally{
+			session.close();
+		}
 	}
 	
 	public Task getTask(int applicationId, String clientTaskId){
@@ -48,27 +52,43 @@ public class TaskDAO extends DAOBase {
 	
 	public Task updateTask(Task task) {
 		Session session = openSession();
-		Transaction trans = session.beginTransaction();
-		session.update(task);
-		trans.commit();
-		session.close();
-		return task;
+		try{
+			Transaction trans = session.beginTransaction();
+			session.update(task);
+			session.flush();
+			trans.commit();
+			return task;
+		}
+		finally{
+			session.close();
+		}
+		
 	}
 	public Task saveTask(Task task) {
 		Session session = openSession();
-		Transaction trans = session.beginTransaction();
-		session.saveOrUpdate(task);
-		trans.commit();
-		session.close();
-		return task;
+		try{
+			Transaction trans = session.beginTransaction();
+			session.saveOrUpdate(task);
+			session.flush();
+			trans.commit();
+			return task;
+		}
+		finally{
+			session.close();
+		}
 	}
 	public TaskInstance saveTaskInstance(TaskInstance instance) {
 		Session session = openSession();
-		Transaction trans = session.beginTransaction();
-		session.save(instance);
-		trans.commit();
-		session.close();
-		return instance;
+		try{
+			Transaction trans = session.beginTransaction();
+			session.save(instance);
+			session.flush();
+			trans.commit();
+			return instance;
+		}
+		finally{
+			session.close();
+		}
 	}
 	
 	public TaskInstance getTaskInstance(String id){
@@ -79,14 +99,20 @@ public class TaskDAO extends DAOBase {
 		finally{
 			session.close();
 		}
+
 	}
 	
 	public TaskInstance updateTaskInstance(TaskInstance taskInstance){
 		Session session = openSession();
-		Transaction trans = session.beginTransaction();
-		session.update(taskInstance);
-		trans.commit();
-		session.close();
-		return taskInstance;
+		try{
+			Transaction trans = session.beginTransaction();
+			session.update(taskInstance);
+			session.flush();
+			trans.commit();
+			return taskInstance;
+		}
+		finally{
+			session.close();
+		}
 	}
 }

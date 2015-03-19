@@ -18,9 +18,10 @@ public class DaoFactory {
 						.buildSessionFactory();
 				sessionFactory = sf;
 			}
-
-			org.hibernate.Session session = sessionFactory.openSession();
-			session.close();
+			
+			//org.hibernate.Session session = sessionFactory.openSession();
+			//ManagedSessionContext.bind(session);
+			
 		} catch (Exception ex) {
 			logger.error(ex);
 			return false;

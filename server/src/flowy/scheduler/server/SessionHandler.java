@@ -29,6 +29,8 @@ public class SessionHandler extends ChannelHandlerAdapter {
 	private static Logger logger = Logger.getLogger(SessionHandler.class);
 
 	private Session session;
+	
+	private ApplicationDAO applicationDAO = new ApplicationDAO();
 
 	@Override
 	public void channelRead(ChannelHandlerContext ctx, Object msg)
@@ -103,10 +105,9 @@ public class SessionHandler extends ChannelHandlerAdapter {
 	}
 
 	private void doLogin(ChannelHandlerContext ctx, LoginRequest request) {
-		ApplicationDAO dao = new ApplicationDAO();
 		String appKey = request.getAppKey();
 		String appSecret = request.getAppSecret();
-		Application application = dao.getApplication(appKey);
+		Application application = applicationDAO.getApplication(appKey);
 
 		if (application == null || !application.getAppSecret().equals(appSecret)) {
 			// auth failed

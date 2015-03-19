@@ -38,8 +38,8 @@ public class WorkerDAO extends DAOBase {
 			}
 
 			session.save(worker);
-			tx.commit();
 			session.flush();
+			tx.commit();
 			return worker;
 		} finally {
 			session.close();
@@ -48,13 +48,15 @@ public class WorkerDAO extends DAOBase {
 	
 	public Worker updateWorker(Worker worker){
 		Session session = openSession();
-		Transaction trans = session.beginTransaction();
-		
-		session.update(worker);
-		
-		trans.commit();
-		
-		session.close();
-		return worker;
+		try{
+			Transaction trans = session.beginTransaction();
+			session.update(worker);
+			session.flush();
+			trans.commit();
+			return worker;
+		}
+		finally{
+			session.close();
+		}
 	}
 }

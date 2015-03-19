@@ -57,6 +57,8 @@ public class Session{
 	private int suspensionId = -1;
 	
 	private Hashtable<Integer, Queue<TaskInstance>> taskQueues = new Hashtable<Integer, Queue<TaskInstance>>();
+	
+	private TaskDAO taskDAO = new TaskDAO();
 
 	public Session(int sessionId, int applicationId, Scheduler scheduler, Channel channel){
 		m_sessionId = sessionId;
@@ -109,8 +111,7 @@ public class Session{
 			}
 		}
 		
-		TaskDAO dao = new TaskDAO();
-		Task task = dao.getTask(taskId);
+		Task task = taskDAO.getTask(taskId);
 		// at most contains 2 elements: 1 executing, 1 waiting
 		// otherwise, ignore the new fire.
 
@@ -123,7 +124,7 @@ public class Session{
 			instance.setFireTime(new Date());
 			instance.setStatus(TaskStatus.NotStart);
 			
-			dao.saveTaskInstance(instance);
+			taskDAO.saveTaskInstance(instance);
 			queue.offer(instance);
 
 			// if this is the first element in the queue, send it to client.
@@ -137,7 +138,6 @@ public class Session{
 	}
 	
 	public void onRegisterTask(ChannelHandlerContext ctx, RegisterTask registerTaskRequest) throws SchedulerException {
-		TaskDAO taskDAO = new TaskDAO();
 		Task task = taskDAO.getTask(this.applicationId, registerTaskRequest.getTaskId());
 		
 		if(task!=null && !task.getExecuteTime().equals(registerTaskRequest.getExecuteTime())){
@@ -196,8 +196,7 @@ public class Session{
 
 	public void onTaskStatusUpdate(ChannelHandlerContext ctx,
 			TaskStatusUpdate taskStatusUpdate) {
-		TaskDAO dao = new TaskDAO();
-		TaskInstance instance = dao.getTaskInstance(taskStatusUpdate.getInstanceId());
+		TaskInstance instance = taskDAO.getTaskInstance(taskStatusUpdate.getInstanceId());
 		if (instance == null){
 			logger.warn("Cannot find task instance " + taskStatusUpdate.getInstanceId());
 			return;
@@ -208,22 +207,22 @@ public class Session{
 			instance.setStatus(TaskStatus.Start);
 			instance.setStartTime(new Date());
 			instance.setUpdateTime(new Date());
-			dao.updateTaskInstance(instance);
+			taskDAO.updateTaskInstance(instance);
 		}else if(taskStatusUpdate.getStatus() == Status.RUNNING){
 			instance.setStatus(TaskStatus.Running);
 			instance.setUpdateTime(new Date());
-			dao.updateTaskInstance(instance);
+			taskDAO.updateTaskInstance(instance);
 		}else if(taskStatusUpdate.getStatus() == Status.COMPLETE){
 			instance.setStatus(TaskStatus.Success);
 			instance.setUpdateTime(new Date());
 			instance.setCompleteTime(new Date());
-			dao.updateTaskInstance(instance);
+			taskDAO.updateTaskInstance(instance);
 			pollAndNotifyNext(taskId, instance.getId());
 		}else if(taskStatusUpdate.getStatus() == Status.FAILED){
 			instance.setStatus(TaskStatus.Failed);
 			instance.setUpdateTime(new Date());
 			instance.setCompleteTime(new Date());
-			dao.updateTaskInstance(instance);
+			taskDAO.updateTaskInstance(instance);
 			pollAndNotifyNext(taskId, instance.getId());
 		}
 	}
@@ -241,8 +240,7 @@ public class Session{
 		// if next task instance exists
 		TaskInstance instance = queue.peek();
 		if (instance != null){
-			TaskDAO dao = new TaskDAO();
-			Task task = dao.getTask(taskId);
+			Task task = taskDAO.getTask(taskId);
 			TaskNotify notify = TaskNotify.newBuilder()
 					.setTaskId(task.getClientTaskId())
 					.setTaskInstanceId(instance.getId())
@@ -289,8 +287,7 @@ public class Session{
 	}
 	
 	private void sendTaskNotification(TaskInstance taskInstance){
-		TaskDAO dao = new TaskDAO();
-		Task task = dao.getTask(taskInstance.getTaskId());
+		Task task = taskDAO.getTask(taskInstance.getTaskId());
 		TaskNotify notify = TaskNotify.newBuilder()
 				.setTaskId(task.getClientTaskId())
 				.setTaskInstanceId(taskInstance.getId())

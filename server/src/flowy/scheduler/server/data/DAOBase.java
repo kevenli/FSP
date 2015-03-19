@@ -6,18 +6,24 @@ import org.hibernate.cfg.Configuration;
 
 public abstract class DAOBase {
 
-	private static SessionFactory sessionFactory;
-	@SuppressWarnings("deprecation")
-	public DAOBase() {
-		if (sessionFactory == null){
-			Configuration cfg = new Configuration();
-			cfg.configure();
-			sessionFactory = cfg.buildSessionFactory();
-		}
-	}
+    private static final SessionFactory sessionFactory = buildSessionFactory();
+
+    @SuppressWarnings("deprecation")
+	private static SessionFactory buildSessionFactory() {
+        try {
+            // Create the SessionFactory from hibernate.cfg.xml
+            return new Configuration().configure().buildSessionFactory();
+        }
+        catch (Throwable ex) {
+            // Make sure you log the exception, as it might be swallowed
+            System.err.println("Initial SessionFactory creation failed." + ex);
+            throw new ExceptionInInitializerError(ex);
+        }
+    }
 
 	protected Session openSession() {
-		return sessionFactory.openSession();
+		Session session = sessionFactory.openSession();
+		return session;
 	}
 
 }
