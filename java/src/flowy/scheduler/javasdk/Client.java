@@ -293,9 +293,9 @@ public class Client {
 		this.channel.writeAndFlush(request).syncUninterruptibly();
 		synchronized(logoutLock){
 			try {
-				logoutLock.wait();
+				//wait no more than 5 seconds.
+				logoutLock.wait(5000l);
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
