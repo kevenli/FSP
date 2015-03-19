@@ -28,6 +28,8 @@ import flowy.scheduler.protocal.Messages.RegisterTask;
 import flowy.scheduler.protocal.Messages.RegisterTaskResponse;
 import flowy.scheduler.protocal.Messages.Request;
 import flowy.scheduler.protocal.Messages.Request.RequestType;
+import flowy.scheduler.protocal.Messages.ResumeSessionRequest;
+import flowy.scheduler.protocal.Messages.ResumeSessionResponse;
 import flowy.scheduler.protocal.Messages.TaskNotify;
 import flowy.scheduler.protocal.Messages.TaskStatusUpdate;
 import flowy.scheduler.protocal.Messages.TaskStatusUpdate.Status;
@@ -63,6 +65,8 @@ public class Client {
 	private ExecutorService threadPool = Executors.newFixedThreadPool(10);
 	
 	private Object closeLock = new Object();
+	
+	private int sessionId = -1;
 
 	public Client(String hosts, String app_key, String app_secret) {
 		this.hosts = hosts.split(";");
@@ -201,6 +205,20 @@ public class Client {
 			break;
 		case SUCCESS:
 			authenticationException = null;
+			if (sessionId > 0){
+				// has session id already, need resume session
+				ResumeSessionRequest resumeSessionRequest = ResumeSessionRequest.newBuilder()
+						.setSessionId(sessionId)
+						.build();
+				
+				Request request = Request.newBuilder()
+						.setType(Request.RequestType.RESUME_SESSION_REQUEST)
+						.setExtension(Messages.resumeSessionRequest, resumeSessionRequest).build();
+
+				this.channel.writeAndFlush(request);
+			}else{
+				sessionId = loginResponse.getSessionId();
+			}
 			break;
 		}
 		synchronized(connectLock){
@@ -323,4 +341,9 @@ public class Client {
 	public void onLogoutResponse(LogoutResponse extension) {
 		this.channel.close();
 	}
+
+	public void onResumeSessionResponse(ResumeSessionResponse response) {
+		this.sessionId = response.getSessionId();
+	}
+	
 }

@@ -81,8 +81,7 @@ public class SessionManager {
 	public void sessionTimeout(Session session) {
 		int sessionId = session.getId();
 		logger.debug("Session timeout : " + sessionId);
-		session.teardown();
-		m_sessions.remove(sessionId);
+		session.suspend();
 	}
 	
 	public void sessionLogout(Session session){

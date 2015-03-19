@@ -39,6 +39,9 @@ public class ClientHandler extends ChannelHandlerAdapter {
 		case LOGOUT_RESPONSE:
 			client.onLogoutResponse(response.getExtension(Messages.logoutResponse));
 			break;
+		case RESUME_SESSION_RESPONSE:
+			client.onResumeSessionResponse(response.getExtension(Messages.resumeSessionResponse));
+			break;
 		default:
 			throw new MessageInvalidException(); 
         }

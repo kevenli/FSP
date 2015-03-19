@@ -203,20 +203,25 @@ public class Session{
 			instance.setUpdateTime(new Date());
 			instance.setCompleteTime(new Date());
 			dao.updateTaskInstance(instance);
-			pollAndNotifyNext(taskId);
+			pollAndNotifyNext(taskId, instance.getId());
 		}else if(taskStatusUpdate.getStatus() == Status.FAILED){
 			instance.setStatus(TaskStatus.Failed);
 			instance.setUpdateTime(new Date());
 			instance.setCompleteTime(new Date());
 			dao.updateTaskInstance(instance);
-			pollAndNotifyNext(taskId);
+			pollAndNotifyNext(taskId, instance.getId());
 		}
 	}
 	
-	private void pollAndNotifyNext(int taskId){
+	private void pollAndNotifyNext(int taskId, String instanceId){
 		Queue<TaskInstance> queue = taskQueues.get(taskId);
 		// remove the first element which is complete
-		queue.poll();
+		// when session resumed, the same task instance may be notified more than once, check the instance id to poll.
+		TaskInstance taskInstanceToPoll = queue.peek();
+		if (taskInstanceToPoll!= null && taskInstanceToPoll.getId().equals(instanceId)){
+			// remove it
+			queue.poll();
+		}
 		
 		// if next task instance exists
 		TaskInstance instance = queue.peek();
