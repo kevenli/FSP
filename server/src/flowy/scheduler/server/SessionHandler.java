@@ -10,14 +10,13 @@ import flowy.scheduler.protocal.Messages;
 import flowy.scheduler.protocal.Messages.ConnectResponse;
 import flowy.scheduler.protocal.Messages.LoginRequest;
 import flowy.scheduler.protocal.Messages.LoginResponse;
+import flowy.scheduler.protocal.Messages.LogoutRequest;
 import flowy.scheduler.protocal.Messages.Response;
 import flowy.scheduler.protocal.Messages.LoginResponse.LoginResultType;
 import flowy.scheduler.protocal.Messages.Request;
 import flowy.scheduler.protocal.Messages.Request.RequestType;
 import flowy.scheduler.protocal.Messages.Response.ResponseType;
 import flowy.scheduler.protocal.Messages.ResumeSessionRequest;
-import flowy.scheduler.protocal.Messages.ResumeSessionResponse;
-import flowy.scheduler.protocal.Messages.ResumeSessionResponse.ResumeResultType;
 import flowy.scheduler.server.data.ApplicationDAO;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerAdapter;
@@ -53,7 +52,7 @@ public class SessionHandler extends ChannelHandlerAdapter {
 			session.onTaskStatusUpdate(ctx,
 					request.getExtension(Messages.taskStatusUpdate));
 		} else if (request.getType() == RequestType.LOGOUT_REQUEST) {
-			SessionManager.getInstance().sessionLogout(session);
+			logout(request.getExtension(Messages.logoutRequest));
 		}
 	}
 
@@ -63,14 +62,22 @@ public class SessionHandler extends ChannelHandlerAdapter {
 		if (evt instanceof IdleStateEvent) {
 			IdleStateEvent e = (IdleStateEvent) evt;
 			if (e.state() == IdleState.ALL_IDLE) {
-				SessionManager.getInstance().sessionTimeout(session);
+				if (session != null){
+					SessionManager.getInstance().sessionTimeout(session);
+				}
+				session = null;
+				ctx.channel().close();
 			}
 		}
 	}
 
 	@Override
 	public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-		SessionManager.getInstance().sessionTimeout(session);
+		if (session != null){
+			SessionManager.getInstance().sessionTimeout(session);
+		}
+		session = null;
+		ctx.channel().close();
 		super.channelInactive(ctx);
 	}
 
@@ -134,13 +141,9 @@ public class SessionHandler extends ChannelHandlerAdapter {
 				.setExtension(Messages.loginResponse, loginResponse).build();
 		ctx.writeAndFlush(response);
 	}
-
-	private void sendResumeSessionResponse(ChannelHandlerContext ctx,
-			ResumeSessionResponse resumeResponse) {
-		Response response = Response.newBuilder()
-				.setType(ResponseType.RESUME_SESSION_RESPONSE)
-				.setExtension(Messages.resumeSessionResponse, resumeResponse)
-				.build();
-		ctx.writeAndFlush(response);
+	
+	private void logout(LogoutRequest request){
+		SessionManager.getInstance().sessionLogout(session);
+		session = null;
 	}
 }

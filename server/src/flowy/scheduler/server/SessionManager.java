@@ -124,11 +124,12 @@ public class SessionManager {
 	public void sessionLogout(Session session) {
 		int sessionId = session.getId();
 		logger.debug("Session logout : " + sessionId);
-		session.onLogout();
-		m_sessions.remove(sessionId);
-
+		
 		SessionDAO dao = new SessionDAO();
 		dao.deleteSession(sessionId);
+		session.onLogout();
+		m_sessions.remove(sessionId);
+		
 	}
 
 	public Session resumeSession(Session currentSession, int resumeToSessionId,
