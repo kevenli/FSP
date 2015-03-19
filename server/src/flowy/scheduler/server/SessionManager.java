@@ -1,6 +1,5 @@
 package flowy.scheduler.server;
 
-import static org.quartz.CronScheduleBuilder.cronSchedule;
 import static org.quartz.JobBuilder.newJob;
 import static org.quartz.TriggerBuilder.newTrigger;
 import io.netty.channel.Channel;
@@ -11,11 +10,7 @@ import java.util.Hashtable;
 import java.util.Random;
 
 import org.apache.log4j.Logger;
-import org.quartz.Job;
-import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
-import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.Trigger;
@@ -139,7 +134,8 @@ public class SessionManager {
 	public Session resumeSession(Session currentSession, int resumeToSessionId,
 			Channel channel) {
 		if (!this.m_sessions.containsKey(resumeToSessionId)) {
-			return null;
+			currentSession.resumeFailed();
+			return currentSession;
 		}
 
 		Session resumeToSession = m_sessions.get(resumeToSessionId);

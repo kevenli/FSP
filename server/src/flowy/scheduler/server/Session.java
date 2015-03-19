@@ -25,9 +25,11 @@ import flowy.scheduler.protocal.Messages;
 import flowy.scheduler.protocal.Messages.LogoutResponse;
 import flowy.scheduler.protocal.Messages.RegisterTask;
 import flowy.scheduler.protocal.Messages.RegisterTaskResponse;
+import flowy.scheduler.protocal.Messages.ResumeSessionResponse;
 import flowy.scheduler.protocal.Messages.RegisterTaskResponse.RegisterTaskResultType;
 import flowy.scheduler.protocal.Messages.Response;
 import flowy.scheduler.protocal.Messages.Response.ResponseType;
+import flowy.scheduler.protocal.Messages.ResumeSessionResponse.ResumeResultType;
 import flowy.scheduler.protocal.Messages.TaskNotify;
 import flowy.scheduler.protocal.Messages.TaskStatusUpdate;
 import flowy.scheduler.protocal.Messages.TaskStatusUpdate.Status;
@@ -72,6 +74,16 @@ public class Session{
 		this.channel = channel;
 		
 		this.suspensionId = -1;
+		
+		
+		ResumeSessionResponse resumeSessionResponse = ResumeSessionResponse.newBuilder()
+				.setResultType(ResumeResultType.SUCCESS)
+				.setSessionId(this.m_sessionId)
+				.build();
+		
+		channel.writeAndFlush(buildResponseMessage(Response.ResponseType.RESUME_SESSION_RESPONSE,
+				Messages.resumeSessionResponse, resumeSessionResponse));
+		
 		// send all suspended notifications
 		Enumeration<Integer> keys=taskQueues.keys();
 		while(keys.hasMoreElements()){
@@ -290,6 +302,16 @@ public class Session{
 			channel.writeAndFlush(buildResponseMessage(ResponseType.TASK_NOTIFY, 
 					Messages.taskNotify, notify));
 		}
+	}
+
+	public void resumeFailed() {
+		ResumeSessionResponse resumeSessionResponse = ResumeSessionResponse.newBuilder()
+				.setResultType(ResumeResultType.SESSION_EXPIRED)
+				.setSessionId(this.m_sessionId)
+				.build();
+		
+		channel.writeAndFlush(buildResponseMessage(Response.ResponseType.RESUME_SESSION_RESPONSE,
+				Messages.resumeSessionResponse, resumeSessionResponse));
 	}
 	
 }
