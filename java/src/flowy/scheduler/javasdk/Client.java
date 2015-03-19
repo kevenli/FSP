@@ -23,6 +23,7 @@ import flowy.scheduler.javasdk.exceptions.TaskAlreadyExistsException;
 import flowy.scheduler.protocal.Messages;
 import flowy.scheduler.protocal.Messages.LoginRequest;
 import flowy.scheduler.protocal.Messages.LoginResponse;
+import flowy.scheduler.protocal.Messages.LogoutRequest;
 import flowy.scheduler.protocal.Messages.LogoutResponse;
 import flowy.scheduler.protocal.Messages.RegisterTask;
 import flowy.scheduler.protocal.Messages.RegisterTaskResponse;
@@ -65,6 +66,8 @@ public class Client {
 	private ExecutorService threadPool = Executors.newFixedThreadPool(10);
 	
 	private Object closeLock = new Object();
+	
+	private Object logoutLock = new Object();
 	
 	private int sessionId = -1;
 
@@ -268,6 +271,8 @@ public class Client {
 	public void close() throws InterruptedException {
 		if(!this.isShutdown){
 			this.isShutdown = true;
+			this.sessionId = -1;
+			logout();
 			this.channel.close();
 			workerGroup.shutdownGracefully();
 			workerGroup = null;
@@ -275,6 +280,26 @@ public class Client {
 				this.closeLock.notify();
 			}
 		}
+	}
+	
+	private void logout(){
+		LogoutRequest logoutRequest = LogoutRequest.newBuilder()
+				.build();
+		
+		Request request = Request.newBuilder()
+				.setType(Request.RequestType.LOGOUT_REQUEST)
+				.setExtension(Messages.logoutRequest, logoutRequest).build();
+
+		this.channel.writeAndFlush(request).syncUninterruptibly();
+		synchronized(logoutLock){
+			try {
+				logoutLock.wait();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
 	}
 
 	public void onTaskNotify(TaskNotify notify) {
@@ -290,11 +315,7 @@ public class Client {
 				.setStatus(Status.START)
 				.build();
 		
-		Request request = Request.newBuilder()
-				.setType(Request.RequestType.TASK_STATUS_UPDATE)
-				.setExtension(Messages.taskStatusUpdate, taskStatusUpdate).build();
-
-		this.channel.writeAndFlush(request);
+		sendTaskStatusUpdate(taskStatusUpdate);
 	}
 	
 	public void taskRunning(String taskInstanceId, int percentage){
@@ -304,11 +325,7 @@ public class Client {
 				.setPercentage(percentage)
 				.build();
 		
-		Request request = Request.newBuilder()
-				.setType(Request.RequestType.TASK_STATUS_UPDATE)
-				.setExtension(Messages.taskStatusUpdate, taskStatusUpdate).build();
-
-		this.channel.writeAndFlush(request);
+		sendTaskStatusUpdate(taskStatusUpdate);
 	}
 	
 	public void taskComplete(String taskInstanceId){
@@ -316,13 +333,9 @@ public class Client {
 				.setInstanceId(taskInstanceId)
 				.setStatus(Status.COMPLETE)
 				.build();
-		
-		Request request = Request.newBuilder()
-				.setType(Request.RequestType.TASK_STATUS_UPDATE)
-				.setExtension(Messages.taskStatusUpdate, taskStatusUpdate).build();
-
-		this.channel.writeAndFlush(request);
+		sendTaskStatusUpdate(taskStatusUpdate);
 	}
+	
 	
 	public void taskFail(String taskInstanceId, String errorMessage){
 		TaskStatusUpdate taskStatusUpdate = TaskStatusUpdate.newBuilder()
@@ -331,14 +344,24 @@ public class Client {
 				.setErrorMessage(errorMessage)
 				.build();
 		
+		sendTaskStatusUpdate(taskStatusUpdate);
+	}
+	
+	private void sendTaskStatusUpdate(TaskStatusUpdate update){
 		Request request = Request.newBuilder()
 				.setType(Request.RequestType.TASK_STATUS_UPDATE)
-				.setExtension(Messages.taskStatusUpdate, taskStatusUpdate).build();
+				.setExtension(Messages.taskStatusUpdate, update).build();
 
-		this.channel.writeAndFlush(request);
+		if (!this.isShutdown && this.channel!=null){
+			this.channel.writeAndFlush(request);
+		}
 	}
 
+
 	public void onLogoutResponse(LogoutResponse extension) {
+		synchronized(logoutLock){
+			logoutLock.notify();
+		}
 		this.channel.close();
 	}
 

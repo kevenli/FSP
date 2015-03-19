@@ -19,7 +19,12 @@ public class TaskNotifyCallbackRunner implements Runnable  {
 
 	@Override
 	public void run() {
-		callback.onTaskNotify(client, task, instanceId);
+		try{
+			callback.onTaskNotify(client, task, instanceId);
+		}
+		catch(Exception e){
+			e.printStackTrace();
+		}
 	}
 
 }
