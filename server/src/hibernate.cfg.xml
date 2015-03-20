@@ -13,8 +13,8 @@
          <property name="connection.username">scheduler</property>
          <property name="connection.password">scheduler</property>
          <property name="dialect">org.hibernate.dialect.MySQLDialect</property>
-         <property name="current_session_context_class">managed</property>
-
+         <property name="hibernate.connection.autocommit">true</property>
+        
          
          <mapping class="flowy.scheduler.entities.Application" />
          <mapping class="flowy.scheduler.entities.Worker"/>

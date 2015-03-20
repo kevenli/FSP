@@ -36,7 +36,7 @@ public class SessionDAO extends DAOBase {
 			Session session = openSession();
 			try{
 				Transaction trans = session.beginTransaction();
-				SessionVO sessionVO = (SessionVO)session.get(SessionVO.class, sessionId);
+				SessionVO sessionVO = (SessionVO)session.get(SessionVO.class, new Integer(sessionId));
 				if (sessionVO==null){
 					logger.warn("deleteSession, cannot find session " + sessionId);
 					return;
