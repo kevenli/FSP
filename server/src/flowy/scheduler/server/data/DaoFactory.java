@@ -1,31 +1,40 @@
 package flowy.scheduler.server.data;
 
 import org.apache.log4j.Logger;
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
+import org.hibernate.service.ServiceRegistry;
+import org.hibernate.service.ServiceRegistryBuilder;
 
+@SuppressWarnings("deprecation")
 public class DaoFactory {
 
 	private static SessionFactory sessionFactory;
 
 	private static Logger logger = Logger.getLogger(DaoFactory.class);
 
-	public static boolean testDatabaseConnection() {
-		try {
-			if (sessionFactory == null) {
-				@SuppressWarnings("deprecation")
-				SessionFactory sf = new Configuration().configure()
-						.buildSessionFactory();
-				sessionFactory = sf;
-			}
+	public static void init(String host, String username, String password, String dbname) {
+		logger.debug("Init database.");
+		
+		if (sessionFactory == null) {
 			
-			//org.hibernate.Session session = sessionFactory.openSession();
-			//ManagedSessionContext.bind(session);
-			
-		} catch (Exception ex) {
-			logger.error(ex);
-			return false;
+			Configuration configuration = new Configuration();
+			configuration.configure();
+			String url = String.format("jdbc:mysql://%s/%s?characterEncoding=utf8", host, dbname);
+			configuration.setProperty("hibernate.connection.url", url);
+			configuration.setProperty("hibernate.connection.username", username);
+	        configuration.setProperty("hibernate.connection.password", password);
+	        
+	        
+	        ServiceRegistry serviceRegistry = 
+	        		new ServiceRegistryBuilder().applySettings(configuration.getProperties()).buildServiceRegistry(); 
+	        
+	        SessionFactory sf = 
+	        		configuration.buildSessionFactory(serviceRegistry);
+			sessionFactory = sf;
+			Session session = sf.openSession();
+			session.close();
 		}
-		return true;
 	}
 }

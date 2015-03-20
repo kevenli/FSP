@@ -1,5 +1,10 @@
 package flowy.scheduler.server;
 
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
+
 import flowy.scheduler.server.data.DaoFactory;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
@@ -20,10 +25,33 @@ public class FSPServer {
 	
 	private static Logger logger = Logger.getLogger(FSPServer.class);
 	
+	private Properties config;
+	
 	public FSPServer() throws Exception{
-		if (!DaoFactory.testDatabaseConnection()){
-			throw new Exception("Cannot connect to database");
+		config = loadConfiguration();
+		
+		initDatabase();
+		
+	}
+	
+	private Properties loadConfiguration() throws IOException{
+		Properties prop = new Properties();
+		InputStream in = new FileInputStream("../conf/fspserver.conf");
+		try{
+			prop.load(in);
+			return prop;
+		}finally{
+			in.close();
 		}
+		
+	}
+	
+	private void initDatabase() throws Exception{
+		String mysqlHost = config.getProperty("mysql.host");
+		String mysqlUsername = config.getProperty("mysql.username");
+		String mysqlPassword = config.getProperty("mysql.password");
+		String mysqlDatabase = config.getProperty("mysql.database");
+		DaoFactory.init(mysqlHost, mysqlUsername, mysqlPassword, mysqlDatabase);
 	}
 	
 	public void Run() throws SchedulerException, InterruptedException {
