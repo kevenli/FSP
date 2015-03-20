@@ -1,28 +1,22 @@
 package flowy.scheduler.server.data;
 
+import org.hibernate.HibernateException;
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.cfg.Configuration;
+import flowy.scheduler.server.exceptions.DaoFactoryException;
 
 public abstract class DAOBase {
 
-    private static final SessionFactory sessionFactory = buildSessionFactory();
-
-    @SuppressWarnings("deprecation")
-	private static SessionFactory buildSessionFactory() {
-        try {
-            // Create the SessionFactory from hibernate.cfg.xml
-            return new Configuration().configure().buildSessionFactory();
-        }
-        catch (Throwable ex) {
-            // Make sure you log the exception, as it might be swallowed
-            System.err.println("Initial SessionFactory creation failed." + ex);
-            throw new ExceptionInInitializerError(ex);
-        }
-    }
-
 	protected Session openSession() {
-		Session session = sessionFactory.openSession();
+		Session session = null;
+		try {
+			session = DaoFactory.getSessionFactory().openSession();
+		} catch (HibernateException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (DaoFactoryException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return session;
 	}
 

@@ -7,6 +7,8 @@ import org.hibernate.cfg.Configuration;
 import org.hibernate.service.ServiceRegistry;
 import org.hibernate.service.ServiceRegistryBuilder;
 
+import flowy.scheduler.server.exceptions.DaoFactoryException;
+
 @SuppressWarnings("deprecation")
 public class DaoFactory {
 
@@ -36,5 +38,12 @@ public class DaoFactory {
 			Session session = sf.openSession();
 			session.close();
 		}
+	}
+	
+	public static SessionFactory getSessionFactory() throws DaoFactoryException{
+		if (sessionFactory==null){
+			throw new DaoFactoryException("DaoFactory should be initialized first.");
+		}
+		return sessionFactory;
 	}
 }
