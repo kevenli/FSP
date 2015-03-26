@@ -6,6 +6,7 @@ import org.hibernate.Transaction;
 
 import flowy.scheduler.entities.SessionVO;
 
+
 public class SessionDAO extends DAOBase {
 	
 	private static Logger logger = Logger.getLogger(SessionDAO.class);
@@ -19,7 +20,7 @@ public class SessionDAO extends DAOBase {
 			Session session = openSession();
 			try{
 				Transaction trans = session.beginTransaction();
-				session.save(sessionVO);
+				session.saveOrUpdate(sessionVO);
 				session.flush();
 				trans.commit();
 				return sessionVO;
@@ -48,6 +49,16 @@ public class SessionDAO extends DAOBase {
 			finally{
 				session.close();
 			}
+		}
+	}
+
+	public SessionVO getSession(int sessionId) {
+		Session session = openSession();
+		try{
+			return (SessionVO)session.get(SessionVO.class, sessionId);
+		}
+		finally{
+			session.close();
 		}
 	}
 

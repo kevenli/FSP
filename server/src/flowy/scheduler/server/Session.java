@@ -18,6 +18,7 @@ import static org.quartz.CronScheduleBuilder.*;
 
 import com.google.protobuf.GeneratedMessage.GeneratedExtension;
 
+import flowy.scheduler.entities.SessionVO;
 import flowy.scheduler.entities.Task;
 import flowy.scheduler.entities.TaskInstance;
 import flowy.scheduler.entities.TaskStatus;
@@ -35,6 +36,7 @@ import flowy.scheduler.protocal.Messages.TaskStatusUpdate;
 import flowy.scheduler.protocal.Messages.TaskStatusUpdate.Status;
 import flowy.scheduler.protocal.Messages.UnregisterTask;
 import flowy.scheduler.protocal.Messages.UnregisterTaskResponse;
+import flowy.scheduler.server.data.SessionDAO;
 import flowy.scheduler.server.data.TaskDAO;
 import flowy.scheduler.server.util.RandomUtil;
 
@@ -61,6 +63,8 @@ public class Session{
 	private Hashtable<Integer, Queue<TaskInstance>> taskQueues = new Hashtable<Integer, Queue<TaskInstance>>();
 	
 	private TaskDAO taskDAO = new TaskDAO();
+	
+	private SessionDAO sessionDAO = new SessionDAO();
 
 	public Session(int sessionId, int applicationId, Scheduler scheduler, Channel channel){
 		m_sessionId = sessionId;
@@ -159,7 +163,11 @@ public class Session{
 		task.setApplicationId(applicationId);
 		task.setClientTaskId(registerTaskRequest.getTaskId());
 		task.setExecuteTime(registerTaskRequest.getExecuteTime());
-		taskDAO.saveTask(task);
+		task = taskDAO.saveTask(task);
+		
+		SessionVO vo = sessionDAO.getSession(this.m_sessionId);
+		vo.getTasks().add(task);
+		sessionDAO.SaveSession(vo);
 		
 		// register quartz scheduler
 		String jobName = this.m_sessionId + "_" + registerTaskRequest.getTaskId() + "_job";
@@ -231,6 +239,9 @@ public class Session{
 	
 	private void pollAndNotifyNext(int taskId, String instanceId){
 		Queue<TaskInstance> queue = taskQueues.get(taskId);
+		if (queue == null){
+			return;
+		}
 		// remove the first element which is complete
 		// when session resumed, the same task instance may be notified more than once, check the instance id to poll.
 		TaskInstance taskInstanceToPoll = queue.peek();
