@@ -17,6 +17,7 @@ import flowy.scheduler.protocal.Messages.Request;
 import flowy.scheduler.protocal.Messages.Request.RequestType;
 import flowy.scheduler.protocal.Messages.Response.ResponseType;
 import flowy.scheduler.protocal.Messages.ResumeSessionRequest;
+import flowy.scheduler.protocal.Messages.UnregisterTask;
 import flowy.scheduler.server.data.ApplicationDAO;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerAdapter;
@@ -55,7 +56,13 @@ public class SessionHandler extends ChannelHandlerAdapter {
 					request.getExtension(Messages.taskStatusUpdate));
 		} else if (request.getType() == RequestType.LOGOUT_REQUEST) {
 			logout(request.getExtension(Messages.logoutRequest));
+		} else if (request.getType() == RequestType.UNREGISTER_TASK){
+			unregisterTask(request.getExtension(Messages.unregisterTask));
 		}
+	}
+
+	private void unregisterTask(UnregisterTask request) {
+		session.onUnregisterTask(request);
 	}
 
 	@Override

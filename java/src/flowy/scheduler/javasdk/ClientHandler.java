@@ -42,6 +42,9 @@ public class ClientHandler extends ChannelHandlerAdapter {
 		case RESUME_SESSION_RESPONSE:
 			client.onResumeSessionResponse(response.getExtension(Messages.resumeSessionResponse));
 			break;
+		case UNREGISTER_TASK_RESPONSE:
+			client.onUnregisterReponse(response.getExtension(Messages.unregisterTaskResponse));
+			break;
 		default:
 			throw new MessageInvalidException(); 
         }

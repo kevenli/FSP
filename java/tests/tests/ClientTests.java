@@ -45,8 +45,16 @@ public class ClientTests implements ITaskNotifyCallback {
 	@Test
 	public void testRegisterTask() throws Exception {
 		client.connect();
+		Task task = new Task("TestTask", "5 * * * * ?");
+		client.registerTask(task, this);
+	}
+	
+	@Test
+	public void testUnregisterTask() throws Exception {
+		client.connect();
 		Task task = new Task("TestTask", "*/5 * * * * ?");
 		client.registerTask(task, this);
+		client.unregisterTask(task);
 	}
 
 	@Test

@@ -12,6 +12,7 @@ message Request {
     TASK_STATUS_UPDATE = 4;
     LOGOUT_REQUEST = 5;
     RESUME_SESSION_REQUEST = 6;
+    UNREGISTER_TASK = 7;
   }
   required RequestType type = 1;
 }
@@ -24,6 +25,7 @@ extend Request {
   optional TaskStatusUpdate task_status_update = 1004;
   optional LogoutRequest logout_request = 1005;
   optional ResumeSessionRequest resume_session_request = 1006;
+  optional UnregisterTask unregister_task = 1007;
 }
 
 message Heartbeat {
@@ -65,6 +67,10 @@ message ResumeSessionRequest{
 	required int32 session_id = 1;
 }
 
+message UnregisterTask{
+  required string task_id = 1;
+}
+
 message Response {
   extensions 100 to max;
   enum ResponseType{
@@ -74,6 +80,7 @@ message Response {
     TASK_NOTIFY = 4;
     LOGOUT_RESPONSE = 5;
     RESUME_SESSION_RESPONSE = 6;
+    UNREGISTER_TASK_RESPONSE = 7;
   }
   required ResponseType type = 1;
 }
@@ -85,6 +92,7 @@ extend Response {
   optional TaskNotify task_notify = 2004;
   optional LogoutResponse logout_response = 2005;
   optional ResumeSessionResponse resume_session_response = 2006;
+  optional UnregisterTaskResponse unregister_task_response = 2007;
 }
 
 message ConnectResponse{
@@ -125,4 +133,8 @@ message ResumeSessionResponse{
 	}
 	required ResumeResultType result_type = 1;
 	optional int32 session_id = 2;
+}
+
+message UnregisterTaskResponse {
+
 }

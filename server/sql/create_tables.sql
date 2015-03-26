@@ -48,4 +48,9 @@ create table `task_status`(
 
 insert  into `task_status`(`id`,`name`) values (0, 'Unknown'),(1,'NotStart'),(2,'Start'),(3,'Running'),(4,'Success'),(5,'Failed'),(6,'Timeout');
 
-
+create table `task_sessions`(
+  `id` int not null primary key auto_increment,
+  `task_id` int not null,
+  `session_id` int not null,
+  UNIQUE KEY `idx_tasks_sessions_task_id_session_id` (`task_id`,`session_id`)  
+) ENGINE = InnoDB DEFAULT CHARSET=utf8;

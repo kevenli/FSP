@@ -33,6 +33,8 @@ import flowy.scheduler.protocal.Messages.ResumeSessionResponse.ResumeResultType;
 import flowy.scheduler.protocal.Messages.TaskNotify;
 import flowy.scheduler.protocal.Messages.TaskStatusUpdate;
 import flowy.scheduler.protocal.Messages.TaskStatusUpdate.Status;
+import flowy.scheduler.protocal.Messages.UnregisterTask;
+import flowy.scheduler.protocal.Messages.UnregisterTaskResponse;
 import flowy.scheduler.server.data.TaskDAO;
 import flowy.scheduler.server.util.RandomUtil;
 
@@ -309,6 +311,36 @@ public class Session{
 		
 		channel.writeAndFlush(buildResponseMessage(Response.ResponseType.RESUME_SESSION_RESPONSE,
 				Messages.resumeSessionResponse, resumeSessionResponse));
+	}
+
+	public void onUnregisterTask(UnregisterTask request) {
+		String taskClientId = request.getTaskId();
+		Task task = taskDAO.getTask(this.applicationId, taskClientId);
+
+		taskDAO.saveTask(task);
+		
+		// register quartz scheduler
+		String jobName = this.m_sessionId + "_" + taskClientId + "_job";
+		
+    	
+		// remove scheduled job
+		try {
+			m_scheduler.deleteJob(new JobKey(jobName, DEFAULT_GROUP_NAME));
+		} catch (SchedulerException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		// remove from queue
+		if (taskQueues.containsKey(task.getId())){
+			taskQueues.remove(task.getId());
+		}
+		
+		UnregisterTaskResponse responseMessage = UnregisterTaskResponse.newBuilder()
+				.build();
+		channel.writeAndFlush(buildResponseMessage(ResponseType.UNREGISTER_TASK_RESPONSE,
+				Messages.unregisterTaskResponse, 
+				responseMessage));
 	}
 	
 }

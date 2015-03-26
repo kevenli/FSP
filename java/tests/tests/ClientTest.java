@@ -19,7 +19,9 @@ public class ClientTest implements ITaskNotifyCallback {
 		
 		try {
 			client.connect();
-			client.registerTask(new Task("TestTask", "*/5 * * * * ?"), test);
+			Task task = new Task("TestTask", "*/5 * * * * ?");
+			client.registerTask(task, test);
+			client.unregisterTask(task);
 			client.waitTillClose();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

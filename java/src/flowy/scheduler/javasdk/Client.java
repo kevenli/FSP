@@ -28,12 +28,14 @@ import flowy.scheduler.protocal.Messages.LogoutResponse;
 import flowy.scheduler.protocal.Messages.RegisterTask;
 import flowy.scheduler.protocal.Messages.RegisterTaskResponse;
 import flowy.scheduler.protocal.Messages.Request;
+import flowy.scheduler.protocal.Messages.UnregisterTask;
 import flowy.scheduler.protocal.Messages.Request.RequestType;
 import flowy.scheduler.protocal.Messages.ResumeSessionRequest;
 import flowy.scheduler.protocal.Messages.ResumeSessionResponse;
 import flowy.scheduler.protocal.Messages.TaskNotify;
 import flowy.scheduler.protocal.Messages.TaskStatusUpdate;
 import flowy.scheduler.protocal.Messages.TaskStatusUpdate.Status;
+import flowy.scheduler.protocal.Messages.UnregisterTaskResponse;
 
 public class Client {
 	public static int DEFAULT_HOST_PORT = 3092;
@@ -56,6 +58,7 @@ public class Client {
 	private Object connectLock = new Object(); 
 	
 	private Object registerTaskLock = new Object();
+	private Object unregisterTaskLock = new Object();
 	private TaskAlreadyExistsException registerTaskException;
 	
 	private Channel channel;
@@ -169,6 +172,26 @@ public class Client {
 		}
 		taskCallbacks.put(task.getId(), callback);
 		tasks.put(task.getId(), task);
+	}
+	
+	public void unregisterTask(Task task){
+		UnregisterTask unregisterTask = UnregisterTask.newBuilder()
+				.setTaskId(task.getId())
+				.build();
+		
+		Request request = Request.newBuilder()
+				.setType(RequestType.UNREGISTER_TASK)
+				.setExtension(Messages.unregisterTask, unregisterTask)
+				.build();
+		channel.writeAndFlush(request);
+		try {
+			synchronized(unregisterTaskLock){
+				this.unregisterTaskLock.wait(30000);
+			}
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	void login(ChannelHandlerContext ctx) {
@@ -367,6 +390,12 @@ public class Client {
 
 	public void onResumeSessionResponse(ResumeSessionResponse response) {
 		this.sessionId = response.getSessionId();
+	}
+
+	public void onUnregisterReponse(UnregisterTaskResponse extension) {
+		synchronized(unregisterTaskLock){
+			this.unregisterTaskLock.notify();
+		}
 	}
 	
 }
