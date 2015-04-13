@@ -20,12 +20,15 @@ class FSPClientProtocol(Protocol):
         connect_request.client_protocol_version = "FSP_0.0.1"
         
         request = protocol.fsp_pb2.Request() 
-        request.type = protocol.fsp_pb2.Request.RequestType.CONNECT_REQUEST
-        request.Extensions[protocol.fsp_pb2.connect_request] = connect_request
+        request.type = protocol.fsp_pb2.Request.CONNECT_REQUEST
+        request.Extensions[protocol.fsp_pb2.connect_request].client_protocol_version="FSP_0.0.1"
         
         body = request.SerializeToString()
         body_length = len(body)
-        length_codec = Base128VarintCodec
+        length_codec = Base128VarintCodec();
+        encoded_length_package = length_codec.encode(body_length)
+        
+        self.transport.write(encoded_length_package+ body)
         
     
     def send_msg(self, msg):
