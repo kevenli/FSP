@@ -5,6 +5,7 @@ import protocol.fsp_pb2
 import string
 import logging
 import struct
+import threading
 
 DEFAULT_PORT = 3092
 
@@ -67,7 +68,10 @@ class FSPClientProtocol(Protocol):
             self._client.on_connect_response()
         elif response.type == protocol.fsp_pb2.Response.LOGIN_RESPONSE:
             self._client.on_login_response(response.Extensions[protocol.fsp_pb2.login_response])
-        
+        elif response.type == protocol.fsp_pb2.Response.REGISTER_TASK_RESPONSE:
+            self._client.on_register_response(response.Extensions[protocol.fsp_pb2.register_task_response])
+        elif response.type == protocol.fsp_pb2.Response.TASK_NOTIFY:
+            self._client.on_task_notify(response.Extensions[protocol.fsp_pb2.task_notify])
         
 
 class FSPClientFactory(ClientFactory):
@@ -75,10 +79,13 @@ class FSPClientFactory(ClientFactory):
 
 class Client():
     
+    task_callbacks = {}
+    
     def __init__(self, hosts, app_key, app_secret):
         self._hosts = tuple(self._parse_hosts(hosts))
         self._app_key = app_key
         self._app_secret = app_secret
+        self.connect_lock = threading.Event()
         
     @staticmethod   
     def _parse_hosts(hosts):
@@ -105,7 +112,52 @@ class Client():
         logging.debug('connecting %s:%d', host, port)
         creator.connectTCP(host, port).addCallback(self.got_protocol)
         
-        reactor.run()
+        self.trasport_thread = threading.Thread(target=reactor.run, args=(False,)).start()
+        #reactor.run()
+        self.connect_lock.wait()
+        
+    def register_task(self, task, callback):
+        self.task_callbacks[task.id] = (task, callback)
+        
+        request = protocol.fsp_pb2.Request() 
+        request.type = protocol.fsp_pb2.Request.REGISTER_TASK
+        request.Extensions[protocol.fsp_pb2.register_task].task_id=task.id
+        request.Extensions[protocol.fsp_pb2.register_task].execute_time=task.execute_time
+        self.protocol.send_msg(request)
+        
+    
+    def unregister_task(self, task):
+        self.task_callbacks.pop(task.id)
+        
+    def task_start(self, instance_id):
+        request = protocol.fsp_pb2.Request() 
+        request.type = protocol.fsp_pb2.Request.TASK_STATUS_UPDATE
+        request.Extensions[protocol.fsp_pb2.task_status_update].instance_id=instance_id
+        request.Extensions[protocol.fsp_pb2.task_status_update].status=protocol.fsp_pb2.TaskStatusUpdate.START
+        self.protocol.send_msg(request)
+
+    def task_running(self, instance_id, progress=0):
+        request = protocol.fsp_pb2.Request() 
+        request.type = protocol.fsp_pb2.Request.TASK_STATUS_UPDATE
+        request.Extensions[protocol.fsp_pb2.task_status_update].instance_id=instance_id
+        request.Extensions[protocol.fsp_pb2.task_status_update].status=protocol.fsp_pb2.TaskStatusUpdate.RUNNING
+        request.Extensions[protocol.fsp_pb2.task_status_update].percentage=progress
+        self.protocol.send_msg(request)
+    
+    def task_complete(self, instance_id):
+        request = protocol.fsp_pb2.Request() 
+        request.type = protocol.fsp_pb2.Request.TASK_STATUS_UPDATE
+        request.Extensions[protocol.fsp_pb2.task_status_update].instance_id=instance_id
+        request.Extensions[protocol.fsp_pb2.task_status_update].status=protocol.fsp_pb2.TaskStatusUpdate.COMPLETE
+        self.protocol.send_msg(request)
+    
+    def task_fail(self, instance_id, error_message):
+        request = protocol.fsp_pb2.Request() 
+        request.type = protocol.fsp_pb2.Request.TASK_STATUS_UPDATE
+        request.Extensions[protocol.fsp_pb2.task_status_update].instance_id=instance_id
+        request.Extensions[protocol.fsp_pb2.task_status_update].status=protocol.fsp_pb2.TaskStatusUpdate.FAILED
+        request.Extensions[protocol.fsp_pb2.task_status_update].error_message=error_message
+        self.protocol.send_msg(request)
         
     def on_connect_response(self):
         request = protocol.fsp_pb2.Request() 
@@ -115,8 +167,19 @@ class Client():
         self.protocol.send_msg(request)
        
     def on_login_response(self, login_response):
-        pass
+        self.connect_lock.set()
         
+    def on_register_response(self, register_response):
+        pass
+    
+    def on_task_notify(self, task_notify):
+        task, task_callback = self.task_callbacks[task_notify.task_id]
+        task_callback(self, task, task_notify.task_instance_id)
+        
+class Task:
+    def __init__(self, task_id, execute_time):
+        self.id = task_id
+        self.execute_time = execute_time
         
         
 class Base128VarintCodec:

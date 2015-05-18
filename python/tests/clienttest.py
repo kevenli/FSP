@@ -7,7 +7,8 @@ Created on 2015年4月10日
 @author: hao.li
 '''
 import unittest
-from fsp import Client;
+from fsp import Client
+from fsp.client import Task
 import logging
 
 
@@ -26,9 +27,36 @@ class Test(unittest.TestCase):
         client = Client('localhost:3092', 'abc', '123')
         client.connect()
         pass
+    
+    def test_register_task(self):
+        client = Client('localhost:3092', 'abc', '123')
+        client.connect()
+        task = Task("TestTask", "*/5 * * * * ?")
+        
+        client.register_task(task, self.task_callback)
+    
+    def task_callback(self, client, task, instanceId):
+        print 'task_callback', task
+        client.task_start(instanceId)
+        client.task_running(instanceId)
+        client.task_complete(instanceId)
+        
+    def test_task_fail(self):    
+        client = Client('localhost:3092', 'abc', '123')
+        client.connect()
+        task = Task("TestTask", "*/5 * * * * ?")
+        
+        client.register_task(task, self.task_callback_report_fail)
+        
+        
+    def task_callback_report_fail(self, client, task, instanceId):
+        print 'task_callback', task
+        client.task_start(instanceId)
+        client.task_running(instanceId)
+        client.task_fail(instanceId, "some exception")
 
 logging.basicConfig(level=logging.DEBUG)
 
 if __name__ == "__main__":
-    #import sys;sys.argv = ['', 'Test.testName']
+    import sys;sys.argv = ['', 'Test.test_task_fail']
     unittest.main()
