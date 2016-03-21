@@ -16,14 +16,14 @@ public class DaoFactory {
 
 	private static Logger logger = Logger.getLogger(DaoFactory.class);
 
-	public static void init(String host, String username, String password, String dbname) {
+	public static void init(String host, String username, String password, String dbname, int port) {
 		logger.debug("Init database.");
 		
 		if (sessionFactory == null) {
 			
 			Configuration configuration = new Configuration();
 			configuration.configure();
-			String url = String.format("jdbc:mysql://%s/%s?characterEncoding=utf8", host, dbname);
+			String url = String.format("jdbc:mysql://%s:%d/%s?characterEncoding=utf8", host, port, dbname);
 			configuration.setProperty("hibernate.connection.url", url);
 			configuration.setProperty("hibernate.connection.username", username);
 	        configuration.setProperty("hibernate.connection.password", password);

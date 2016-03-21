@@ -51,7 +51,8 @@ public class FSPServer {
 		String mysqlUsername = config.getProperty("mysql.username");
 		String mysqlPassword = config.getProperty("mysql.password");
 		String mysqlDatabase = config.getProperty("mysql.database");
-		DaoFactory.init(mysqlHost, mysqlUsername, mysqlPassword, mysqlDatabase);
+		int mysqlPort = Integer.parseInt(config.getProperty("mysql.port", "3306"));
+		DaoFactory.init(mysqlHost, mysqlUsername, mysqlPassword, mysqlDatabase, mysqlPort);
 	}
 	
 	public void Run() throws SchedulerException, InterruptedException {
