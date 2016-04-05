@@ -19,5 +19,6 @@
 	<classpathentry kind="lib" path="lib/javassist-3.18.1-GA.jar"/>
 	<classpathentry kind="lib" path="lib/antlr-2.7.7.jar"/>
 	<classpathentry kind="lib" path="lib/netty-all-5.0.0.Alpha2.jar"/>
+	<classpathentry kind="lib" path="lib/json-20160212.jar"/>
 	<classpathentry kind="output" path="build"/>
 </classpath>

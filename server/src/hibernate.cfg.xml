@@ -18,6 +18,7 @@
          <mapping class="flowy.scheduler.entities.Task"/>
          <mapping class="flowy.scheduler.entities.TaskInstance"/>
          <mapping class="flowy.scheduler.entities.SessionVO"/>
+         <mapping class="flowy.scheduler.entities.TaskType" />
      </session-factory>
      
  </hibernate-configuration>

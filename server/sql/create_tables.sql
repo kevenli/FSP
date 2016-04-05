@@ -54,3 +54,9 @@ create table `task_sessions`(
   `session_id` int not null,
   UNIQUE KEY `idx_tasks_sessions_task_id_session_id` (`task_id`,`session_id`)  
 ) ENGINE = InnoDB DEFAULT CHARSET=utf8;
+
+create table `task_types`(
+    `id` int not null primary key auto_increment,
+    `name` varchar(50) not null,
+    unique key `idx_task_types_name` (`name`)
+) engine = InnoDB default charset=utf8;
