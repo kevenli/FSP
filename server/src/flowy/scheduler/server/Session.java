@@ -23,6 +23,8 @@ import flowy.scheduler.entities.Task;
 import flowy.scheduler.entities.TaskInstance;
 import flowy.scheduler.entities.TaskStatus;
 import flowy.scheduler.protocal.Messages;
+import flowy.scheduler.protocal.Messages.CreateTaskRequest;
+import flowy.scheduler.protocal.Messages.CreateTaskResponse;
 import flowy.scheduler.protocal.Messages.LogoutResponse;
 import flowy.scheduler.protocal.Messages.RegisterTask;
 import flowy.scheduler.protocal.Messages.RegisterTaskResponse;
@@ -351,6 +353,15 @@ public class Session{
 				.build();
 		channel.writeAndFlush(buildResponseMessage(ResponseType.UNREGISTER_TASK_RESPONSE,
 				Messages.unregisterTaskResponse, 
+				responseMessage));
+	}
+	
+	public void onCreateTask(ChannelHandlerContext ctx,
+			CreateTaskRequest createTaskRequest)
+	{
+		CreateTaskResponse responseMessage = CreateTaskResponse.newBuilder().build();
+		channel.writeAndFlush(buildResponseMessage(ResponseType.CREATE_TASK_RESPONSE,
+				Messages.createTaskResponse, 
 				responseMessage));
 	}
 	

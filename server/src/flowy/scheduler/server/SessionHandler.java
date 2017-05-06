@@ -58,6 +58,8 @@ public class SessionHandler extends ChannelHandlerAdapter {
 			logout(request.getExtension(Messages.logoutRequest));
 		} else if (request.getType() == RequestType.UNREGISTER_TASK){
 			unregisterTask(request.getExtension(Messages.unregisterTask));
+		} else if (request.getType() == RequestType.CREATE_TASK){
+			session.onCreateTask(ctx, request.getExtension(Messages.createTask));
 		}
 	}
 
