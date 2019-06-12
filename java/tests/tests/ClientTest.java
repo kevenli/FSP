@@ -21,7 +21,10 @@ public class ClientTest implements ITaskNotifyCallback {
 			client.connect();
 			Task task = new Task("TestTask", "*/5 * * * * ?");
 			client.registerTask(task, test);
-			client.unregisterTask(task);
+			
+			Task task2 = new Task("TestTask2", "*/5 * * * * ?");
+			client.registerTask(task2, test);
+			//client.unregisterTask(task);
 			client.waitTillClose();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -46,6 +49,7 @@ public class ClientTest implements ITaskNotifyCallback {
 				new Date());
 		client.taskStart(instanceId);
 		try {
+			System.out.println(String.format("Current thread : %s", Thread.currentThread().getId()));
 			Thread.sleep(10000l);
 			client.taskRunning(instanceId, 0);
 			Thread.sleep(10000l);

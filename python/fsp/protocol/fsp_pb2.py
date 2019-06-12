@@ -13,7 +13,7 @@ from google.protobuf import descriptor_pb2
 DESCRIPTOR = _descriptor.FileDescriptor(
   name='fsp.proto',
   package='',
-  serialized_pb='\n\tfsp.proto\"\xee\x01\n\x07Request\x12\"\n\x04type\x18\x01 \x02(\x0e\x32\x14.Request.RequestType\"\xb4\x01\n\x0bRequestType\x12\r\n\tHEARTBEAT\x10\x00\x12\x13\n\x0f\x43ONNECT_REQUEST\x10\x01\x12\x11\n\rLOGIN_REQUEST\x10\x02\x12\x11\n\rREGISTER_TASK\x10\x03\x12\x16\n\x12TASK_STATUS_UPDATE\x10\x04\x12\x12\n\x0eLOGOUT_REQUEST\x10\x05\x12\x1a\n\x16RESUME_SESSION_REQUEST\x10\x06\x12\x13\n\x0fUNREGISTER_TASK\x10\x07*\x08\x08\x64\x10\x80\x80\x80\x80\x02\"\x0b\n\tHeartbeat\"1\n\x0e\x43onnectRequest\x12\x1f\n\x17\x63lient_protocol_version\x18\x01 \x02(\t\"3\n\x0cLoginRequest\x12\x0f\n\x07\x61pp_key\x18\x01 \x02(\t\x12\x12\n\napp_secret\x18\x02 \x02(\t\"5\n\x0cRegisterTask\x12\x0f\n\x07task_id\x18\x01 \x02(\t\x12\x14\n\x0c\x65xecute_time\x18\x02 \x02(\t\"\xb8\x01\n\x10TaskStatusUpdate\x12\x13\n\x0binstance_id\x18\x01 \x02(\t\x12(\n\x06status\x18\x02 \x02(\x0e\x32\x18.TaskStatusUpdate.Status\x12\x12\n\npercentage\x18\x03 \x01(\x05\x12\x15\n\rerror_message\x18\x04 \x01(\t\":\n\x06Status\x12\t\n\x05START\x10\x00\x12\x0b\n\x07RUNNING\x10\x01\x12\x0c\n\x08\x43OMPLETE\x10\x02\x12\n\n\x06\x46\x41ILED\x10\x03\"\x0f\n\rLogoutRequest\"*\n\x14ResumeSessionRequest\x12\x12\n\nsession_id\x18\x01 \x02(\x05\"!\n\x0eUnregisterTask\x12\x0f\n\x07task_id\x18\x01 \x02(\t\"\xf2\x01\n\x08Response\x12$\n\x04type\x18\x01 \x02(\x0e\x32\x16.Response.ResponseType\"\xb5\x01\n\x0cResponseType\x12\x14\n\x10\x43ONNECT_RESPONSE\x10\x01\x12\x12\n\x0eLOGIN_RESPONSE\x10\x02\x12\x1a\n\x16REGISTER_TASK_RESPONSE\x10\x03\x12\x0f\n\x0bTASK_NOTIFY\x10\x04\x12\x13\n\x0fLOGOUT_RESPONSE\x10\x05\x12\x1b\n\x17RESUME_SESSION_RESPONSE\x10\x06\x12\x1c\n\x18UNREGISTER_TASK_RESPONSE\x10\x07*\x08\x08\x64\x10\x80\x80\x80\x80\x02\"\x11\n\x0f\x43onnectResponse\"\x9b\x01\n\rLoginResponse\x12\x33\n\x0bresult_type\x18\x01 \x02(\x0e\x32\x1e.LoginResponse.LoginResultType\x12\x15\n\x0b\x66\x61il_reason\x18\x02 \x01(\t:\x00\x12\x12\n\nsession_id\x18\x03 \x01(\x05\"*\n\x0fLoginResultType\x12\x0b\n\x07SUCCESS\x10\x00\x12\n\n\x06\x46\x41ILED\x10\x01\"\x9d\x01\n\x14RegisterTaskResponse\x12\x45\n\x0fregister_result\x18\x01 \x02(\x0e\x32,.RegisterTaskResponse.RegisterTaskResultType\">\n\x16RegisterTaskResultType\x12\x0b\n\x07SUCCESS\x10\x00\x12\x17\n\x13TASK_ALREADY_EXISTS\x10\x01\"7\n\nTaskNotify\x12\x0f\n\x07task_id\x18\x01 \x02(\t\x12\x18\n\x10task_instance_id\x18\x02 \x02(\t\"\x10\n\x0eLogoutResponse\"\x9f\x01\n\x15ResumeSessionResponse\x12<\n\x0bresult_type\x18\x01 \x02(\x0e\x32\'.ResumeSessionResponse.ResumeResultType\x12\x12\n\nsession_id\x18\x02 \x01(\x05\"4\n\x10ResumeResultType\x12\x0b\n\x07SUCCESS\x10\x00\x12\x13\n\x0fSESSION_EXPIRED\x10\x01\"\x18\n\x16UnregisterTaskResponse:(\n\theartbeat\x12\x08.Request\x18\xe8\x07 \x01(\x0b\x32\n.Heartbeat:3\n\x0f\x63onnect_request\x12\x08.Request\x18\xe9\x07 \x01(\x0b\x32\x0f.ConnectRequest:/\n\rlogin_request\x12\x08.Request\x18\xea\x07 \x01(\x0b\x32\r.LoginRequest:/\n\rregister_task\x12\x08.Request\x18\xeb\x07 \x01(\x0b\x32\r.RegisterTask:8\n\x12task_status_update\x12\x08.Request\x18\xec\x07 \x01(\x0b\x32\x11.TaskStatusUpdate:1\n\x0elogout_request\x12\x08.Request\x18\xed\x07 \x01(\x0b\x32\x0e.LogoutRequest:@\n\x16resume_session_request\x12\x08.Request\x18\xee\x07 \x01(\x0b\x32\x15.ResumeSessionRequest:3\n\x0funregister_task\x12\x08.Request\x18\xef\x07 \x01(\x0b\x32\x0f.UnregisterTask:6\n\x10\x63onnect_response\x12\t.Response\x18\xd1\x0f \x01(\x0b\x32\x10.ConnectResponse:2\n\x0elogin_response\x12\t.Response\x18\xd2\x0f \x01(\x0b\x32\x0e.LoginResponse:A\n\x16register_task_response\x12\t.Response\x18\xd3\x0f \x01(\x0b\x32\x15.RegisterTaskResponse:,\n\x0btask_notify\x12\t.Response\x18\xd4\x0f \x01(\x0b\x32\x0b.TaskNotify:4\n\x0flogout_response\x12\t.Response\x18\xd5\x0f \x01(\x0b\x32\x0f.LogoutResponse:C\n\x17resume_session_response\x12\t.Response\x18\xd6\x0f \x01(\x0b\x32\x16.ResumeSessionResponse:E\n\x18unregister_task_response\x12\t.Response\x18\xd7\x0f \x01(\x0b\x32\x17.UnregisterTaskResponseB&\n\x18\x66lowy.scheduler.protocalB\x08MessagesH\x01')
+  serialized_pb='\n\tfsp.proto\"\xff\x01\n\x07Request\x12\"\n\x04type\x18\x01 \x02(\x0e\x32\x14.Request.RequestType\"\xc5\x01\n\x0bRequestType\x12\r\n\tHEARTBEAT\x10\x00\x12\x13\n\x0f\x43ONNECT_REQUEST\x10\x01\x12\x11\n\rLOGIN_REQUEST\x10\x02\x12\x11\n\rREGISTER_TASK\x10\x03\x12\x16\n\x12TASK_STATUS_UPDATE\x10\x04\x12\x12\n\x0eLOGOUT_REQUEST\x10\x05\x12\x1a\n\x16RESUME_SESSION_REQUEST\x10\x06\x12\x13\n\x0fUNREGISTER_TASK\x10\x07\x12\x0f\n\x0b\x43REATE_TASK\x10\x08*\x08\x08\x64\x10\x80\x80\x80\x80\x02\"\x0b\n\tHeartbeat\"1\n\x0e\x43onnectRequest\x12\x1f\n\x17\x63lient_protocol_version\x18\x01 \x02(\t\"3\n\x0cLoginRequest\x12\x0f\n\x07\x61pp_key\x18\x01 \x02(\t\x12\x12\n\napp_secret\x18\x02 \x02(\t\"5\n\x0cRegisterTask\x12\x0f\n\x07task_id\x18\x01 \x02(\t\x12\x14\n\x0c\x65xecute_time\x18\x02 \x02(\t\"\xb8\x01\n\x10TaskStatusUpdate\x12\x13\n\x0binstance_id\x18\x01 \x02(\t\x12(\n\x06status\x18\x02 \x02(\x0e\x32\x18.TaskStatusUpdate.Status\x12\x12\n\npercentage\x18\x03 \x01(\x05\x12\x15\n\rerror_message\x18\x04 \x01(\t\":\n\x06Status\x12\t\n\x05START\x10\x00\x12\x0b\n\x07RUNNING\x10\x01\x12\x0c\n\x08\x43OMPLETE\x10\x02\x12\n\n\x06\x46\x41ILED\x10\x03\"\x0f\n\rLogoutRequest\"*\n\x14ResumeSessionRequest\x12\x12\n\nsession_id\x18\x01 \x02(\x05\"!\n\x0eUnregisterTask\x12\x0f\n\x07task_id\x18\x01 \x02(\t\",\n\rTaskParameter\x12\x0c\n\x04name\x18\x01 \x02(\t\x12\r\n\x05value\x18\x02 \x02(\t\"J\n\x11\x43reateTaskRequest\x12\x11\n\ttask_name\x18\x01 \x02(\t\x12\"\n\nparameters\x18\x02 \x03(\x0b\x32\x0e.TaskParameter\"\x8c\x02\n\x08Response\x12$\n\x04type\x18\x01 \x02(\x0e\x32\x16.Response.ResponseType\"\xcf\x01\n\x0cResponseType\x12\x14\n\x10\x43ONNECT_RESPONSE\x10\x01\x12\x12\n\x0eLOGIN_RESPONSE\x10\x02\x12\x1a\n\x16REGISTER_TASK_RESPONSE\x10\x03\x12\x0f\n\x0bTASK_NOTIFY\x10\x04\x12\x13\n\x0fLOGOUT_RESPONSE\x10\x05\x12\x1b\n\x17RESUME_SESSION_RESPONSE\x10\x06\x12\x1c\n\x18UNREGISTER_TASK_RESPONSE\x10\x07\x12\x18\n\x14\x43REATE_TASK_RESPONSE\x10\x08*\x08\x08\x64\x10\x80\x80\x80\x80\x02\"\x11\n\x0f\x43onnectResponse\"\x9b\x01\n\rLoginResponse\x12\x33\n\x0bresult_type\x18\x01 \x02(\x0e\x32\x1e.LoginResponse.LoginResultType\x12\x15\n\x0b\x66\x61il_reason\x18\x02 \x01(\t:\x00\x12\x12\n\nsession_id\x18\x03 \x01(\x05\"*\n\x0fLoginResultType\x12\x0b\n\x07SUCCESS\x10\x00\x12\n\n\x06\x46\x41ILED\x10\x01\"\x9d\x01\n\x14RegisterTaskResponse\x12\x45\n\x0fregister_result\x18\x01 \x02(\x0e\x32,.RegisterTaskResponse.RegisterTaskResultType\">\n\x16RegisterTaskResultType\x12\x0b\n\x07SUCCESS\x10\x00\x12\x17\n\x13TASK_ALREADY_EXISTS\x10\x01\"7\n\nTaskNotify\x12\x0f\n\x07task_id\x18\x01 \x02(\t\x12\x18\n\x10task_instance_id\x18\x02 \x02(\t\"\x10\n\x0eLogoutResponse\"\x9f\x01\n\x15ResumeSessionResponse\x12<\n\x0bresult_type\x18\x01 \x02(\x0e\x32\'.ResumeSessionResponse.ResumeResultType\x12\x12\n\nsession_id\x18\x02 \x01(\x05\"4\n\x10ResumeResultType\x12\x0b\n\x07SUCCESS\x10\x00\x12\x13\n\x0fSESSION_EXPIRED\x10\x01\"\x18\n\x16UnregisterTaskResponse\"\x14\n\x12\x43reateTaskResponse:(\n\theartbeat\x12\x08.Request\x18\xe8\x07 \x01(\x0b\x32\n.Heartbeat:3\n\x0f\x63onnect_request\x12\x08.Request\x18\xe9\x07 \x01(\x0b\x32\x0f.ConnectRequest:/\n\rlogin_request\x12\x08.Request\x18\xea\x07 \x01(\x0b\x32\r.LoginRequest:/\n\rregister_task\x12\x08.Request\x18\xeb\x07 \x01(\x0b\x32\r.RegisterTask:8\n\x12task_status_update\x12\x08.Request\x18\xec\x07 \x01(\x0b\x32\x11.TaskStatusUpdate:1\n\x0elogout_request\x12\x08.Request\x18\xed\x07 \x01(\x0b\x32\x0e.LogoutRequest:@\n\x16resume_session_request\x12\x08.Request\x18\xee\x07 \x01(\x0b\x32\x15.ResumeSessionRequest:3\n\x0funregister_task\x12\x08.Request\x18\xef\x07 \x01(\x0b\x32\x0f.UnregisterTask:2\n\x0b\x63reate_task\x12\x08.Request\x18\xf0\x07 \x01(\x0b\x32\x12.CreateTaskRequest:6\n\x10\x63onnect_response\x12\t.Response\x18\xd1\x0f \x01(\x0b\x32\x10.ConnectResponse:2\n\x0elogin_response\x12\t.Response\x18\xd2\x0f \x01(\x0b\x32\x0e.LoginResponse:A\n\x16register_task_response\x12\t.Response\x18\xd3\x0f \x01(\x0b\x32\x15.RegisterTaskResponse:,\n\x0btask_notify\x12\t.Response\x18\xd4\x0f \x01(\x0b\x32\x0b.TaskNotify:4\n\x0flogout_response\x12\t.Response\x18\xd5\x0f \x01(\x0b\x32\x0f.LogoutResponse:C\n\x17resume_session_response\x12\t.Response\x18\xd6\x0f \x01(\x0b\x32\x16.ResumeSessionResponse:E\n\x18unregister_task_response\x12\t.Response\x18\xd7\x0f \x01(\x0b\x32\x17.UnregisterTaskResponse:=\n\x14\x63reate_task_response\x12\t.Response\x18\xd8\x0f \x01(\x0b\x32\x13.CreateTaskResponseB&\n\x18\x66lowy.scheduler.protocalB\x08MessagesH\x01')
 
 
 HEARTBEAT_FIELD_NUMBER = 1000
@@ -80,9 +80,17 @@ unregister_task = _descriptor.FieldDescriptor(
   message_type=None, enum_type=None, containing_type=None,
   is_extension=True, extension_scope=None,
   options=None)
+CREATE_TASK_FIELD_NUMBER = 1008
+create_task = _descriptor.FieldDescriptor(
+  name='create_task', full_name='create_task', index=8,
+  number=1008, type=11, cpp_type=10, label=1,
+  has_default_value=False, default_value=None,
+  message_type=None, enum_type=None, containing_type=None,
+  is_extension=True, extension_scope=None,
+  options=None)
 CONNECT_RESPONSE_FIELD_NUMBER = 2001
 connect_response = _descriptor.FieldDescriptor(
-  name='connect_response', full_name='connect_response', index=8,
+  name='connect_response', full_name='connect_response', index=9,
   number=2001, type=11, cpp_type=10, label=1,
   has_default_value=False, default_value=None,
   message_type=None, enum_type=None, containing_type=None,
@@ -90,7 +98,7 @@ connect_response = _descriptor.FieldDescriptor(
   options=None)
 LOGIN_RESPONSE_FIELD_NUMBER = 2002
 login_response = _descriptor.FieldDescriptor(
-  name='login_response', full_name='login_response', index=9,
+  name='login_response', full_name='login_response', index=10,
   number=2002, type=11, cpp_type=10, label=1,
   has_default_value=False, default_value=None,
   message_type=None, enum_type=None, containing_type=None,
@@ -98,7 +106,7 @@ login_response = _descriptor.FieldDescriptor(
   options=None)
 REGISTER_TASK_RESPONSE_FIELD_NUMBER = 2003
 register_task_response = _descriptor.FieldDescriptor(
-  name='register_task_response', full_name='register_task_response', index=10,
+  name='register_task_response', full_name='register_task_response', index=11,
   number=2003, type=11, cpp_type=10, label=1,
   has_default_value=False, default_value=None,
   message_type=None, enum_type=None, containing_type=None,
@@ -106,7 +114,7 @@ register_task_response = _descriptor.FieldDescriptor(
   options=None)
 TASK_NOTIFY_FIELD_NUMBER = 2004
 task_notify = _descriptor.FieldDescriptor(
-  name='task_notify', full_name='task_notify', index=11,
+  name='task_notify', full_name='task_notify', index=12,
   number=2004, type=11, cpp_type=10, label=1,
   has_default_value=False, default_value=None,
   message_type=None, enum_type=None, containing_type=None,
@@ -114,7 +122,7 @@ task_notify = _descriptor.FieldDescriptor(
   options=None)
 LOGOUT_RESPONSE_FIELD_NUMBER = 2005
 logout_response = _descriptor.FieldDescriptor(
-  name='logout_response', full_name='logout_response', index=12,
+  name='logout_response', full_name='logout_response', index=13,
   number=2005, type=11, cpp_type=10, label=1,
   has_default_value=False, default_value=None,
   message_type=None, enum_type=None, containing_type=None,
@@ -122,7 +130,7 @@ logout_response = _descriptor.FieldDescriptor(
   options=None)
 RESUME_SESSION_RESPONSE_FIELD_NUMBER = 2006
 resume_session_response = _descriptor.FieldDescriptor(
-  name='resume_session_response', full_name='resume_session_response', index=13,
+  name='resume_session_response', full_name='resume_session_response', index=14,
   number=2006, type=11, cpp_type=10, label=1,
   has_default_value=False, default_value=None,
   message_type=None, enum_type=None, containing_type=None,
@@ -130,8 +138,16 @@ resume_session_response = _descriptor.FieldDescriptor(
   options=None)
 UNREGISTER_TASK_RESPONSE_FIELD_NUMBER = 2007
 unregister_task_response = _descriptor.FieldDescriptor(
-  name='unregister_task_response', full_name='unregister_task_response', index=14,
+  name='unregister_task_response', full_name='unregister_task_response', index=15,
   number=2007, type=11, cpp_type=10, label=1,
+  has_default_value=False, default_value=None,
+  message_type=None, enum_type=None, containing_type=None,
+  is_extension=True, extension_scope=None,
+  options=None)
+CREATE_TASK_RESPONSE_FIELD_NUMBER = 2008
+create_task_response = _descriptor.FieldDescriptor(
+  name='create_task_response', full_name='create_task_response', index=16,
+  number=2008, type=11, cpp_type=10, label=1,
   has_default_value=False, default_value=None,
   message_type=None, enum_type=None, containing_type=None,
   is_extension=True, extension_scope=None,
@@ -175,11 +191,15 @@ _REQUEST_REQUESTTYPE = _descriptor.EnumDescriptor(
       name='UNREGISTER_TASK', index=7, number=7,
       options=None,
       type=None),
+    _descriptor.EnumValueDescriptor(
+      name='CREATE_TASK', index=8, number=8,
+      options=None,
+      type=None),
   ],
   containing_type=None,
   options=None,
   serialized_start=62,
-  serialized_end=242,
+  serialized_end=259,
 )
 
 _TASKSTATUSUPDATE_STATUS = _descriptor.EnumDescriptor(
@@ -207,8 +227,8 @@ _TASKSTATUSUPDATE_STATUS = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   options=None,
-  serialized_start=553,
-  serialized_end=611,
+  serialized_start=570,
+  serialized_end=628,
 )
 
 _RESPONSE_RESPONSETYPE = _descriptor.EnumDescriptor(
@@ -245,11 +265,15 @@ _RESPONSE_RESPONSETYPE = _descriptor.EnumDescriptor(
       name='UNREGISTER_TASK_RESPONSE', index=6, number=7,
       options=None,
       type=None),
+    _descriptor.EnumValueDescriptor(
+      name='CREATE_TASK_RESPONSE', index=7, number=8,
+      options=None,
+      type=None),
   ],
   containing_type=None,
   options=None,
-  serialized_start=761,
-  serialized_end=942,
+  serialized_start=900,
+  serialized_end=1107,
 )
 
 _LOGINRESPONSE_LOGINRESULTTYPE = _descriptor.EnumDescriptor(
@@ -269,8 +293,8 @@ _LOGINRESPONSE_LOGINRESULTTYPE = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   options=None,
-  serialized_start=1087,
-  serialized_end=1129,
+  serialized_start=1252,
+  serialized_end=1294,
 )
 
 _REGISTERTASKRESPONSE_REGISTERTASKRESULTTYPE = _descriptor.EnumDescriptor(
@@ -290,8 +314,8 @@ _REGISTERTASKRESPONSE_REGISTERTASKRESULTTYPE = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   options=None,
-  serialized_start=1227,
-  serialized_end=1289,
+  serialized_start=1392,
+  serialized_end=1454,
 )
 
 _RESUMESESSIONRESPONSE_RESUMERESULTTYPE = _descriptor.EnumDescriptor(
@@ -311,8 +335,8 @@ _RESUMESESSIONRESPONSE_RESUMERESULTTYPE = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   options=None,
-  serialized_start=1474,
-  serialized_end=1526,
+  serialized_start=1639,
+  serialized_end=1691,
 )
 
 
@@ -341,7 +365,7 @@ _REQUEST = _descriptor.Descriptor(
   is_extendable=True,
   extension_ranges=[(100, 536870912), ],
   serialized_start=14,
-  serialized_end=252,
+  serialized_end=269,
 )
 
 
@@ -361,8 +385,8 @@ _HEARTBEAT = _descriptor.Descriptor(
   options=None,
   is_extendable=False,
   extension_ranges=[],
-  serialized_start=254,
-  serialized_end=265,
+  serialized_start=271,
+  serialized_end=282,
 )
 
 
@@ -389,8 +413,8 @@ _CONNECTREQUEST = _descriptor.Descriptor(
   options=None,
   is_extendable=False,
   extension_ranges=[],
-  serialized_start=267,
-  serialized_end=316,
+  serialized_start=284,
+  serialized_end=333,
 )
 
 
@@ -424,8 +448,8 @@ _LOGINREQUEST = _descriptor.Descriptor(
   options=None,
   is_extendable=False,
   extension_ranges=[],
-  serialized_start=318,
-  serialized_end=369,
+  serialized_start=335,
+  serialized_end=386,
 )
 
 
@@ -459,8 +483,8 @@ _REGISTERTASK = _descriptor.Descriptor(
   options=None,
   is_extendable=False,
   extension_ranges=[],
-  serialized_start=371,
-  serialized_end=424,
+  serialized_start=388,
+  serialized_end=441,
 )
 
 
@@ -509,8 +533,8 @@ _TASKSTATUSUPDATE = _descriptor.Descriptor(
   options=None,
   is_extendable=False,
   extension_ranges=[],
-  serialized_start=427,
-  serialized_end=611,
+  serialized_start=444,
+  serialized_end=628,
 )
 
 
@@ -530,8 +554,8 @@ _LOGOUTREQUEST = _descriptor.Descriptor(
   options=None,
   is_extendable=False,
   extension_ranges=[],
-  serialized_start=613,
-  serialized_end=628,
+  serialized_start=630,
+  serialized_end=645,
 )
 
 
@@ -558,8 +582,8 @@ _RESUMESESSIONREQUEST = _descriptor.Descriptor(
   options=None,
   is_extendable=False,
   extension_ranges=[],
-  serialized_start=630,
-  serialized_end=672,
+  serialized_start=647,
+  serialized_end=689,
 )
 
 
@@ -586,8 +610,78 @@ _UNREGISTERTASK = _descriptor.Descriptor(
   options=None,
   is_extendable=False,
   extension_ranges=[],
-  serialized_start=674,
-  serialized_end=707,
+  serialized_start=691,
+  serialized_end=724,
+)
+
+
+_TASKPARAMETER = _descriptor.Descriptor(
+  name='TaskParameter',
+  full_name='TaskParameter',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='name', full_name='TaskParameter.name', index=0,
+      number=1, type=9, cpp_type=9, label=2,
+      has_default_value=False, default_value=unicode("", "utf-8"),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='value', full_name='TaskParameter.value', index=1,
+      number=2, type=9, cpp_type=9, label=2,
+      has_default_value=False, default_value=unicode("", "utf-8"),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  extension_ranges=[],
+  serialized_start=726,
+  serialized_end=770,
+)
+
+
+_CREATETASKREQUEST = _descriptor.Descriptor(
+  name='CreateTaskRequest',
+  full_name='CreateTaskRequest',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='task_name', full_name='CreateTaskRequest.task_name', index=0,
+      number=1, type=9, cpp_type=9, label=2,
+      has_default_value=False, default_value=unicode("", "utf-8"),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='parameters', full_name='CreateTaskRequest.parameters', index=1,
+      number=2, type=11, cpp_type=10, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  extension_ranges=[],
+  serialized_start=772,
+  serialized_end=846,
 )
 
 
@@ -615,8 +709,8 @@ _RESPONSE = _descriptor.Descriptor(
   options=None,
   is_extendable=True,
   extension_ranges=[(100, 536870912), ],
-  serialized_start=710,
-  serialized_end=952,
+  serialized_start=849,
+  serialized_end=1117,
 )
 
 
@@ -636,8 +730,8 @@ _CONNECTRESPONSE = _descriptor.Descriptor(
   options=None,
   is_extendable=False,
   extension_ranges=[],
-  serialized_start=954,
-  serialized_end=971,
+  serialized_start=1119,
+  serialized_end=1136,
 )
 
 
@@ -679,8 +773,8 @@ _LOGINRESPONSE = _descriptor.Descriptor(
   options=None,
   is_extendable=False,
   extension_ranges=[],
-  serialized_start=974,
-  serialized_end=1129,
+  serialized_start=1139,
+  serialized_end=1294,
 )
 
 
@@ -708,8 +802,8 @@ _REGISTERTASKRESPONSE = _descriptor.Descriptor(
   options=None,
   is_extendable=False,
   extension_ranges=[],
-  serialized_start=1132,
-  serialized_end=1289,
+  serialized_start=1297,
+  serialized_end=1454,
 )
 
 
@@ -743,8 +837,8 @@ _TASKNOTIFY = _descriptor.Descriptor(
   options=None,
   is_extendable=False,
   extension_ranges=[],
-  serialized_start=1291,
-  serialized_end=1346,
+  serialized_start=1456,
+  serialized_end=1511,
 )
 
 
@@ -764,8 +858,8 @@ _LOGOUTRESPONSE = _descriptor.Descriptor(
   options=None,
   is_extendable=False,
   extension_ranges=[],
-  serialized_start=1348,
-  serialized_end=1364,
+  serialized_start=1513,
+  serialized_end=1529,
 )
 
 
@@ -800,8 +894,8 @@ _RESUMESESSIONRESPONSE = _descriptor.Descriptor(
   options=None,
   is_extendable=False,
   extension_ranges=[],
-  serialized_start=1367,
-  serialized_end=1526,
+  serialized_start=1532,
+  serialized_end=1691,
 )
 
 
@@ -821,14 +915,36 @@ _UNREGISTERTASKRESPONSE = _descriptor.Descriptor(
   options=None,
   is_extendable=False,
   extension_ranges=[],
-  serialized_start=1528,
-  serialized_end=1552,
+  serialized_start=1693,
+  serialized_end=1717,
+)
+
+
+_CREATETASKRESPONSE = _descriptor.Descriptor(
+  name='CreateTaskResponse',
+  full_name='CreateTaskResponse',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  extension_ranges=[],
+  serialized_start=1719,
+  serialized_end=1739,
 )
 
 _REQUEST.fields_by_name['type'].enum_type = _REQUEST_REQUESTTYPE
 _REQUEST_REQUESTTYPE.containing_type = _REQUEST;
 _TASKSTATUSUPDATE.fields_by_name['status'].enum_type = _TASKSTATUSUPDATE_STATUS
 _TASKSTATUSUPDATE_STATUS.containing_type = _TASKSTATUSUPDATE;
+_CREATETASKREQUEST.fields_by_name['parameters'].message_type = _TASKPARAMETER
 _RESPONSE.fields_by_name['type'].enum_type = _RESPONSE_RESPONSETYPE
 _RESPONSE_RESPONSETYPE.containing_type = _RESPONSE;
 _LOGINRESPONSE.fields_by_name['result_type'].enum_type = _LOGINRESPONSE_LOGINRESULTTYPE
@@ -846,6 +962,8 @@ DESCRIPTOR.message_types_by_name['TaskStatusUpdate'] = _TASKSTATUSUPDATE
 DESCRIPTOR.message_types_by_name['LogoutRequest'] = _LOGOUTREQUEST
 DESCRIPTOR.message_types_by_name['ResumeSessionRequest'] = _RESUMESESSIONREQUEST
 DESCRIPTOR.message_types_by_name['UnregisterTask'] = _UNREGISTERTASK
+DESCRIPTOR.message_types_by_name['TaskParameter'] = _TASKPARAMETER
+DESCRIPTOR.message_types_by_name['CreateTaskRequest'] = _CREATETASKREQUEST
 DESCRIPTOR.message_types_by_name['Response'] = _RESPONSE
 DESCRIPTOR.message_types_by_name['ConnectResponse'] = _CONNECTRESPONSE
 DESCRIPTOR.message_types_by_name['LoginResponse'] = _LOGINRESPONSE
@@ -854,6 +972,7 @@ DESCRIPTOR.message_types_by_name['TaskNotify'] = _TASKNOTIFY
 DESCRIPTOR.message_types_by_name['LogoutResponse'] = _LOGOUTRESPONSE
 DESCRIPTOR.message_types_by_name['ResumeSessionResponse'] = _RESUMESESSIONRESPONSE
 DESCRIPTOR.message_types_by_name['UnregisterTaskResponse'] = _UNREGISTERTASKRESPONSE
+DESCRIPTOR.message_types_by_name['CreateTaskResponse'] = _CREATETASKRESPONSE
 
 class Request(_message.Message):
   __metaclass__ = _reflection.GeneratedProtocolMessageType
@@ -909,6 +1028,18 @@ class UnregisterTask(_message.Message):
 
   # @@protoc_insertion_point(class_scope:UnregisterTask)
 
+class TaskParameter(_message.Message):
+  __metaclass__ = _reflection.GeneratedProtocolMessageType
+  DESCRIPTOR = _TASKPARAMETER
+
+  # @@protoc_insertion_point(class_scope:TaskParameter)
+
+class CreateTaskRequest(_message.Message):
+  __metaclass__ = _reflection.GeneratedProtocolMessageType
+  DESCRIPTOR = _CREATETASKREQUEST
+
+  # @@protoc_insertion_point(class_scope:CreateTaskRequest)
+
 class Response(_message.Message):
   __metaclass__ = _reflection.GeneratedProtocolMessageType
   DESCRIPTOR = _RESPONSE
@@ -957,6 +1088,12 @@ class UnregisterTaskResponse(_message.Message):
 
   # @@protoc_insertion_point(class_scope:UnregisterTaskResponse)
 
+class CreateTaskResponse(_message.Message):
+  __metaclass__ = _reflection.GeneratedProtocolMessageType
+  DESCRIPTOR = _CREATETASKRESPONSE
+
+  # @@protoc_insertion_point(class_scope:CreateTaskResponse)
+
 heartbeat.message_type = _HEARTBEAT
 Request.RegisterExtension(heartbeat)
 connect_request.message_type = _CONNECTREQUEST
@@ -973,6 +1110,8 @@ resume_session_request.message_type = _RESUMESESSIONREQUEST
 Request.RegisterExtension(resume_session_request)
 unregister_task.message_type = _UNREGISTERTASK
 Request.RegisterExtension(unregister_task)
+create_task.message_type = _CREATETASKREQUEST
+Request.RegisterExtension(create_task)
 connect_response.message_type = _CONNECTRESPONSE
 Response.RegisterExtension(connect_response)
 login_response.message_type = _LOGINRESPONSE
@@ -987,6 +1126,8 @@ resume_session_response.message_type = _RESUMESESSIONRESPONSE
 Response.RegisterExtension(resume_session_response)
 unregister_task_response.message_type = _UNREGISTERTASKRESPONSE
 Response.RegisterExtension(unregister_task_response)
+create_task_response.message_type = _CREATETASKRESPONSE
+Response.RegisterExtension(create_task_response)
 
 DESCRIPTOR.has_options = True
 DESCRIPTOR._options = _descriptor._ParseOptions(descriptor_pb2.FileOptions(), '\n\030flowy.scheduler.protocalB\010MessagesH\001')
