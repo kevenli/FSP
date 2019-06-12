@@ -1,8 +1,6 @@
 package flowy.scheduler.server;
 
 import java.net.InetSocketAddress;
-
-import org.apache.log4j.Logger;
 import org.quartz.SchedulerException;
 
 import flowy.scheduler.entities.Application;
@@ -24,10 +22,12 @@ import io.netty.channel.ChannelHandlerAdapter;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.timeout.IdleState;
 import io.netty.handler.timeout.IdleStateEvent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class SessionHandler extends ChannelHandlerAdapter {
 
-	private static Logger logger = Logger.getLogger(SessionHandler.class);
+	private static Logger logger = LoggerFactory.getLogger(SessionHandler.class);
 
 	private Session session;
 	
@@ -37,7 +37,7 @@ public class SessionHandler extends ChannelHandlerAdapter {
 	public void channelRead(ChannelHandlerContext ctx, Object msg)
 			throws SchedulerException {
 		Request request = (Request) msg;
-		logger.debug(request);
+		logger.debug(request.toString());
 
 		// the handler will handle ConnectRequest & LoginRequest without
 		// Session.

@@ -1,15 +1,16 @@
 package flowy.scheduler.server.data;
 
-import org.apache.log4j.Logger;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
 import flowy.scheduler.entities.SessionVO;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 public class SessionDAO extends DAOBase {
 	
-	private static Logger logger = Logger.getLogger(SessionDAO.class);
+	private static Logger logger = LoggerFactory.getLogger(SessionDAO.class);
 	
 	public SessionDAO() {
 

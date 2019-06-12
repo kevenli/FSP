@@ -17,17 +17,17 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 
-import org.apache.log4j.Logger;
-import org.apache.log4j.PropertyConfigurator;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.impl.StdSchedulerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class FSPServer {
 
 	public static final int DEFAULT_PORT = 3092;
 
-	private static Logger logger = Logger.getLogger(FSPServer.class);
+	private static Logger logger = LoggerFactory.getLogger(FSPServer.class);
 
 	private Properties config;
 
@@ -108,7 +108,7 @@ public class FSPServer {
 
 	public static void main(String[] args) throws Exception {
 		// load log4j configuration
-		PropertyConfigurator.configure("../conf/log4j.properties");
+		// PropertyConfigurator.configure("../conf/log4j.properties");
 
 		// start server
 		FSPServer server = new FSPServer();

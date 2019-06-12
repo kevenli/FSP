@@ -42,18 +42,19 @@ import flowy.scheduler.server.data.SessionDAO;
 import flowy.scheduler.server.data.TaskDAO;
 import flowy.scheduler.server.util.RandomUtil;
 
-import org.apache.log4j.Logger;
 import org.quartz.JobDetail;
 import org.quartz.JobKey;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.Trigger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Session{
 	
 	private static final String DEFAULT_GROUP_NAME = "session_tasks";
 	
-	private static Logger logger = Logger.getLogger(Session.class);
+	private static Logger logger = LoggerFactory.getLogger(Session.class.getName());
 	
 	private Scheduler m_scheduler;
 	private int m_sessionId;

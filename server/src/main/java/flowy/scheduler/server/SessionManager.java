@@ -9,7 +9,6 @@ import java.util.Date;
 import java.util.Hashtable;
 import java.util.Random;
 
-import org.apache.log4j.Logger;
 import org.quartz.JobDetail;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
@@ -18,10 +17,12 @@ import org.quartz.impl.StdSchedulerFactory;
 
 import flowy.scheduler.entities.SessionVO;
 import flowy.scheduler.server.data.SessionDAO;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class SessionManager {
 
-	private static Logger logger = Logger.getLogger(SessionManager.class);
+	private static Logger logger = LoggerFactory.getLogger(SessionManager.class);
 
 	private static final String SUSPENSION_CHECK_GROUP = "sessionmanager.suspensioncheck";
 

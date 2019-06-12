@@ -2,8 +2,6 @@ package flowy.scheduler.server.rest.actions;
 
 import java.util.List;
 
-import org.apache.log4j.Logger;
-
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.DefaultFullHttpRequest;
@@ -14,10 +12,12 @@ import io.netty.handler.codec.http.multipart.HttpPostRequestDecoder;
 import io.netty.handler.codec.http.multipart.InterfaceHttpData;
 import flowy.scheduler.server.FSPServer;
 import flowy.scheduler.server.rest.IAction;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class TaskTypeInstanceAction implements IAction {
 
-	private static Logger logger = Logger.getLogger(TaskTypeInstanceAction.class);
+	private static Logger logger = LoggerFactory.getLogger(TaskTypeInstanceAction.class);
 	@Override
 	public String processRequest(HttpRequest request, String content,
 			ChannelHandlerContext ctx) {
@@ -43,7 +43,7 @@ public class TaskTypeInstanceAction implements IAction {
 		HttpPostRequestDecoder decoder = new HttpPostRequestDecoder(new DefaultHttpDataFactory(false), postRequest);
 		//decoder.offer(new HttpContent())
 		List<InterfaceHttpData> postList = decoder.getBodyHttpDatas();
-		logger.debug(decoder.getBodyHttpData("name"));
+		logger.debug(decoder.getBodyHttpData("name").toString());
 		return null;
 		
 	}

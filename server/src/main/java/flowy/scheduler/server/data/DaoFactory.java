@@ -1,6 +1,5 @@
 package flowy.scheduler.server.data;
 
-import org.apache.log4j.Logger;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
@@ -8,13 +7,15 @@ import org.hibernate.service.ServiceRegistry;
 import org.hibernate.service.ServiceRegistryBuilder;
 
 import flowy.scheduler.server.exceptions.DaoFactoryException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @SuppressWarnings("deprecation")
 public class DaoFactory {
 
 	private static SessionFactory sessionFactory;
 
-	private static Logger logger = Logger.getLogger(DaoFactory.class);
+	private static Logger logger = LoggerFactory.getLogger(DaoFactory.class);
 
 	public static void init(String host, String username, String password, String dbname, int port) {
 		logger.debug("Init database.");

@@ -1,14 +1,15 @@
 package flowy.scheduler.server;
 
-import org.apache.log4j.Logger;
 import org.quartz.Job;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class TaskNotifyJob implements Job {
 
-	private static Logger logger = Logger.getLogger(TaskNotifyJob.class);
+	private static Logger logger = LoggerFactory.getLogger(TaskNotifyJob.class);
 	
 	@Override
 	public void execute(JobExecutionContext arg0) throws JobExecutionException {
