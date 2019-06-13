@@ -1,8 +1,7 @@
 from twisted.internet.protocol import Protocol, ClientFactory
 from twisted.internet import reactor
 from twisted.internet.protocol import ClientCreator
-import protocol.fsp_pb2
-import string
+from .protocol import fsp_pb2
 import logging
 import struct
 import threading
@@ -13,14 +12,14 @@ DEFAULT_PORT = 3092
 
 class FSPClientProtocol(Protocol):
     
-    read_buffer = ""
+    read_buffer = b""
     def connectionMade(self):
         #self.transport.
         logging.debug("connected to host")
         
-        request = protocol.fsp_pb2.Request() 
-        request.type = protocol.fsp_pb2.Request.CONNECT_REQUEST
-        request.Extensions[protocol.fsp_pb2.connect_request].client_protocol_version="FSP_0.0.1"
+        request = fsp_pb2.Request()
+        request.type = fsp_pb2.Request.CONNECT_REQUEST
+        request.Extensions[fsp_pb2.connect_request].client_protocol_version="FSP_0.0.1"
         
         self.send_msg(request)
         
@@ -28,13 +27,12 @@ class FSPClientProtocol(Protocol):
     def send_msg(self, msg):
         body = msg.SerializeToString()
         body_length = len(body)
-        length_codec = Base128VarintCodec();
+        length_codec = Base128VarintCodec()
         encoded_length_package = length_codec.encode(body_length)
         
         self.transport.write(encoded_length_package + body)
         
     def set_client(self, client):
-        
         self._client = client
     
     def dataReceived(self, data):
@@ -42,12 +40,12 @@ class FSPClientProtocol(Protocol):
         self.read_buffer += data
         while True:
             codec = Base128VarintCodec()
-            length_buffer = ""
+            length_buffer = b""
             for i in range(5):
                 if len(self.read_buffer)<i+1:
                     # no enough buffer read, just return wait for next dataReceived
                     return
-                length_buffer += self.read_buffer[i]
+                length_buffer += self.read_buffer[i:i+1]
                 if self.read_buffer[i]>0:
                     break
                     
@@ -56,7 +54,7 @@ class FSPClientProtocol(Protocol):
                 # no enough buffer
                 return
             
-            response = protocol.fsp_pb2.Response()
+            response = fsp_pb2.Response()
             response.ParseFromString(self.read_buffer[len(length_buffer):len(length_buffer)+body_length])
             self.read_buffer = self.read_buffer[len(length_buffer)+body_length:]
             logging.debug(response)
@@ -64,14 +62,14 @@ class FSPClientProtocol(Protocol):
             
     
     def on_message(self, response):
-        if response.type == protocol.fsp_pb2.Response.CONNECT_RESPONSE:
+        if response.type == fsp_pb2.Response.CONNECT_RESPONSE:
             self._client.on_connect_response()
-        elif response.type == protocol.fsp_pb2.Response.LOGIN_RESPONSE:
-            self._client.on_login_response(response.Extensions[protocol.fsp_pb2.login_response])
-        elif response.type == protocol.fsp_pb2.Response.REGISTER_TASK_RESPONSE:
-            self._client.on_register_response(response.Extensions[protocol.fsp_pb2.register_task_response])
-        elif response.type == protocol.fsp_pb2.Response.TASK_NOTIFY:
-            self._client.on_task_notify(response.Extensions[protocol.fsp_pb2.task_notify])
+        elif response.type == fsp_pb2.Response.LOGIN_RESPONSE:
+            self._client.on_login_response(response.Extensions[fsp_pb2.login_response])
+        elif response.type == fsp_pb2.Response.REGISTER_TASK_RESPONSE:
+            self._client.on_register_response(response.Extensions[fsp_pb2.register_task_response])
+        elif response.type == fsp_pb2.Response.TASK_NOTIFY:
+            self._client.on_task_notify(response.Extensions[fsp_pb2.task_notify])
         
 
 class FSPClientFactory(ClientFactory):
@@ -89,10 +87,10 @@ class Client():
         
     @staticmethod   
     def _parse_hosts(hosts):
-        parts = string.split(hosts, ';')
+        parts = hosts.split(';')
         for part in parts:
-            if string.find(part, ':')>=0:
-                host, port = string.split(part, ':', 2)
+            if part.find( ':')>=0:
+                host, port = part.split( ':', 2)
                 port = int(port)
                 yield (host, port)
             else:
@@ -119,10 +117,10 @@ class Client():
     def register_task(self, task, callback):
         self.task_callbacks[task.id] = (task, callback)
         
-        request = protocol.fsp_pb2.Request() 
-        request.type = protocol.fsp_pb2.Request.REGISTER_TASK
-        request.Extensions[protocol.fsp_pb2.register_task].task_id=task.id
-        request.Extensions[protocol.fsp_pb2.register_task].execute_time=task.execute_time
+        request = fsp_pb2.Request() 
+        request.type = fsp_pb2.Request.REGISTER_TASK
+        request.Extensions[fsp_pb2.register_task].task_id=task.id
+        request.Extensions[fsp_pb2.register_task].execute_time=task.execute_time
         self.protocol.send_msg(request)
         
     
@@ -130,40 +128,40 @@ class Client():
         self.task_callbacks.pop(task.id)
         
     def task_start(self, instance_id):
-        request = protocol.fsp_pb2.Request() 
-        request.type = protocol.fsp_pb2.Request.TASK_STATUS_UPDATE
-        request.Extensions[protocol.fsp_pb2.task_status_update].instance_id=instance_id
-        request.Extensions[protocol.fsp_pb2.task_status_update].status=protocol.fsp_pb2.TaskStatusUpdate.START
+        request = fsp_pb2.Request() 
+        request.type = fsp_pb2.Request.TASK_STATUS_UPDATE
+        request.Extensions[fsp_pb2.task_status_update].instance_id=instance_id
+        request.Extensions[fsp_pb2.task_status_update].status=fsp_pb2.TaskStatusUpdate.START
         self.protocol.send_msg(request)
 
     def task_running(self, instance_id, progress=0):
-        request = protocol.fsp_pb2.Request() 
-        request.type = protocol.fsp_pb2.Request.TASK_STATUS_UPDATE
-        request.Extensions[protocol.fsp_pb2.task_status_update].instance_id=instance_id
-        request.Extensions[protocol.fsp_pb2.task_status_update].status=protocol.fsp_pb2.TaskStatusUpdate.RUNNING
-        request.Extensions[protocol.fsp_pb2.task_status_update].percentage=progress
+        request = fsp_pb2.Request() 
+        request.type = fsp_pb2.Request.TASK_STATUS_UPDATE
+        request.Extensions[fsp_pb2.task_status_update].instance_id=instance_id
+        request.Extensions[fsp_pb2.task_status_update].status=fsp_pb2.TaskStatusUpdate.RUNNING
+        request.Extensions[fsp_pb2.task_status_update].percentage=progress
         self.protocol.send_msg(request)
     
     def task_complete(self, instance_id):
-        request = protocol.fsp_pb2.Request() 
-        request.type = protocol.fsp_pb2.Request.TASK_STATUS_UPDATE
-        request.Extensions[protocol.fsp_pb2.task_status_update].instance_id=instance_id
-        request.Extensions[protocol.fsp_pb2.task_status_update].status=protocol.fsp_pb2.TaskStatusUpdate.COMPLETE
+        request = fsp_pb2.Request() 
+        request.type = fsp_pb2.Request.TASK_STATUS_UPDATE
+        request.Extensions[fsp_pb2.task_status_update].instance_id=instance_id
+        request.Extensions[fsp_pb2.task_status_update].status=fsp_pb2.TaskStatusUpdate.COMPLETE
         self.protocol.send_msg(request)
     
     def task_fail(self, instance_id, error_message):
-        request = protocol.fsp_pb2.Request() 
-        request.type = protocol.fsp_pb2.Request.TASK_STATUS_UPDATE
-        request.Extensions[protocol.fsp_pb2.task_status_update].instance_id=instance_id
-        request.Extensions[protocol.fsp_pb2.task_status_update].status=protocol.fsp_pb2.TaskStatusUpdate.FAILED
-        request.Extensions[protocol.fsp_pb2.task_status_update].error_message=error_message
+        request = fsp_pb2.Request() 
+        request.type = fsp_pb2.Request.TASK_STATUS_UPDATE
+        request.Extensions[fsp_pb2.task_status_update].instance_id=instance_id
+        request.Extensions[fsp_pb2.task_status_update].status=fsp_pb2.TaskStatusUpdate.FAILED
+        request.Extensions[fsp_pb2.task_status_update].error_message=error_message
         self.protocol.send_msg(request)
         
     def on_connect_response(self):
-        request = protocol.fsp_pb2.Request() 
-        request.type = protocol.fsp_pb2.Request.LOGIN_REQUEST
-        request.Extensions[protocol.fsp_pb2.login_request].app_key=self._app_key
-        request.Extensions[protocol.fsp_pb2.login_request].app_secret=self._app_secret
+        request = fsp_pb2.Request() 
+        request.type = fsp_pb2.Request.LOGIN_REQUEST
+        request.Extensions[fsp_pb2.login_request].app_key=self._app_key
+        request.Extensions[fsp_pb2.login_request].app_secret=self._app_secret
         self.protocol.send_msg(request)
        
     def on_login_response(self, login_response):
@@ -175,6 +173,12 @@ class Client():
     def on_task_notify(self, task_notify):
         task, task_callback = self.task_callbacks[task_notify.task_id]
         task_callback(self, task, task_notify.task_instance_id)
+
+    def close(self):
+        pass
+
+    def __del__(self):
+        pass
         
 class Task:
     def __init__(self, task_id, execute_time):
@@ -184,7 +188,7 @@ class Task:
         
 class Base128VarintCodec:
     def encode(self, value):
-        data = ""
+        data = b""
         while True:
             if value & ~0x7f == 0:
                 data += struct.pack('b', value)
@@ -197,8 +201,7 @@ class Base128VarintCodec:
     def decode(self, data):
         byte_index = 0
         value = 0
-        for c in data:
-            c_value, = struct.unpack('b', c)
+        for c_value in data:
             value |= ((c_value & 0x7f) << (7*byte_index))
             byte_index += 1
             

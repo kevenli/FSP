@@ -7,7 +7,7 @@ Created on 2015年4月10日
 @author: hao.li
 '''
 import unittest
-from fsp import Client
+from fsp.client import Client
 from fsp.client import Task
 import logging
 
@@ -21,7 +21,7 @@ class Test(unittest.TestCase):
         self.assertEqual(3092, client._hosts[0][1], 'default port is 3092')
         self.assertEqual('127.0.0.1', client._hosts[1][0])
         self.assertEqual(1111, client._hosts[1][1])
-        print client._hosts
+        print(client._hosts)
 
     def testConnect(self):
         client = Client('localhost:3092', 'abc', '123')
@@ -36,7 +36,7 @@ class Test(unittest.TestCase):
         client.register_task(task, self.task_callback)
     
     def task_callback(self, client, task, instanceId):
-        print 'task_callback', task
+        print('task_callback', task)
         client.task_start(instanceId)
         client.task_running(instanceId)
         client.task_complete(instanceId)
@@ -50,7 +50,7 @@ class Test(unittest.TestCase):
         
         
     def task_callback_report_fail(self, client, task, instanceId):
-        print 'task_callback', task
+        print('task_callback', task)
         client.task_start(instanceId)
         client.task_running(instanceId)
         client.task_fail(instanceId, "some exception")
