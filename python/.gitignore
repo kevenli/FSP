@@ -12,3 +12,6 @@ build/
 *.project
 *.pydevproject
 .settings
+
+.idea
+.pytest_cache
