@@ -77,26 +77,37 @@ class FSPClientProtocol(Protocol):
 class FSPClientFactory(ClientFactory):
     pass
 
+CONNECTION_CLOSED = 0
+CONNECTION_CONNECTING = 1
+CONNECTION_CONNECTED = 2
+
+
 class Client():
     def __init__(self, hosts, app_key, app_secret):
         self._hosts = tuple(self._parse_hosts(hosts))
         self._app_key = app_key
         self._app_secret = app_secret
-        self._connect_lock = threading.Event()
         self._task_callbacks = {}
+        self._send_msg_queue = []
+        self._connection_status = CONNECTION_CLOSED
+        self._heartbeat_thread = threading.Thread(target=self.start_heartbeat_loop, daemon=False)
 
     @staticmethod
     def _parse_hosts(hosts):
         parts = hosts.split(';')
         for part in parts:
-            if part.find( ':')>=0:
-                host, port = part.split( ':', 2)
+            if part.find(':') >= 0:
+                host, port = part.split(':', 2)
                 port = int(port)
                 yield (host, port)
             else:
                 yield (part, DEFAULT_PORT)
 
     def connect(self):
+        logger.info('Connecting to server.')
+        self._connection_status = CONNECTION_CONNECTING
+        if not self._heartbeat_thread.is_alive():
+            self._heartbeat_thread.start()
         self._socket = socket.socket()
         address = self._hosts[0]
         self._socket.connect(address)
@@ -106,46 +117,72 @@ class Client():
 
         self.on_connect_response()
         login_response = self.receive_next_msg()
+        if login_response.Extensions[fsp_pb2.login_response].result_type != fsp_pb2.LoginResponse.SUCCESS:
+            raise Exception('Login faild')
+        self._connection_status = CONNECTION_CONNECTED
+
+    def _reconnect(self):
+        try:
+            self.connect()
+        except Exception as e:
+            logger.warning('Cannot connect to server, connection refused')
+            self.connect_disconnected()
 
 
     def connectionMade(self):
         # self.transport.
-        logger.debug("connected to host")
+        logger.info("connected")
 
         request = fsp_pb2.Request()
         request.type = fsp_pb2.Request.CONNECT_REQUEST
         request.Extensions[fsp_pb2.connect_request].client_protocol_version = "FSP_0.0.1"
 
-        self.send_msg(request)
+        self.send_msg_directly(request)
 
-    def send_msg(self, msg):
+    def send_msg_directly(self, msg):
         body = msg.SerializeToString()
         body_length = len(body)
         length_codec = Base128VarintCodec()
         encoded_length_package = length_codec.encode(body_length)
+        try:
+            self._socket.send(encoded_length_package + body)
+            return True
+        except (ConnectionResetError, ConnectionRefusedError):
+            self.connect_disconnected()
+            return False
 
-        self._socket.send(encoded_length_package + body)
+    def send_msg(self, msg):
+        self._send_msg_queue.append(msg)
+        while len(self._send_msg_queue)>0:
+            next_msg = self._send_msg_queue.pop(0)
+            if not self.send_msg_directly(next_msg):
+                self._send_msg_queue.insert(0, msg)
+                return
+
 
     def receive_next_msg(self):
         received_buffer = b''
         codec = Base128VarintCodec()
-        for i in range(5):
-            b = self._socket.recv(1)
-            received_buffer += b
-            if int.from_bytes(b, 'big')>0:
-                break
-        body_length = codec.decode(received_buffer)
-        msg_binary = self._socket.recv(body_length)
-        response = fsp_pb2.Response()
-        response.ParseFromString(msg_binary)
-        return response
+        try:
+            for i in range(5):
+                b = self._socket.recv(1)
+                received_buffer += b
+                if int.from_bytes(b, 'big')>0:
+                    break
+            body_length = codec.decode(received_buffer)
+            msg_binary = self._socket.recv(body_length)
+            response = fsp_pb2.Response()
+            response.ParseFromString(msg_binary)
+            return response
+        except (ConnectionResetError, ConnectionRefusedError):
+            self.connect_disconnected()
 
     def on_connect_response(self):
         request = fsp_pb2.Request()
         request.type = fsp_pb2.Request.LOGIN_REQUEST
         request.Extensions[fsp_pb2.login_request].app_key = self._app_key
         request.Extensions[fsp_pb2.login_request].app_secret = self._app_secret
-        self.send_msg(request)
+        self.send_msg_directly(request)
 
     def on_login_response(self, login_response):
         self.connect_lock.set()
@@ -205,22 +242,30 @@ class Client():
         self.send_msg(request)
 
     def wait_till_end(self):
-        self._heartbeat_thread = threading.Thread(target=self.start_heartbeat_loop)
-        self._heartbeat_thread.start()
         while True:
             time.sleep(0.001)
-            response = self.receive_next_msg()
-            self.on_message(response)
+            if self._connection_status == CONNECTION_CONNECTED:
+                response = self.receive_next_msg()
+                # if connection lost, response might be none
+                if response:
+                    self.on_message(response)
 
     def start_heartbeat_loop(self):
         while True:
             time.sleep(10)
-            self.send_heartbeat()
+            if self._connection_status == CONNECTION_CONNECTED:
+                self.send_heartbeat()
+            elif self._connection_status == CONNECTION_CLOSED:
+                self._reconnect()
 
     def send_heartbeat(self):
         request = fsp_pb2.Request()
         request.type = fsp_pb2.Request.HEARTBEAT
         self.send_msg(request)
+
+    def connect_disconnected(self):
+        logger.warning('Connection lost')
+        self._connection_status = CONNECTION_CLOSED
 
 
 class TwistedClient():

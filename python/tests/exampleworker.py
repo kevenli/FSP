@@ -4,8 +4,11 @@ import logging
 import time
 import threading
 
+
+logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
+#logger.setLevel(logging.DEBUG)
+
 
 def job_start():
     logger.info("start")
@@ -34,7 +37,7 @@ def flow1_job(job):
 def flow1():
     client = Client('localhost', 'abc', '123')
     client.connect()
-    for x in range(10):
+    for x in range(3):
         task = Task('job_%s' % x, '*/5 * * * * ?')
         task.x = x
         client.register_task(task, flow1_job)
