@@ -11,11 +11,10 @@ public class TaskNotifyJob implements Job {
 
 	private static Logger logger = LoggerFactory.getLogger(TaskNotifyJob.class);
 	
-	@Override
 	public void execute(JobExecutionContext arg0) throws JobExecutionException {
 		JobDataMap dataMap = arg0.getJobDetail().getJobDataMap();
-		int sessionId = (int)dataMap.get("SessionId");
-		int taskId = (int)dataMap.get("TaskId");
+		int sessionId = dataMap.getInt("SessionId");
+		int taskId = dataMap.getInt("TaskId");
 		
 		Session session = SessionManager.getInstance().findSession(sessionId);
 		if (session==null){

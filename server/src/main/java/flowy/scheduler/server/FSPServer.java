@@ -22,7 +22,12 @@ import org.quartz.SchedulerException;
 import org.quartz.impl.StdSchedulerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+
+@Component
 public class FSPServer {
 
 	public static final int DEFAULT_PORT = 3092;
@@ -32,6 +37,7 @@ public class FSPServer {
 	private Properties config;
 
 	public FSPServer() throws Exception {
+		logger.debug("Constructing FSPServer");
 		config = loadConfiguration();
 
 		initDatabase();
@@ -40,7 +46,7 @@ public class FSPServer {
 
 	private Properties loadConfiguration() throws IOException {
 		Properties prop = new Properties();
-		InputStream in = new FileInputStream("../conf/fspserver.conf");
+		InputStream in = new FileInputStream("conf/fspserver.conf");
 		try {
 			prop.load(in);
 			return prop;
@@ -61,6 +67,7 @@ public class FSPServer {
 				mysqlPort);
 	}
 
+	@PostConstruct
 	public void Run() throws SchedulerException, InterruptedException {
 		// init global scheduler
 		Scheduler scheduler = StdSchedulerFactory.getDefaultScheduler();
@@ -104,6 +111,12 @@ public class FSPServer {
 			wiBossGroup.shutdownGracefully();
 			wiWorkerGroup.shutdownGracefully();
 		}
+	}
+
+	@PreDestroy
+	public void stop()
+	{
+
 	}
 
 	public static void main(String[] args) throws Exception {
