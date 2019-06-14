@@ -17,6 +17,7 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 
+import org.apache.log4j.PropertyConfigurator;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.impl.StdSchedulerFactory;
@@ -121,7 +122,7 @@ public class FSPServer {
 
 	public static void main(String[] args) throws Exception {
 		// load log4j configuration
-		// PropertyConfigurator.configure("../conf/log4j.properties");
+		PropertyConfigurator.configure("conf/log4j.properties");
 
 		// start server
 		FSPServer server = new FSPServer();

@@ -14,7 +14,7 @@ import io.netty.handler.timeout.IdleStateHandler;
 
 public class SessionHandlerInitializer extends ChannelInitializer<SocketChannel> {
 
-	public static final int SESSION_TIMEOUT = 10;
+	public static final int SESSION_TIMEOUT = 30;
 	
 	public SessionHandlerInitializer() {
 

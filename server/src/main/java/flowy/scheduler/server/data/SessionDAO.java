@@ -20,10 +20,10 @@ public class SessionDAO extends DAOBase {
 		synchronized(SessionDAO.class){
 			Session session = openSession();
 			try{
-				Transaction trans = session.beginTransaction();
+				//Transaction trans = session.beginTransaction();
 				session.saveOrUpdate(sessionVO);
 				session.flush();
-				trans.commit();
+				//trans.commit();
 				return sessionVO;
 			}
 			finally{
@@ -37,7 +37,7 @@ public class SessionDAO extends DAOBase {
 		synchronized(SessionDAO.class){
 			Session session = openSession();
 			try{
-				Transaction trans = session.beginTransaction();
+				//Transaction trans = session.beginTransaction();
 				SessionVO sessionVO = (SessionVO)session.get(SessionVO.class, new Integer(sessionId));
 				if (sessionVO==null){
 					logger.warn("deleteSession, cannot find session " + sessionId);
@@ -45,7 +45,7 @@ public class SessionDAO extends DAOBase {
 				}
 				session.delete(sessionVO);
 				session.flush();
-				trans.commit();
+				//trans.commit();
 			}
 			finally{
 				session.close();
