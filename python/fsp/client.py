@@ -8,14 +8,14 @@ import threading
 
 DEFAULT_PORT = 3092
 
-
+logger = logging.getLogger(__name__)
 
 class FSPClientProtocol(Protocol):
     
     read_buffer = b""
     def connectionMade(self):
         #self.transport.
-        logging.debug("connected to host")
+        logger.debug("connected to host")
         
         request = fsp_pb2.Request()
         request.type = fsp_pb2.Request.CONNECT_REQUEST
@@ -36,7 +36,7 @@ class FSPClientProtocol(Protocol):
         self._client = client
     
     def dataReceived(self, data):
-        logging.debug('data received')
+        logger.debug('data received')
         self.read_buffer += data
         while True:
             codec = Base128VarintCodec()
@@ -57,7 +57,7 @@ class FSPClientProtocol(Protocol):
             response = fsp_pb2.Response()
             response.ParseFromString(self.read_buffer[len(length_buffer):len(length_buffer)+body_length])
             self.read_buffer = self.read_buffer[len(length_buffer)+body_length:]
-            logging.debug(response)
+            logger.debug(response)
             self.on_message(response)
             
     
@@ -100,14 +100,14 @@ class Client():
         return self._hosts[0]
     
     def got_protocol(self, p):
-        logging.debug('connected, got protocol')
+        logger.debug('connected, got protocol')
         p.set_client(self)
         self.protocol = p
         
     def connect(self):
         host, port = self._pick_host()
         creator = ClientCreator(reactor, FSPClientProtocol)
-        logging.debug('connecting %s:%d', host, port)
+        logger.debug('connecting %s:%d', host, port)
         creator.connectTCP(host, port).addCallback(self.got_protocol)
         
         self.trasport_thread = threading.Thread(target=reactor.run, args=(False,)).start()
@@ -206,4 +206,134 @@ class Base128VarintCodec:
             byte_index += 1
             
         return value
-            
+
+
+import tornado.gen
+import tornado.tcpclient
+import tornado.ioloop
+import tornado.concurrent
+
+class AsyncClient(Client):
+    def __init__(self, hosts, app_key, app_secret, ioloop=None):
+        self._hosts = tuple(self._parse_hosts(hosts))
+        self._app_key = app_key
+        self._app_secret = app_secret
+        self._tcpclient = tornado.tcpclient.TCPClient()
+        self.connect_lock = threading.Event()
+        if ioloop is None:
+            self._ioloop = tornado.ioloop.IOLoop.current()
+        else:
+            self._ioloop = ioloop
+
+        self._receive_callback = tornado.ioloop.PeriodicCallback(self._receive, 0.001)
+        self.read_buffer = b''
+        self.connect_callback = None
+
+    def _receive_done(self, future):
+        try:
+            result = future.result()
+            self._data_received(result)
+        finally:
+            self._receive()
+
+
+    def _data_received(self, data):
+        self.read_buffer += data
+        while True:
+            codec = Base128VarintCodec()
+            length_buffer = b""
+            for i in range(5):
+                if len(self.read_buffer) < i + 1:
+                    # no enough buffer read, just return wait for next dataReceived
+                    return
+                length_buffer += self.read_buffer[i:i + 1]
+                if self.read_buffer[i] > 0:
+                    break
+
+            body_length = codec.decode(length_buffer)
+            if len(self.read_buffer) < len(length_buffer) + body_length:
+                # no enough buffer
+                return
+
+            response = fsp_pb2.Response()
+            response.ParseFromString(self.read_buffer[len(length_buffer):len(length_buffer) + body_length])
+            self.read_buffer = self.read_buffer[len(length_buffer) + body_length:]
+            logger.debug(response)
+            self.on_message(response)
+
+    def _receive(self):
+        logger.debug('data received')
+        #read_future = self._socketstream.read_into(self.read_buffer, partial=True)
+        read_future = self._socketstream.read_bytes(8192, partial=True)
+        read_future.add_done_callback(self._receive_done)
+        return
+
+
+
+    def on_message(self, response):
+        logger.debug(response)
+        if response.type == fsp_pb2.Response.CONNECT_RESPONSE:
+            self.on_connect_response()
+        elif response.type == fsp_pb2.Response.LOGIN_RESPONSE:
+            self.on_login_response(response.Extensions[fsp_pb2.login_response])
+        # elif response.type == fsp_pb2.Response.REGISTER_TASK_RESPONSE:
+        #     self._client.on_register_response(response.Extensions[fsp_pb2.register_task_response])
+        # elif response.type == fsp_pb2.Response.TASK_NOTIFY:
+        #     self._client.on_task_notify(response.Extensions[fsp_pb2.task_notify])
+
+    def on_login_response(self, login_response):
+        if self.connect_callback:
+            self.connect_callback()
+        self._connect_future.set_result('true')
+
+    def on_connect_response(self):
+        request = fsp_pb2.Request()
+        request.type = fsp_pb2.Request.LOGIN_REQUEST
+        request.Extensions[fsp_pb2.login_request].app_key=self._app_key
+        request.Extensions[fsp_pb2.login_request].app_secret=self._app_secret
+        self.send_msg(request)
+
+    @tornado.gen.coroutine
+    def connect(self, callback=None):
+        hosts = self._hosts
+        connect_host = hosts[0][0]
+        connect_port = hosts[0][1]
+
+        if callback:
+            self.connect_callback=callback
+
+        self._socketstream = yield self._tcpclient.connect(connect_host, connect_port)
+        self._socketstream.set_nodelay(True)
+        self.send_connect_request()
+        self._connect_future = tornado.ioloop.Future()
+        #self._receive_callback.start()
+        self._receive()
+        #self.connect_lock.wait(30)
+        yield self._connect_future
+        raise tornado.gen.Return()
+
+    def send_connect_request(self):
+        request = fsp_pb2.Request()
+        request.type = fsp_pb2.Request.CONNECT_REQUEST
+        request.Extensions[fsp_pb2.connect_request].client_protocol_version="FSP_0.0.1"
+        self.send_msg(request)
+
+    def send_msg(self, msg):
+        body = msg.SerializeToString()
+        body_length = len(body)
+        length_codec = Base128VarintCodec()
+        encoded_length_package = length_codec.encode(body_length)
+
+        self._socketstream.write(encoded_length_package + body)
+
+    def start(self):
+        self._ioloop.start()
+
+    def register_task(self, task, callback):
+        self.task_callbacks[task.id] = (task, callback)
+
+        request = fsp_pb2.Request()
+        request.type = fsp_pb2.Request.REGISTER_TASK
+        request.Extensions[fsp_pb2.register_task].task_id = task.id
+        request.Extensions[fsp_pb2.register_task].execute_time = task.execute_time
+        self.send_msg(request)

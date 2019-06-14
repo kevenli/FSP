@@ -1,15 +1,11 @@
 # -*- coding: utf-8 -*-
-
-
-'''
-Created on 2015年4月10日
-
-@author: hao.li
-'''
 import unittest
-from fsp.client import Client
+from fsp.client import Client, AsyncClient
 from fsp.client import Task
+import tornado.testing
+import tornado.concurrent
 import logging
+import time
 
 
 class Test(unittest.TestCase):
@@ -38,8 +34,12 @@ class Test(unittest.TestCase):
     def task_callback(self, client, task, instanceId):
         print('task_callback', task)
         client.task_start(instanceId)
+        time.sleep(10)
         client.task_running(instanceId)
+        time.sleep(10)
         client.task_complete(instanceId)
+        time.sleep(10)
+        self.stop()
         
     def test_task_fail(self):    
         client = Client('localhost:3092', 'abc', '123')
@@ -49,6 +49,52 @@ class Test(unittest.TestCase):
         client.register_task(task, self.task_callback_report_fail)
         
         
+    def task_callback_report_fail(self, client, task, instanceId):
+        print('task_callback', task)
+        client.task_start(instanceId)
+        client.task_running(instanceId)
+        client.task_fail(instanceId, "some exception")
+
+class AsyncClientTest(tornado.testing.AsyncTestCase):
+    @tornado.testing.gen_test(timeout=30)
+    def test_connect(self):
+        client = AsyncClient('localhost', 'abc', '123')
+        yield client.connect()
+
+    @tornado.testing.gen_test(timeout=30)
+    def test_connect_failed(self):
+        client = AsyncClient('localhost:99999', '', '')
+        try:
+            client.connect()
+            self.fail("exception not caught")
+        except:
+            pass
+
+    @tornado.testing.gen_test(timeout=30)
+    def test_register_task(self):
+        client = AsyncClient('localhost:3092', 'abc', '123')
+        yield client.connect()
+        task = Task("TestTask", "*/5 * * * * ?")
+
+        client.register_task(task, self.task_callback)
+
+    def task_callback(self, client, task, instanceId):
+        print('task_callback', task)
+        client.task_start(instanceId)
+        time.sleep(10)
+        client.task_running(instanceId)
+        time.sleep(10)
+        client.task_complete(instanceId)
+        time.sleep(10)
+        self.stop()
+
+    def test_task_fail(self):
+        client = Client('localhost:3092', 'abc', '123')
+        client.connect()
+        task = Task("TestTask", "*/5 * * * * ?")
+
+        client.register_task(task, self.task_callback_report_fail)
+
     def task_callback_report_fail(self, client, task, instanceId):
         print('task_callback', task)
         client.task_start(instanceId)
