@@ -5,6 +5,8 @@ from .protocol import fsp_pb2
 import logging
 import struct
 import threading
+import socket
+import time
 
 DEFAULT_PORT = 3092
 
@@ -76,16 +78,14 @@ class FSPClientFactory(ClientFactory):
     pass
 
 class Client():
-    
-    task_callbacks = {}
-    
     def __init__(self, hosts, app_key, app_secret):
         self._hosts = tuple(self._parse_hosts(hosts))
         self._app_key = app_key
         self._app_secret = app_secret
-        self.connect_lock = threading.Event()
-        
-    @staticmethod   
+        self._connect_lock = threading.Event()
+        self._task_callbacks = {}
+
+    @staticmethod
     def _parse_hosts(hosts):
         parts = hosts.split(';')
         for part in parts:
@@ -95,7 +95,138 @@ class Client():
                 yield (host, port)
             else:
                 yield (part, DEFAULT_PORT)
-                
+
+    def connect(self):
+        self._socket = socket.socket()
+        address = self._hosts[0]
+        self._socket.connect(address)
+        self.connectionMade()
+        # receive login response
+        connect_response = self.receive_next_msg()
+
+        self.on_connect_response()
+        login_response = self.receive_next_msg()
+
+
+    def connectionMade(self):
+        # self.transport.
+        logger.debug("connected to host")
+
+        request = fsp_pb2.Request()
+        request.type = fsp_pb2.Request.CONNECT_REQUEST
+        request.Extensions[fsp_pb2.connect_request].client_protocol_version = "FSP_0.0.1"
+
+        self.send_msg(request)
+
+    def send_msg(self, msg):
+        body = msg.SerializeToString()
+        body_length = len(body)
+        length_codec = Base128VarintCodec()
+        encoded_length_package = length_codec.encode(body_length)
+
+        self._socket.send(encoded_length_package + body)
+
+    def receive_next_msg(self):
+        received_buffer = b''
+        codec = Base128VarintCodec()
+        for i in range(5):
+            b = self._socket.recv(1)
+            received_buffer += b
+            if int.from_bytes(b, 'big')>0:
+                break
+        body_length = codec.decode(received_buffer)
+        msg_binary = self._socket.recv(body_length)
+        response = fsp_pb2.Response()
+        response.ParseFromString(msg_binary)
+        return response
+
+    def on_connect_response(self):
+        request = fsp_pb2.Request()
+        request.type = fsp_pb2.Request.LOGIN_REQUEST
+        request.Extensions[fsp_pb2.login_request].app_key = self._app_key
+        request.Extensions[fsp_pb2.login_request].app_secret = self._app_secret
+        self.send_msg(request)
+
+    def on_login_response(self, login_response):
+        self.connect_lock.set()
+
+    def register_task(self, task, callback):
+        self._task_callbacks[task.id] = (task, callback)
+
+        request = fsp_pb2.Request()
+        request.type = fsp_pb2.Request.REGISTER_TASK
+        request.Extensions[fsp_pb2.register_task].task_id = task.id
+        request.Extensions[fsp_pb2.register_task].execute_time = task.execute_time
+        self.send_msg(request)
+        self.receive_next_msg()
+
+    def on_message(self, response):
+        logger.debug(response)
+        if response.type == fsp_pb2.Response.TASK_NOTIFY:
+            self.on_task_notify(response.Extensions[fsp_pb2.task_notify])
+
+    def on_task_notify(self, task_notify):
+        task, task_callback = self._task_callbacks[task_notify.task_id]
+        self.task_start(task_notify.task_instance_id)
+        try:
+            task_callback(task)
+            self.task_complete(task_notify.task_instance_id)
+        except Exception as e:
+            self.task_fail(task_notify.task_instance_id, str(e))
+
+    def task_start(self, instance_id):
+        request = fsp_pb2.Request()
+        request.type = fsp_pb2.Request.TASK_STATUS_UPDATE
+        request.Extensions[fsp_pb2.task_status_update].instance_id = instance_id
+        request.Extensions[fsp_pb2.task_status_update].status = fsp_pb2.TaskStatusUpdate.START
+        self.send_msg(request)
+
+    def task_running(self, instance_id, progress=0):
+        request = fsp_pb2.Request()
+        request.type = fsp_pb2.Request.TASK_STATUS_UPDATE
+        request.Extensions[fsp_pb2.task_status_update].instance_id = instance_id
+        request.Extensions[fsp_pb2.task_status_update].status = fsp_pb2.TaskStatusUpdate.RUNNING
+        request.Extensions[fsp_pb2.task_status_update].percentage = progress
+        self.send_msg(request)
+
+    def task_complete(self, instance_id):
+        request = fsp_pb2.Request()
+        request.type = fsp_pb2.Request.TASK_STATUS_UPDATE
+        request.Extensions[fsp_pb2.task_status_update].instance_id = instance_id
+        request.Extensions[fsp_pb2.task_status_update].status = fsp_pb2.TaskStatusUpdate.COMPLETE
+        self.send_msg(request)
+
+    def task_fail(self, instance_id, error_message):
+        request = fsp_pb2.Request()
+        request.type = fsp_pb2.Request.TASK_STATUS_UPDATE
+        request.Extensions[fsp_pb2.task_status_update].instance_id = instance_id
+        request.Extensions[fsp_pb2.task_status_update].status = fsp_pb2.TaskStatusUpdate.FAILED
+        request.Extensions[fsp_pb2.task_status_update].error_message = error_message
+        self.send_msg(request)
+
+    def wait_till_end(self):
+        self._heartbeat_thread = threading.Thread(target=self.start_heartbeat_loop)
+        self._heartbeat_thread.start()
+        while True:
+            time.sleep(0.001)
+            response = self.receive_next_msg()
+            self.on_message(response)
+
+    def start_heartbeat_loop(self):
+        while True:
+            time.sleep(10)
+            self.send_heartbeat()
+
+    def send_heartbeat(self):
+        request = fsp_pb2.Request()
+        request.type = fsp_pb2.Request.HEARTBEAT
+        self.send_msg(request)
+
+
+class TwistedClient():
+    def __init__(self, hosts, app_key, app_secret):
+        super(TwistedClient, self).__init__(hosts, app_key, app_secret)
+
     def _pick_host(self):
         return self._hosts[0]
     
