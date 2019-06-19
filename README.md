@@ -1,0 +1,1 @@
+FSP (Flowy scheduling protocol) is designed for distributed systems to monitoring period tasks, it holds a global clock and all task settings, distributed task workers should run the task when a notification is pushed by the server, and report its own status in time. So the administrator can see all the tasks' status in one view. 
