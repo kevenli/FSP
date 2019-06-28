@@ -80,10 +80,10 @@ public class TaskDAO extends DAOBase {
 	public TaskInstance saveTaskInstance(TaskInstance instance) {
 		Session session = openSession();
 		try{
-			Transaction trans = session.beginTransaction();
+			//Transaction trans = session.beginTransaction();
 			session.save(instance);
 			session.flush();
-			trans.commit();
+			//trans.commit();
 			return instance;
 		}
 		finally{
@@ -105,10 +105,10 @@ public class TaskDAO extends DAOBase {
 	public TaskInstance updateTaskInstance(TaskInstance taskInstance){
 		Session session = openSession();
 		try{
-			Transaction trans = session.beginTransaction();
+			//Transaction trans = session.beginTransaction();
 			session.update(taskInstance);
 			session.flush();
-			trans.commit();
+			//trans.commit();
 			return taskInstance;
 		}
 		finally{

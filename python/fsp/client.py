@@ -7,6 +7,8 @@ import struct
 import threading
 import socket
 import time
+from .exceptions import *
+from .watcher import JobWorkerWatcher
 
 DEFAULT_PORT = 3092
 
@@ -91,6 +93,8 @@ class Client():
         self._send_msg_queue = []
         self._connection_status = CONNECTION_CLOSED
         self._heartbeat_thread = threading.Thread(target=self.start_heartbeat_loop, daemon=False)
+        self._job_watcher = JobWorkerWatcher()
+        self._job_watcher.on_job_finished = self.on_job_finished
 
     @staticmethod
     def _parse_hosts(hosts):
@@ -106,8 +110,10 @@ class Client():
     def connect(self):
         logger.info('Connecting to server.')
         self._connection_status = CONNECTION_CONNECTING
-        if not self._heartbeat_thread.is_alive():
-            self._heartbeat_thread.start()
+        # if not self._heartbeat_thread.is_alive():
+            # self._heartbeat_thread.start()
+        self._heartbeat_thread = threading.Thread(target=self.start_heartbeat_loop, daemon=False)
+        self._heartbeat_thread.start()
         self._socket = socket.socket()
         address = self._hosts[0]
         self._socket.connect(address)
@@ -121,10 +127,13 @@ class Client():
             raise Exception('Login faild')
         self._connection_status = CONNECTION_CONNECTED
 
+        self._job_watcher.start()
+
     def _reconnect(self):
         try:
             self.connect()
         except Exception as e:
+            logger.error(e)
             logger.warning('Cannot connect to server, connection refused')
             self.connect_disconnected()
 
@@ -187,8 +196,8 @@ class Client():
     def on_login_response(self, login_response):
         self.connect_lock.set()
 
-    def register_task(self, task, callback):
-        self._task_callbacks[task.id] = (task, callback)
+    def register_task(self, task, job_worker):
+        self._task_callbacks[task.id] = (task, job_worker)
 
         request = fsp_pb2.Request()
         request.type = fsp_pb2.Request.REGISTER_TASK
@@ -203,13 +212,31 @@ class Client():
             self.on_task_notify(response.Extensions[fsp_pb2.task_notify])
 
     def on_task_notify(self, task_notify):
-        task, task_callback = self._task_callbacks[task_notify.task_id]
-        self.task_start(task_notify.task_instance_id)
         try:
-            task_callback(task)
-            self.task_complete(task_notify.task_instance_id)
+            self.start_job(task_notify.task_id, task_notify.task_instance_id)
+            self.task_start(task_notify.task_instance_id)
         except Exception as e:
+            logger.warning(e)
             self.task_fail(task_notify.task_instance_id, str(e))
+
+    def start_job(self, task_id, task_instance_id):
+        try:
+            task, job_worker = self._task_callbacks[task_id]
+        except KeyError:
+            raise JobNotFoudException()
+        if not job_worker.finished:
+            raise JobStillRunning()
+        try:
+            job_worker.start()
+            self._job_watcher.watchWorker(task_instance_id, job_worker)
+        except Exception as e:
+            logger.error(e)
+            raise JobRunFailedException(e.message)
+
+    def on_job_finished(self, job_instance_id):
+        self.task_complete(job_instance_id)
+
+
 
     def task_start(self, instance_id):
         request = fsp_pb2.Request()

@@ -35,7 +35,7 @@ public class Worker {
 	
 	@Id
 	@Column(name = "id")
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@GeneratedValue(strategy=GenerationType.AUTO)
 	public long getId(){
 		return m_id;
 	}

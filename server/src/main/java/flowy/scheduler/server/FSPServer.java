@@ -58,14 +58,10 @@ public class FSPServer {
 	}
 
 	private void initDatabase() throws Exception {
-		String mysqlHost = config.getProperty("mysql.host");
-		String mysqlUsername = config.getProperty("mysql.username");
-		String mysqlPassword = config.getProperty("mysql.password");
-		String mysqlDatabase = config.getProperty("mysql.database");
+
 		int mysqlPort = Integer.parseInt(config.getProperty("mysql.port",
 				"3306"));
-		DaoFactory.init(mysqlHost, mysqlUsername, mysqlPassword, mysqlDatabase,
-				mysqlPort);
+		DaoFactory.init(config);
 	}
 
 	@PostConstruct
